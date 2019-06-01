@@ -24,12 +24,10 @@ public class DefaultLoadMoreBinder extends BaseLoadMoreBinder<BaseLoadMoreBinder
 
   public DefaultLoadMoreBinder(OnViewClickListener viewClickListener) {
     mViewClickListener = viewClickListener;
-    System.out.println(" ====== DefaultLoadMoreBinder  ");
   }
 
   @Override
   public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, @NonNull final LoadMoreState item) {
-    System.out.println(" ========  "+holder.itemView);
     if (item.state.equals(FOOT_STATE_LOAD_ERROR)) {
       onLoadErrorState(item.tips);
     } else if (item.state.equals(FOOT_STATE_LOAD_NOMORE)) {
@@ -55,7 +53,6 @@ public class DefaultLoadMoreBinder extends BaseLoadMoreBinder<BaseLoadMoreBinder
   public JViewHolder onCreateViewHolder(@NonNull LayoutInflater inflater, @NonNull ViewGroup parent) {
     mLoadMoreHolder = new JViewHolder(
         mRootView = inflater.inflate(R.layout.default_recyc_loading_more, parent, false));
-    System.out.println(" ====== onCreateViewHolder  "+mLoadMoreHolder.itemView);
     rootViewLoadingTag(FOOT_STATE_LOAD_NOMORE);//holder处于 loadmore状态
     mLoadMoreHolder.itemView.setOnClickListener(new View.OnClickListener() {
       @Override

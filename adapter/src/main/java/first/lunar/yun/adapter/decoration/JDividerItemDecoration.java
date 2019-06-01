@@ -41,11 +41,11 @@ public class JDividerItemDecoration extends RecyclerView.ItemDecoration {
         @Override
         public void onScrollStateChanged(RecyclerView recyclerView, int newState){
             mScrollState = newState;
-            if(newState == SCROLL_STATE_DRAGGING) {
-                System.out.println("lashen jianju");
-            }else {
-                System.out.println("还原");
-            }
+//            if(newState == SCROLL_STATE_DRAGGING) {
+//                System.out.println("lashen jianju");
+//            }else {
+//                System.out.println("还原");
+//            }
         }
 
         @Override
@@ -53,7 +53,7 @@ public class JDividerItemDecoration extends RecyclerView.ItemDecoration {
             if(mScrollState == SCROLL_STATE_DRAGGING) {
                 mScrolledPx += dy;
 //                mScall = Damping.calculateDamping(mScrolledPx);
-                System.out.println(mScrolledPx+"------------------------"+mScall);
+//                System.out.println(mScrolledPx+"------------------------"+mScall);
             }else {
                 mScrolledPx = 0;
             }

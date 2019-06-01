@@ -311,7 +311,6 @@ public class LoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<RecyclerView
     if (position < mData.size()) {
       mInnerAdapter.onBindViewHolder(holder, position, payloads);
     } else if (isShowLoadMoreHolder()) {
-      System.out.println("==================onBindViewHolder");
       mLoadingBinder.onBindViewHolder(holder, mLoadMoreState, payloads);
     }
   }

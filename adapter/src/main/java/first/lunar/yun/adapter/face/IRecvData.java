@@ -11,9 +11,8 @@ import java.util.List;
  */
 public interface IRecvData {
   void onViewDetachedFromWindow(@NonNull JViewHolder holder);
+
   void onViewAttachedToWindow(@NonNull JViewHolder holder);
-  /**
-   *
-   */
-  void onBindViewHolder(JViewHolder holder, int position, @Nullable List<Object> payloads,@Nullable OnViewClickListener viewClickListener);
+
+  void onBindViewHolder(JViewHolder holder, int position, @Nullable List<Object> payloads, @Nullable OnViewClickListener viewClickListener);
 }
