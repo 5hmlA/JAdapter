@@ -15,5 +15,5 @@ public interface IRecvData {
   /**
    *
    */
-  void onBindViewHolder(JViewHolder holder, int position, @Nullable List<Object> payloads, OnViewClickListener viewClickListener);
+  void onBindViewHolder(JViewHolder holder, int position, @Nullable List<Object> payloads,@Nullable OnViewClickListener viewClickListener);
 }
