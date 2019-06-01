@@ -19,12 +19,10 @@ import first.lunar.yun.adapter.holder.DefaultLoadMoreBinder;
 import first.lunar.yun.adapter.holder.JRecvBaseBinder;
 import first.lunar.yun.adapter.holder.JViewHolder;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static first.lunar.yun.adapter.LConsistent.LoadMoreWrapper.NEED_UP2LOAD_MORE;
 import static first.lunar.yun.adapter.LConsistent.LoadMoreWrapper.NON_UP2LOAD_MORE;
-import static first.lunar.yun.adapter.holder.BaseLoadMoreBinder.FOOT_STATE_LOAD_CUSTOM_TIP;
 import static first.lunar.yun.adapter.holder.BaseLoadMoreBinder.FOOT_STATE_LOAD_FINISH;
 import static first.lunar.yun.adapter.holder.CheckHelper.checkLists;
 
@@ -44,7 +42,7 @@ public class LoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<RecyclerView
    * 设置{@link #enAbleLoadMore(boolean)}为false之后 将会隐藏底部loadingholder
    */
   public static final int STYLE_LOADING_HOLDER_GONE = 130;
-  public int mLoadMoreWrapperStyle = STYLE_LOADING_HOLDER_GONE;
+  public int mLoadMoreWrapperStyle = STYLE_FIX_LOADING_HOLDER;
 
   public static final int ITEMTYPE_LOADMORE = -13;
   public static final String FOOT_STATE_LOAD_LOADING = "loadingholder_up2load_loading";
@@ -269,11 +267,13 @@ public class LoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<RecyclerView
   public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
     LayoutInflater inflater = LayoutInflater.from(parent.getContext());
     if (viewType == ITEMTYPE_LOADMORE) {
-      mLoadingBinder = onCreateLoadmoreBinder(parent);
       if (mLoadingBinder == null) {
-        mLoadingBinder = new DefaultLoadMoreBinder(this);
-        mLoadMoreHolder = (JViewHolder) mLoadingBinder.onCreateViewHolder(inflater, parent);
-        getLoadMoreStateBean();
+        mLoadingBinder = onCreateLoadmoreBinder(parent);
+        if (mLoadingBinder == null) {
+          mLoadingBinder = new DefaultLoadMoreBinder(this);
+          mLoadMoreHolder = (JViewHolder) mLoadingBinder.onCreateViewHolder(inflater, parent);
+          getLoadMoreStateBean();
+        }
       }
       if (mStaggeredGridLayoutManager != null) {
         StaggeredGridLayoutManager.LayoutParams fullSpanLayoutparam = new StaggeredGridLayoutManager.LayoutParams(
@@ -302,11 +302,7 @@ public class LoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<RecyclerView
 
   @Override
   public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
-    if (position < mData.size()) {
-      mInnerAdapter.onBindViewHolder(holder, position, Collections.emptyList());
-    } else if (isShowLoadMoreHolder()) {
-      mLoadingBinder.onBindViewHolder(holder, mLoadMoreState);
-    }
+    this.onBindViewHolder(holder, position, null);
   }
 
 
@@ -315,6 +311,7 @@ public class LoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<RecyclerView
     if (position < mData.size()) {
       mInnerAdapter.onBindViewHolder(holder, position, payloads);
     } else if (isShowLoadMoreHolder()) {
+      System.out.println("==================onBindViewHolder");
       mLoadingBinder.onBindViewHolder(holder, mLoadMoreState, payloads);
     }
   }
@@ -337,7 +334,7 @@ public class LoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<RecyclerView
     if (mLoadingBinder != null) {
       mInLoadingMore = true;
       //mLoadingBinder不应该为null 默认不允许上啦加载会导致nullpointexception
-      mLoadingBinder.onLoadMoreState();
+      mLoadingBinder.onLoadMoreState("");
     } else {
       LLog.llog("检查是否默认关闭了上拉加载");
     }
@@ -349,8 +346,9 @@ public class LoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<RecyclerView
   public void loadError() {
     if (mLoadingBinder != null) {
       mInLoadingMore = false;
-      mLoadingBinder.onLoadErrorState();
+      mLoadingBinder.onLoadErrorState("");
       getLoadMoreStateBean().state = FOOT_STATE_LOAD_ERROR;
+      notifyItemChanged(mData.size(), 90);
     } else {
       LLog.llog("检查是否默认关闭了上拉加载");
     }
@@ -359,14 +357,11 @@ public class LoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<RecyclerView
   /**
    * 外部手动调用 自定义 loading加载内容 设置是否允许上啦加载数据 调用{@link #enAbleLoadMore}
    */
-  public void loadCustomMsg(CharSequence tip, boolean canUp2LoadMore) {
+  public void loadCustomMsg(boolean canUp2LoadMore, CharSequence tip) {
     if (TextUtils.isEmpty(tip)) {
       enAbleLoadMore(false);
     } else if (mLoadingBinder != null) {
-      mLoadmoreitem = NEED_UP2LOAD_MORE;
-      mCanUp2LoadMore = canUp2LoadMore;
-      getLoadMoreStateBean().state = FOOT_STATE_LOAD_CUSTOM_TIP;
-      getLoadMoreStateBean().tips = tip;
+      enAbleLoadMore(canUp2LoadMore, tip);
     } else {
       LLog.llog("检查是否默认关闭了上拉加载");
     }
@@ -376,7 +371,7 @@ public class LoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<RecyclerView
    * 外部手动调用 自定义 loading加载内容 设置 不允许上啦加载数据，不涉及隐藏底部loadingholder
    */
   public void loadCustomMsg(CharSequence tip) {
-    loadCustomMsg(tip, false);
+    loadCustomMsg(false, tip);
   }
 
   /**
@@ -402,32 +397,7 @@ public class LoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<RecyclerView
    * <h1>注意需要在notify之前调用，该方法会重新设置mCanUp2LoadMore</h1>
    */
   public void enAbleLoadMore(boolean enable) {
-    if (mCanUp2LoadMore != enable) {
-      mInLoadingMore = false;
-      if (mRecyclerView != null) {
-        if (enable) {
-          registerAdapterDataObserver(mAdapterDataObserver);
-          mRecyclerView.addOnScrollListener(mOnScrollListener);
-        } else {
-          unregisterAdapterDataObserver(mAdapterDataObserver);
-          mRecyclerView.removeOnScrollListener(mOnScrollListener);
-        }
-      }
-      if (mLoadMoreWrapperStyle == STYLE_FIX_LOADING_HOLDER) {
-        mLoadmoreitem = NEED_UP2LOAD_MORE;
-        getLoadMoreStateBean().state = enable ? FOOT_STATE_LOAD_NOMORE : FOOT_STATE_LOAD_FINISH;
-        getLoadMoreStateBean().tips = "";
-      } else {
-        if (enable) {
-          mLoadmoreitem = NEED_UP2LOAD_MORE;
-          getLoadMoreStateBean().state = FOOT_STATE_LOAD_NOMORE;
-          getLoadMoreStateBean().tips = "";
-        } else {
-          mLoadmoreitem = NON_UP2LOAD_MORE;
-        }
-      }
-      mCanUp2LoadMore = enable;
-    }
+    enAbleLoadMore(enable, "");
   }
 
   /**
@@ -435,7 +405,7 @@ public class LoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<RecyclerView
    */
   public void enAbleLoadMore(boolean enable, CharSequence tips) {
     if (mCanUp2LoadMore != enable) {
-      mInLoadingMore = false;
+      mCanUp2LoadMore = enable;
       if (mRecyclerView != null) {
         if (enable) {
           registerAdapterDataObserver(mAdapterDataObserver);
@@ -445,7 +415,8 @@ public class LoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<RecyclerView
           mRecyclerView.removeOnScrollListener(mOnScrollListener);
         }
       }
-      if (mLoadMoreWrapperStyle == STYLE_FIX_LOADING_HOLDER) {
+      if (!TextUtils.isEmpty(tips) || mLoadMoreWrapperStyle == STYLE_FIX_LOADING_HOLDER) {
+        //有提示内容一定显示loadingholder
         mLoadmoreitem = NEED_UP2LOAD_MORE;
         getLoadMoreStateBean().state = enable ? FOOT_STATE_LOAD_NOMORE : FOOT_STATE_LOAD_FINISH;
         getLoadMoreStateBean().tips = tips;
@@ -458,8 +429,11 @@ public class LoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<RecyclerView
           mLoadmoreitem = NON_UP2LOAD_MORE;
         }
       }
-      loadError();
-      mCanUp2LoadMore = enable;
+      notifyItemChanged(mData.size());
+      mInLoadingMore = false;
+//    } else {
+//      getLoadMoreStateBean().state = FOOT_STATE_LOAD_NOMORE;
+//      getLoadMoreStateBean().tips = tips;
     }
   }
 
@@ -484,22 +458,27 @@ public class LoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<RecyclerView
   }
 
   public void refreshAllData(@NonNull List<T> data) {
-    if (checkLists(data)) {
-      mData.clear();
-      mData.addAll(data);
-      mLastCheckDataSize = data.size();
-      mInLoadingMore = false;
-      notifyDataSetChanged();
-    }
+    changeAllData(data);
   }
 
   public void changeAllData(@NonNull List<T> data) {
     if (checkLists(data)) {
-      mData.clear();
+      checkPageSize(data.size());
       mInLoadingMore = false;
+      int size = mData.size();
+      if (size > 0) {
+        mData.clear();
+        notifyItemRangeRemoved(0, size);
+      }
       mData.addAll(data);
       mLastCheckDataSize = data.size();
+      notifyDataSetChanged();
+//      notifyItemRangeInserted(0, mLastCheckDataSize);
     }
+  }
+
+  private void checkPageSize(int size) {
+    enAbleLoadMore(size > PAGESIZE);
   }
 
   public void removeItem(int position) {

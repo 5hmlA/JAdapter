@@ -20,18 +20,20 @@ public class DefaultLoadMoreBinder extends BaseLoadMoreBinder<BaseLoadMoreBinder
 
   public JViewHolder mLoadMoreHolder;
   private OnViewClickListener mViewClickListener;
-  private CharSequence mNomoreLoadTipsIfneed = "== 我是有底线的 ==";
+  private CharSequence mNomoreLoadTipsIfneed = "=== 我是有底线的 ===";
 
   public DefaultLoadMoreBinder(OnViewClickListener viewClickListener) {
     mViewClickListener = viewClickListener;
+    System.out.println(" ====== DefaultLoadMoreBinder  ");
   }
 
   @Override
   public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, @NonNull final LoadMoreState item) {
+    System.out.println(" ========  "+holder.itemView);
     if (item.state.equals(FOOT_STATE_LOAD_ERROR)) {
-      onLoadErrorState();
+      onLoadErrorState(item.tips);
     } else if (item.state.equals(FOOT_STATE_LOAD_NOMORE)) {
-      onLoadMoreState();
+      onLoadMoreState(item.tips);
     } else {
       onNomoreLoadTips(item.tips);
     }
@@ -41,7 +43,7 @@ public class DefaultLoadMoreBinder extends BaseLoadMoreBinder<BaseLoadMoreBinder
     if (FOOT_STATE_LOAD_ERROR.equals(mRootView.getTag(LConsistent.ViewTag.view_tag5))) {
       mViewClickListener.onItemClicked(mRootView, item);
       //加载错误状态==点击===转为 加载状态！
-      onLoadMoreState();
+      onLoadMoreState("");
       //点击重试之后变成加载更多
     } else {
       //正常状态 ，一般不可达
@@ -53,6 +55,7 @@ public class DefaultLoadMoreBinder extends BaseLoadMoreBinder<BaseLoadMoreBinder
   public JViewHolder onCreateViewHolder(@NonNull LayoutInflater inflater, @NonNull ViewGroup parent) {
     mLoadMoreHolder = new JViewHolder(
         mRootView = inflater.inflate(R.layout.default_recyc_loading_more, parent, false));
+    System.out.println(" ====== onCreateViewHolder  "+mLoadMoreHolder.itemView);
     rootViewLoadingTag(FOOT_STATE_LOAD_NOMORE);//holder处于 loadmore状态
     mLoadMoreHolder.itemView.setOnClickListener(new View.OnClickListener() {
       @Override
@@ -84,11 +87,11 @@ public class DefaultLoadMoreBinder extends BaseLoadMoreBinder<BaseLoadMoreBinder
   /**
    * 重新设置holder到loadmore界面和状态
    */
-  public void onLoadMoreState() {
+  public void onLoadMoreState(CharSequence tips) {
     if (!checkRootViewLoadingTag(FOOT_STATE_LOAD_NOMORE)) {
       rootViewLoadingTag(FOOT_STATE_LOAD_NOMORE);
       mLoadMoreHolder.setText(R.id.recyc_item_tv_loadmore,
-          findString(R.string.jonas_recyc_loading_more));
+          TextUtils.isEmpty(tips) ? findString(R.string.jonas_recyc_loading_more) : tips);
       mLoadMoreHolder.visibleViews(R.id.recyc_item_pb_loadmore);
     }
   }
@@ -96,11 +99,11 @@ public class DefaultLoadMoreBinder extends BaseLoadMoreBinder<BaseLoadMoreBinder
   /**
    * 重新设置holder到loaderror界面和状态
    */
-  public void onLoadErrorState() {
+  public void onLoadErrorState(CharSequence tips) {
     rootViewLoadingTag(FOOT_STATE_LOAD_ERROR);
     mLoadMoreHolder.visibleViews(R.id.recyc_item_pb_loadmore);
     mLoadMoreHolder.setText(R.id.recyc_item_tv_loadmore,
-        findString(R.string.jonas_recyc_load_retry));
+        TextUtils.isEmpty(tips) ? findString(R.string.jonas_recyc_load_retry) : tips);
   }
 
   public void onLoadCustomState(CharSequence msg) {

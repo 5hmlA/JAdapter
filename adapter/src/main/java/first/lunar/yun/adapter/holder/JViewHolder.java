@@ -1,7 +1,6 @@
 package first.lunar.yun.adapter.holder;
 
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
@@ -24,10 +23,11 @@ import java.lang.ref.WeakReference;
  */
 public class JViewHolder extends RecyclerView.ViewHolder {
   private static final int NO_COLOR = -19910113;
+  private static final int JVIEW_TAG = 0x20190601;
   private final SparseArray<WeakReference<View>> mCacheViews;
   private String tag = JViewHolder.class.getSimpleName();
   public static final String TAG_LOADING = "loadingholder";
-  private final WeakReference<Context> mContextWeakReference;
+  private final WeakReference<Activity> mActivityWeakReference;
 
   public <E> E getExtra() {
     return (E) extra;
@@ -44,18 +44,22 @@ public class JViewHolder extends RecyclerView.ViewHolder {
     if (LApp.getContext() == null) {
       LApp.fly(itemView.getContext().getApplicationContext());
     }
-    mContextWeakReference = new WeakReference<>(itemView.getContext());
+    mActivityWeakReference = new WeakReference<>(getActivity(itemView));
     mCacheViews = new SparseArray<>(10);
+  }
+
+  public Activity getActivity() {
+    if (mActivityWeakReference == null || mActivityWeakReference.get() == null) {
+      return getActivity(itemView);
+    } else {
+      return mActivityWeakReference.get();
+    }
   }
 
   public Activity getActivity(View view) {
     return LApp.getAct4View(view);
   }
 
-  @Nullable
-  public Context getContext() {
-    return mContextWeakReference.get();
-  }
 
   public <V extends View> V getView(int viewId) {
     return getView(itemView, viewId);
@@ -100,7 +104,7 @@ public class JViewHolder extends RecyclerView.ViewHolder {
     TextView textView = getView(viewId);
     if (!TextUtils.isEmpty(text)) {
       textView.setVisibility(View.VISIBLE);
-      if (NO_COLOR!=color) {
+      if (NO_COLOR != color) {
         textView.setTextColor(color);
       }
       textView.setText(text);
@@ -194,7 +198,7 @@ public class JViewHolder extends RecyclerView.ViewHolder {
     return this;
   }
 
-  public JViewHolder setOnClickListener( View.OnClickListener l,int... viewIds) {
+  public JViewHolder setOnClickListener(View.OnClickListener l, int... viewIds) {
     for (int viewId : viewIds) {
       getView(viewId).setOnClickListener(l);
     }
@@ -217,5 +221,16 @@ public class JViewHolder extends RecyclerView.ViewHolder {
 
   public void setTag(String tag) {
     this.tag = tag;
+  }
+
+  public static void setViewTag(View view, Object Tag) {
+    if (Tag != null) {
+      view.setTag(JVIEW_TAG, Tag);
+    }
+  }
+
+  @Nullable
+  public static <T> T getViewTag(View view) {
+    return (T) view.getTag(JVIEW_TAG);
   }
 }

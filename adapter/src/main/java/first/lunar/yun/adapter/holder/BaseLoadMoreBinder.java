@@ -32,13 +32,15 @@ public abstract class BaseLoadMoreBinder<D> extends JRecvBaseBinder<D,RecyclerVi
 
     /**
      * 重新设置holder到loadmore界面和状态
+     * @param tips
      */
-    public abstract void onLoadMoreState();
+    public abstract void onLoadMoreState(CharSequence tips);
 
     /**
      * 重新设置holder到loaderror界面和状态
+     * @param tips
      */
-    public abstract void onLoadErrorState();
+    public abstract void onLoadErrorState(CharSequence tips);
 
     public abstract void onLoadCustomState(CharSequence msg);
 

@@ -1,9 +1,13 @@
 package first.lunar.yun.adapter.vb;
 
 import android.app.Activity;
+import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
 import first.lunar.yun.adapter.LApp;
 import first.lunar.yun.adapter.face.IRecvDataDiff;
+import first.lunar.yun.adapter.holder.JViewHolder;
 import java.lang.ref.WeakReference;
 
 /**
@@ -16,9 +20,26 @@ import java.lang.ref.WeakReference;
 public abstract class JViewBean implements IRecvDataDiff {
 
   private WeakReference<Activity> mActivityWeakReference;
+  private int mPosition;
+
+  public int getPosition() {
+    return mPosition;
+  }
+
+  public void setPosition(int position) {
+    mPosition = position;
+  }
 
   public void bindActivity(Activity activity) {
     mActivityWeakReference = new WeakReference<>(activity);
+  }
+
+  @Nullable
+  public Activity getActivity() {
+    if (mActivityWeakReference == null) {
+      return null;
+    }
+    return mActivityWeakReference.get();
   }
 
   public Activity getActivity(View view) {
@@ -47,5 +68,18 @@ public abstract class JViewBean implements IRecvDataDiff {
   @Override
   public Object getChangePayload(IRecvDataDiff oldData, IRecvDataDiff newData) {
     return null;
+  }
+
+  @LayoutRes
+  public abstract int bindLayout();
+
+  @Override
+  public void onViewDetachedFromWindow(@NonNull JViewHolder holder) {
+
+  }
+
+  @Override
+  public void onViewAttachedToWindow(@NonNull JViewHolder holder) {
+
   }
 }

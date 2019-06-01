@@ -3,7 +3,6 @@ package first.lunar.yun.adapter.decoration;
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import first.lunar.yun.adapter.helper.Damping;
 
 import static android.support.v4.view.ViewPager.SCROLL_STATE_DRAGGING;
 
@@ -53,7 +52,7 @@ public class JDividerItemDecoration extends RecyclerView.ItemDecoration {
         public void onScrolled(RecyclerView recyclerView, int dx, int dy){
             if(mScrollState == SCROLL_STATE_DRAGGING) {
                 mScrolledPx += dy;
-                mScall = Damping.calculateDamping(mScrolledPx);
+//                mScall = Damping.calculateDamping(mScrolledPx);
                 System.out.println(mScrolledPx+"------------------------"+mScall);
             }else {
                 mScrolledPx = 0;
