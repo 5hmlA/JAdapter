@@ -13,6 +13,7 @@ import first.lunar.yun.adapter.LApp;
 import first.lunar.yun.adapter.LoadMoreWrapperAdapter;
 import first.lunar.yun.adapter.face.OnMoreloadListener;
 import first.lunar.yun.adapter.face.OnViewClickListener;
+import first.lunar.yun.adapter.helper.JOnClickListener;
 import first.lunar.yun.adapter.holder.JViewHolder;
 import first.lunar.yun.adapter.vb.JViewBean;
 import java.util.ArrayList;
@@ -113,9 +114,9 @@ class DataTest extends JViewBean {
   @Override
   public void onBindViewHolder(JViewHolder holder, final int position, @Nullable List<Object> payloads, OnViewClickListener viewClickListener) {
     holder.setText(R.id.tv, position + "    " + text)
-        .setOnClickListener(new View.OnClickListener() {
+        .setOnClickListener(new JOnClickListener() {
           @Override
-          public void onClick(View v) {
+          protected void throttleFirstclick(View v) {
             Toast.makeText(v.getContext(), getPosition() + "", Toast.LENGTH_SHORT).show();
           }
         }, R.id.iv);

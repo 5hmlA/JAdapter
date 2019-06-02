@@ -146,6 +146,17 @@ public class LoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<RecyclerView
   };
 
 
+
+  /**
+   * 多布局模式 支持上拉刷新
+   */
+  public LoadMoreWrapperAdapter(JVBrecvAdapter innerAdapter) {
+    mInnerAdapter = innerAdapter;
+    mData = innerAdapter.getDataList();
+    mLastCheckDataSize = mData.size();
+  }
+
+
   /**
    * 多布局模式 支持上拉刷新
    */

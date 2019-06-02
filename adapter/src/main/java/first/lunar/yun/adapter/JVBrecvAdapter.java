@@ -33,6 +33,10 @@ public class JVBrecvAdapter<D extends JViewBean> extends RecyclerView.Adapter<JV
     mOnViewClickListener = onViewClickListener;
   }
 
+  public List<D> getDataList() {
+    return mDataList;
+  }
+
   @Override
   public int getItemViewType(int position) {
     return mDataList.get(position).bindLayout();

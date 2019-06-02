@@ -13,7 +13,11 @@ public class LoadMoreWrapperDampAdapter<T> extends LoadMoreWrapperAdapter<T> {
 
     public boolean mIsNeedDamp = true;
 
-    public LoadMoreWrapperDampAdapter(RecyclerView.Adapter<RecyclerView.ViewHolder> innerAdapter, List data){
+    public LoadMoreWrapperDampAdapter(JVBrecvAdapter innerAdapter) {
+        super(innerAdapter);
+    }
+
+    public LoadMoreWrapperDampAdapter(RecyclerView.Adapter<RecyclerView.ViewHolder> innerAdapter, List data) {
         super(innerAdapter, data);
     }
 

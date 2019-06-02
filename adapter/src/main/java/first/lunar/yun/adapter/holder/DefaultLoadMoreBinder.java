@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import first.lunar.yun.adapter.LConsistent;
 import first.lunar.yun.adapter.R;
 import first.lunar.yun.adapter.face.OnViewClickListener;
+import first.lunar.yun.adapter.helper.JOnClickListener;
 
 import static first.lunar.yun.adapter.LApp.findString;
 
@@ -54,19 +55,12 @@ public class DefaultLoadMoreBinder extends BaseLoadMoreBinder<BaseLoadMoreBinder
     mLoadMoreHolder = new JViewHolder(
         mRootView = inflater.inflate(R.layout.default_recyc_loading_more, parent, false));
     rootViewLoadingTag(FOOT_STATE_LOAD_NOMORE);//holder处于 loadmore状态
-    mLoadMoreHolder.itemView.setOnClickListener(new View.OnClickListener() {
+    mLoadMoreHolder.itemView.setOnClickListener(new JOnClickListener() {
       @Override
-      public void onClick(View v) {
+      protected void throttleFirstclick(View v) {
         onLoadErrorClick(mLoadMoreHolder);
       }
     });
-//        RxView.clicks(mLoadMoreHolder.itemView).throttleFirst(300, TimeUnit.MILLISECONDS)
-//                .subscribe(new Consumer<Object>() {
-//                    @Override
-//                    public void accept(Object o) throws Exception{
-//                        onLoadErrorClick(mLoadMoreHolder);
-//                    }
-//                });
     return mLoadMoreHolder;
   }
 
