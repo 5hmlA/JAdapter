@@ -265,6 +265,7 @@ public class LoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<RecyclerView
 
   @Override
   public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
     LayoutInflater inflater = LayoutInflater.from(parent.getContext());
     if (viewType == ITEMTYPE_LOADMORE) {
       if (mLoadingBinder == null) {
@@ -282,10 +283,22 @@ public class LoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<RecyclerView
         ((LinearLayout) mLoadMoreHolder.getView(R.id.recyc_item_tv_loadmore).getParent())
             .setLayoutParams(fullSpanLayoutparam);
       }
+      LLog.llog(" ****** onCreateViewHolder : " + mLoadMoreHolder.itemView);
       return mLoadMoreHolder;
     } else {
+      if (LApp.isDebug()) {
+        RecyclerView.ViewHolder viewHolder = mInnerAdapter.onCreateViewHolder(parent, viewType);
+        LLog.llog(" ****** onCreateViewHolder : " + viewHolder.itemView);
+        return viewHolder;
+      }
       return mInnerAdapter.onCreateViewHolder(parent, viewType);
     }
+  }
+
+  @Override
+  public void onViewRecycled(@NonNull RecyclerView.ViewHolder holder) {
+    super.onViewRecycled(holder);
+    LLog.llog(" ****** onViewRecycled : " + holder.itemView);
   }
 
   private BaseLoadMoreBinder.LoadMoreState getLoadMoreStateBean() {
@@ -347,7 +360,7 @@ public class LoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<RecyclerView
       mInLoadingMore = false;
       mLoadingBinder.onLoadErrorState("");
       getLoadMoreStateBean().state = FOOT_STATE_LOAD_ERROR;
-      notifyItemChanged(mData.size(), 90);
+      notifyItemChanged(mData.size(), "上拉加载失败");
     } else {
       LLog.llog("检查是否默认关闭了上拉加载");
     }
@@ -390,7 +403,7 @@ public class LoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<RecyclerView
   /**
    * <p>在{@link #STYLE_FIX_LOADING_HOLDER}模式下 只控制是否允许上啦加载数据，
    * true 表示loadingholder处于loading状态， false表示处于加载结束状态，显示结束提示信息{提示信息可以通过获取loadingholder设置{@link #getLoadingHolderBinder()}
-   * 需要自定义提示内容可调用{@link #enAbleLoadMore(boolean, CharSequence)}
+   * 需要自定义提示内容可调用{@link #enAbleLoadMore(boolean)}
    * </p>
    * <p>在STYLE_LOADING_HOLDER_GONE模式下控制是否还有上拉的底部布局loadingholder同时控制是否允许上啦加载数据</p>
    * <h1>注意需要在notify之前调用，该方法会重新设置mCanUp2LoadMore</h1>
@@ -428,7 +441,8 @@ public class LoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<RecyclerView
           mLoadmoreitem = NON_UP2LOAD_MORE;
         }
       }
-      notifyItemChanged(mData.size());
+//      notifyItemChanged(mData.size());//会导致 上拉加载holder再次创建
+      notifyItemChanged(mData.size(),"上拉加载状态更新:"+enable);
       mInLoadingMore = false;
 //    } else {
 //      getLoadMoreStateBean().state = FOOT_STATE_LOAD_NOMORE;
