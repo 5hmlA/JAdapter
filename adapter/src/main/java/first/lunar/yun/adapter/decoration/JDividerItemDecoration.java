@@ -1,10 +1,10 @@
 package first.lunar.yun.adapter.decoration;
 
 import android.graphics.Rect;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 
-import static android.support.v4.view.ViewPager.SCROLL_STATE_DRAGGING;
+import static androidx.viewpager.widget.ViewPager.SCROLL_STATE_DRAGGING;
 
 /**
  * @author yun.

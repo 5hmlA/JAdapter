@@ -1,7 +1,7 @@
 package first.lunar.yun.adapter.face;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import first.lunar.yun.adapter.holder.JViewHolder;
 import java.util.List;
 

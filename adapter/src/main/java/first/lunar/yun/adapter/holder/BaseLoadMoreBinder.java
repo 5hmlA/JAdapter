@@ -1,6 +1,6 @@
 package first.lunar.yun.adapter.holder;
 
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * @another 江祖赟

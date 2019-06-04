@@ -1,6 +1,6 @@
 package first.lunar.yun.adapter;
 
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.widget.LinearLayout;
 import first.lunar.yun.adapter.helper.Damping;
 import java.util.List;

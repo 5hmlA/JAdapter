@@ -1,9 +1,9 @@
 package first.lunar.yun.adapter.vb;
 
 import android.app.Activity;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.view.View;
 import first.lunar.yun.adapter.LApp;
 import first.lunar.yun.adapter.face.IRecvDataDiff;

@@ -1,10 +1,10 @@
 package first.lunar.yun.adapter;
 
-import android.support.annotation.NonNull;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -144,7 +144,6 @@ public class LoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<RecyclerView
     //                }
     //            }
   };
-
 
 
   /**
@@ -453,7 +452,7 @@ public class LoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<RecyclerView
         }
       }
 //      notifyItemChanged(mData.size());//会导致 上拉加载holder再次创建
-      notifyItemChanged(mData.size(),"上拉加载状态更新:"+enable);
+      notifyItemChanged(mData.size(), "上拉加载状态更新:" + enable);
       mInLoadingMore = false;
 //    } else {
 //      getLoadMoreStateBean().state = FOOT_STATE_LOAD_NOMORE;
@@ -502,7 +501,9 @@ public class LoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<RecyclerView
   }
 
   private void checkPageSize(int size) {
-    enAbleLoadMore(size > PAGESIZE);
+    if (mCanUp2LoadMore) {
+      enAbleLoadMore(size > PAGESIZE);
+    }
   }
 
   public void removeItem(int position) {
