@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import first.lunar.yun.adapter.LConsistent;
 import first.lunar.yun.adapter.R;
 import first.lunar.yun.adapter.face.OnViewClickListener;
-import first.lunar.yun.adapter.helper.JOnClickListener;
+import first.lunar.yun.adapter.face.JOnClickListener;
 
 import static first.lunar.yun.adapter.LApp.findString;
 
