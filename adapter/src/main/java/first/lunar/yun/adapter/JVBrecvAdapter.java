@@ -1,5 +1,6 @@
 package first.lunar.yun.adapter;
 
+import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -24,15 +25,18 @@ public class JVBrecvAdapter<D extends JViewBean> extends RecyclerView.Adapter<JV
 
   private OnViewClickListener<D> mOnViewClickListener;
 
+  @Keep
   public JVBrecvAdapter(List<D> list) {
     mDataList = list;
   }
 
+  @Keep
   public JVBrecvAdapter(List<D> dataList, OnViewClickListener<D> onViewClickListener) {
     mDataList = dataList;
     mOnViewClickListener = onViewClickListener;
   }
 
+  @Keep
   public List<D> getDataList() {
     return mDataList;
   }
@@ -58,9 +62,6 @@ public class JVBrecvAdapter<D extends JViewBean> extends RecyclerView.Adapter<JV
   public void onBindViewHolder(@NonNull JViewHolder holder, int position, @NonNull List<Object> payloads) {
     final D d = mDataList.get(position);
     d.setPosition(position);
-    if (d.getActivity() == null) {
-      d.bindActivity(holder.getActivity());
-    }
     if (mOnViewClickListener != null) {
       JViewHolder.setViewTag(holder.itemView, d);
       holder.itemView.setOnClickListener(this);
@@ -68,6 +69,7 @@ public class JVBrecvAdapter<D extends JViewBean> extends RecyclerView.Adapter<JV
     d.onBindViewHolder(holder, position, payloads, mOnViewClickListener);
   }
 
+  @Keep
   @Override
   public int getItemCount() {
     return mDataList.size();

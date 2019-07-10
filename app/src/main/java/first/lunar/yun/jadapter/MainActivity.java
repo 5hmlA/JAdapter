@@ -1,19 +1,19 @@
 package first.lunar.yun.jadapter;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Toast;
 import androidx.annotation.Nullable;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import android.view.View;
-import android.widget.Toast;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import first.lunar.yun.adapter.JVBrecvAdapter;
 import first.lunar.yun.adapter.LApp;
 import first.lunar.yun.adapter.LoadMoreWrapperAdapter;
+import first.lunar.yun.adapter.face.JOnClickListener;
 import first.lunar.yun.adapter.face.OnMoreloadListener;
 import first.lunar.yun.adapter.face.OnViewClickListener;
-import first.lunar.yun.adapter.helper.JOnClickListener;
 import first.lunar.yun.adapter.holder.JViewHolder;
 import first.lunar.yun.adapter.vb.JViewBean;
 import java.util.ArrayList;
@@ -116,7 +116,7 @@ class DataTest extends JViewBean {
     holder.setText(R.id.tv, position + "    " + text)
         .setOnClickListener(new JOnClickListener() {
           @Override
-          protected void throttleFirstclick(View v) {
+          public void throttleFirstclick(View v) {
             Toast.makeText(v.getContext(), getPosition() + "", Toast.LENGTH_SHORT).show();
           }
         }, R.id.iv);

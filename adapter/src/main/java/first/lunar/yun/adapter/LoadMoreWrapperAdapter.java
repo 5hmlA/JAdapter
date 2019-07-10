@@ -1,16 +1,17 @@
 package first.lunar.yun.adapter;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import androidx.annotation.Keep;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import first.lunar.yun.adapter.face.OnMoreloadListener;
 import first.lunar.yun.adapter.face.OnViewClickListener;
 import first.lunar.yun.adapter.helper.LLog;
@@ -23,8 +24,8 @@ import java.util.List;
 
 import static first.lunar.yun.adapter.LConsistent.LoadMoreWrapper.NEED_UP2LOAD_MORE;
 import static first.lunar.yun.adapter.LConsistent.LoadMoreWrapper.NON_UP2LOAD_MORE;
+import static first.lunar.yun.adapter.helper.CheckHelper.checkLists;
 import static first.lunar.yun.adapter.holder.BaseLoadMoreBinder.FOOT_STATE_LOAD_FINISH;
-import static first.lunar.yun.adapter.holder.CheckHelper.checkLists;
 
 
 /**
@@ -149,6 +150,7 @@ public class LoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<RecyclerView
   /**
    * 多布局模式 支持上拉刷新
    */
+  @Keep
   public LoadMoreWrapperAdapter(JVBrecvAdapter innerAdapter) {
     mInnerAdapter = innerAdapter;
     mData = innerAdapter.getDataList();
@@ -159,6 +161,7 @@ public class LoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<RecyclerView
   /**
    * 多布局模式 支持上拉刷新
    */
+  @Keep
   public LoadMoreWrapperAdapter(RecyclerView.Adapter<RecyclerView.ViewHolder> innerAdapter, List data) {
     mInnerAdapter = innerAdapter;
     mData = data;
@@ -311,6 +314,7 @@ public class LoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<RecyclerView
     LLog.llog(" ****** onViewRecycled : " + holder.itemView);
   }
 
+  @Keep
   private BaseLoadMoreBinder.LoadMoreState getLoadMoreStateBean() {
     if (mLoadMoreState == null) {
       return createLoadmoreStateBean();
@@ -341,6 +345,7 @@ public class LoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<RecyclerView
   /**
    * 设置每页显示的数量
    */
+  @Keep
   public LoadMoreWrapperAdapter setPagesize(int pagesize) {
     if (mData.size() < pagesize) {
       LLog.llog(TAG, "mData.size() < pagesize 不显示上拉加载状态");
@@ -352,6 +357,7 @@ public class LoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<RecyclerView
   /**
    * 重回 加载状态
    */
+  @Keep
   public void loadLoading() {
     if (mLoadingBinder != null) {
       mInLoadingMore = true;
@@ -365,6 +371,7 @@ public class LoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<RecyclerView
   /**
    * 外部手动调用 加载错误
    */
+  @Keep
   public void loadError() {
     if (mLoadingBinder != null) {
       mInLoadingMore = false;
@@ -379,6 +386,7 @@ public class LoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<RecyclerView
   /**
    * 外部手动调用 自定义 loading加载内容 设置是否允许上啦加载数据 调用{@link #enAbleLoadMore}
    */
+  @Keep
   public void loadCustomMsg(boolean canUp2LoadMore, CharSequence tip) {
     if (TextUtils.isEmpty(tip)) {
       enAbleLoadMore(false);
@@ -392,6 +400,7 @@ public class LoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<RecyclerView
   /**
    * 外部手动调用 自定义 loading加载内容 设置 不允许上啦加载数据，不涉及隐藏底部loadingholder
    */
+  @Keep
   public void loadCustomMsg(CharSequence tip) {
     loadCustomMsg(false, tip);
   }
@@ -406,6 +415,7 @@ public class LoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<RecyclerView
   /**
    * 是否 允许上拉{同时需要允许显示底部的loadingholder} 抓取数据 回掉监听的 onup2LoadingMore
    */
+  @Keep
   public boolean isEnable2LoadMore() {
     return mCanUp2LoadMore;
   }
@@ -418,6 +428,7 @@ public class LoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<RecyclerView
    * <p>在STYLE_LOADING_HOLDER_GONE模式下控制是否还有上拉的底部布局loadingholder同时控制是否允许上啦加载数据</p>
    * <h1>注意需要在notify之前调用，该方法会重新设置mCanUp2LoadMore</h1>
    */
+  @Keep
   public void enAbleLoadMore(boolean enable) {
     enAbleLoadMore(enable, "");
   }
@@ -425,6 +436,7 @@ public class LoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<RecyclerView
   /**
    * 同时将模式设置为 STYLE_FIX_LOADING_HOLDER
    */
+  @Keep
   public void enAbleLoadMore(boolean enable, CharSequence tips) {
     if (mCanUp2LoadMore != enable) {
       mCanUp2LoadMore = enable;
@@ -460,16 +472,19 @@ public class LoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<RecyclerView
     }
   }
 
+  @Keep
   public LoadMoreWrapperAdapter setLoadeMoreWrapperStyle(int style) {
     mLoadMoreWrapperStyle = style;
     return this;
   }
 
+  @Keep
   public LoadMoreWrapperAdapter setOnMoreloadListener(OnMoreloadListener listener) {
     mListener = listener;
     return this;
   }
 
+  @Keep
   public void addMoreList(@NonNull List<T> data) {
     if (checkLists(data)) {
       mInLoadingMore = false;
@@ -480,10 +495,12 @@ public class LoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<RecyclerView
     }
   }
 
+  @Keep
   public void refreshAllData(@NonNull List<T> data) {
     changeAllData(data);
   }
 
+  @Keep
   public void changeAllData(@NonNull List<T> data) {
     if (checkLists(data)) {
       checkPageSize(data.size());
@@ -506,6 +523,7 @@ public class LoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<RecyclerView
     }
   }
 
+  @Keep
   public void removeItem(int position) {
     if (position < mData.size()) {
       mData.remove(position);
@@ -519,6 +537,7 @@ public class LoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<RecyclerView
     }
   }
 
+  @Keep
   public void removeItem(Object item) {
     int index = mData.indexOf(item);
     if (index > -1) {
@@ -534,6 +553,7 @@ public class LoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<RecyclerView
   }
 
 
+  @Keep
   public void addItem(Object data, int position) {
     mInLoadingMore = false;
     if (position > mData.size()) {
@@ -549,6 +569,7 @@ public class LoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<RecyclerView
   /**
    * 自定义实现上拉加载布局 //最好包括 三种状态 上拉加载中,加载失败,没有更多 ,可自由切换 同时需要复写 {@link #loadError()},{@link #enAbleLoadMore(boolean)} }
    */
+  @Keep
   public BaseLoadMoreBinder onCreateLoadmoreBinder(ViewGroup parent) {
     return null;
   }
@@ -586,10 +607,12 @@ public class LoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<RecyclerView
     }
   }
 
+  @Keep
   public JViewHolder getLoadingHolder() {
     return mLoadMoreHolder;
   }
 
+  @Keep
   public JRecvBaseBinder getLoadingHolderBinder() {
     return mLoadingBinder;
   }

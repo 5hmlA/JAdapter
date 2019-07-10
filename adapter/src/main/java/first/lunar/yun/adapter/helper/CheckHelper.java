@@ -1,4 +1,4 @@
-package first.lunar.yun.adapter.holder;
+package first.lunar.yun.adapter.helper;
 
 import android.app.Activity;
 import android.app.AppOpsManager;
@@ -7,10 +7,10 @@ import android.os.Binder;
 import android.os.Build;
 import android.text.TextUtils;
 import android.view.View;
+import androidx.annotation.Keep;
 import first.lunar.yun.adapter.LApp;
-import first.lunar.yun.adapter.helper.LLog;
 import java.util.Collection;
-
+@Keep
 public class CheckHelper {
 
     public static final int EQUALTAG = 0x7f199101;

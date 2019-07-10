@@ -1,9 +1,12 @@
 package first.lunar.yun.adapter.face;
 
+import androidx.annotation.Keep;
+
 /**
  * @another 江祖赟
  * @date 2017/7/5.
  */
+@Keep
 public interface IRecvDataDiff extends IRecvData {
 
 

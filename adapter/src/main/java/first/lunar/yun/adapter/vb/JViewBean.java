@@ -1,14 +1,10 @@
 package first.lunar.yun.adapter.vb;
 
-import android.app.Activity;
+import androidx.annotation.Keep;
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import android.view.View;
-import first.lunar.yun.adapter.LApp;
 import first.lunar.yun.adapter.face.IRecvDataDiff;
 import first.lunar.yun.adapter.holder.JViewHolder;
-import java.lang.ref.WeakReference;
 
 /**
  * @author yun.
@@ -17,42 +13,17 @@ import java.lang.ref.WeakReference;
  * @since [https://github.com/mychoices]
  * <p><a href="https://github.com/mychoices">github</a>
  */
+@Keep
 public abstract class JViewBean implements IRecvDataDiff {
 
-  private WeakReference<Activity> mActivityWeakReference;
-  private int mPosition;
+  private int position;
 
   public int getPosition() {
-    return mPosition;
+    return position;
   }
 
   public void setPosition(int position) {
-    mPosition = position;
-  }
-
-  public void bindActivity(Activity activity) {
-    mActivityWeakReference = new WeakReference<>(activity);
-  }
-
-  @Nullable
-  public Activity getActivity() {
-    if (mActivityWeakReference == null) {
-      return null;
-    }
-    return mActivityWeakReference.get();
-  }
-
-  public Activity getActivity(View view) {
-    if (mActivityWeakReference != null) {
-      Activity activity = mActivityWeakReference.get();
-      if (activity != null) {
-        return activity;
-      } else {
-        return (mActivityWeakReference = new WeakReference<>(LApp.getAct4View(view))).get();
-      }
-    } else {
-      return (mActivityWeakReference = new WeakReference<>(LApp.getAct4View(view))).get();
-    }
+    position = position;
   }
 
   @Override

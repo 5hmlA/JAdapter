@@ -1,5 +1,6 @@
 package first.lunar.yun.adapter.face;
 
+import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import first.lunar.yun.adapter.holder.JViewHolder;
@@ -9,6 +10,7 @@ import java.util.List;
  * @another 江祖赟
  * @date 2017/7/5.
  */
+@Keep
 public interface IRecvData {
   void onViewDetachedFromWindow(@NonNull JViewHolder holder);
 
