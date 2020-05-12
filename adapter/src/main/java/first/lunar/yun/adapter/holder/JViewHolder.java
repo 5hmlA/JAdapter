@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import first.lunar.yun.adapter.LApp;
+import first.lunar.yun.adapter.vb.JViewBean;
 import java.lang.ref.WeakReference;
 
 /**
@@ -28,6 +29,7 @@ public class JViewHolder extends RecyclerView.ViewHolder {
   private String tag = JViewHolder.class.getSimpleName();
   public static final String TAG_LOADING = "loadingholder";
   private final WeakReference<Activity> mActivityWeakReference;
+  private JViewBean mHoldVBean;
 
   public <E> E getExtra() {
     return (E) extra;
@@ -232,5 +234,13 @@ public class JViewHolder extends RecyclerView.ViewHolder {
   @Nullable
   public static <T> T getViewTag(View view) {
     return (T) view.getTag(JVIEW_TAG);
+  }
+
+  public <D extends JViewBean> void setHoldVBean(JViewBean holdVBean) {
+    mHoldVBean = holdVBean;
+  }
+
+  public JViewBean getHoldVBean() {
+    return mHoldVBean;
   }
 }

@@ -61,6 +61,7 @@ public class JVBrecvAdapter<D extends JViewBean> extends RecyclerView.Adapter<JV
   @Override
   public void onBindViewHolder(@NonNull JViewHolder holder, int position, @NonNull List<Object> payloads) {
     final D d = mDataList.get(position);
+    holder.setHoldVBean(d);
     d.setPosition(position);
     if (mOnViewClickListener != null) {
       JViewHolder.setViewTag(holder.itemView, d);
@@ -78,15 +79,28 @@ public class JVBrecvAdapter<D extends JViewBean> extends RecyclerView.Adapter<JV
   @Override
   public void onViewAttachedToWindow(@NonNull JViewHolder holder) {
     super.onViewAttachedToWindow(holder);
-    int adapterPosition = holder.getAdapterPosition();
-    mDataList.get(adapterPosition).onViewAttachedToWindow(holder);
+    JViewBean holdVBean = holder.getHoldVBean();
+    if (holdVBean != null) {
+      holdVBean.onViewAttachedToWindow(holder);
+    }
   }
 
   @Override
   public void onViewDetachedFromWindow(@NonNull JViewHolder holder) {
     super.onViewDetachedFromWindow(holder);
-    int adapterPosition = holder.getAdapterPosition();
-    mDataList.get(adapterPosition).onViewDetachedFromWindow(holder);
+    JViewBean holdVBean = holder.getHoldVBean();
+    if (holdVBean != null) {
+      holdVBean.onViewDetachedFromWindow(holder);
+    }
+  }
+
+  @Override
+  public void onViewRecycled(@NonNull JViewHolder holder) {
+    super.onViewRecycled(holder);
+    JViewBean holdVBean = holder.getHoldVBean();
+    if (holdVBean != null) {
+      holdVBean.onViewRecycled(holder);
+    }
   }
 
   @Override

@@ -53,4 +53,8 @@ public abstract class JViewBean implements IRecvDataDiff {
   public void onViewAttachedToWindow(@NonNull JViewHolder holder) {
 
   }
+
+  public void onViewRecycled(@NonNull JViewHolder holder) {
+
+  }
 }
