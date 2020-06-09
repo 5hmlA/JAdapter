@@ -98,10 +98,23 @@ public class JViewHolder extends RecyclerView.ViewHolder {
     return this;
   }
 
+  /**
+   * 当 text为空的时候会设置textview不可见
+   * @param viewId
+   * @param text
+   * @return
+   */
   public JViewHolder setText2(int viewId, CharSequence text) {
     return setText2(viewId, text, NO_COLOR);
   }
 
+  /**
+   * 当 text为空的时候会设置textview不可见
+   * @param viewId
+   * @param text
+   * @param color
+   * @return
+   */
   public JViewHolder setText2(int viewId, CharSequence text, @ColorInt int color) {
     TextView textView = getView(viewId);
     if (!TextUtils.isEmpty(text)) {

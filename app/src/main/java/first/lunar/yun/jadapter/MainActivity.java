@@ -3,6 +3,7 @@ package first.lunar.yun.jadapter;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -120,5 +121,11 @@ class DataTest extends JViewBean {
             Toast.makeText(v.getContext(), getPosition() + "", Toast.LENGTH_SHORT).show();
           }
         }, R.id.iv);
+  }
+
+  @Override
+  public void onViewDetachedFromWindow(@NonNull JViewHolder holder) {
+    super.onViewDetachedFromWindow(holder);
+    System.out.println("onViewDetachedFromWindow - "+getPosition() +" - " + holder);
   }
 }

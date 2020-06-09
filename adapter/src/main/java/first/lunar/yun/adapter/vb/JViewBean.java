@@ -16,14 +16,14 @@ import first.lunar.yun.adapter.holder.JViewHolder;
 @Keep
 public abstract class JViewBean implements IRecvDataDiff {
 
-  private int position;
+  private int mPosition;
 
   public int getPosition() {
-    return position;
+    return mPosition;
   }
 
   public void setPosition(int position) {
-    position = position;
+    mPosition = position;
   }
 
   @Override

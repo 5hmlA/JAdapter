@@ -308,12 +308,6 @@ public class LoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<RecyclerView
     }
   }
 
-  @Override
-  public void onViewRecycled(@NonNull RecyclerView.ViewHolder holder) {
-    super.onViewRecycled(holder);
-    LLog.llog(" ****** onViewRecycled : " + holder.itemView);
-  }
-
   @Keep
   private BaseLoadMoreBinder.LoadMoreState getLoadMoreStateBean() {
     if (mLoadMoreState == null) {
@@ -577,6 +571,9 @@ public class LoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<RecyclerView
   @Override
   public void onViewAttachedToWindow(RecyclerView.ViewHolder holder) {
     super.onViewAttachedToWindow(holder);
+    if (mInnerAdapter!=null) {
+      mInnerAdapter.onViewAttachedToWindow(holder);
+    }
   }
 
   @Override
@@ -590,8 +587,20 @@ public class LoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<RecyclerView
   @Override
   public void onViewDetachedFromWindow(RecyclerView.ViewHolder holder) {
     super.onViewDetachedFromWindow(holder);
+    if (mInnerAdapter!=null) {
+      mInnerAdapter.onViewDetachedFromWindow(holder);
+    }
     if (mLoadingBinder != null) {
       mLoadingBinder.onViewDetachedFromWindow(holder);
+    }
+  }
+
+  @Override
+  public void onViewRecycled(@NonNull RecyclerView.ViewHolder holder) {
+    super.onViewRecycled(holder);
+    LLog.llog(" ****** onViewRecycled : " + holder.itemView);
+    if (mInnerAdapter != null) {
+      mInnerAdapter.onViewRecycled(holder);
     }
   }
 
