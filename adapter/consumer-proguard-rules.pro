@@ -120,6 +120,6 @@
 -keepclassmembers class first.lunar.yun.adapter.LoadMoreWrapperAdapter {}
 -keepclassmembers class first.lunar.yun.adapter.LoadMoreWrapperDampAdapter {}
 #自定义混淆字典配置
-#-obfuscationdictionary proguard-tradition.txt
-#-packageobfuscationdictionary proguard-tradition.txt
-#-classobfuscationdictionary proguard-tradition.txt
+-obfuscationdictionary proguard-tradition.txt
+-packageobfuscationdictionary proguard-tradition.txt
+-classobfuscationdictionary proguard-tradition.txt

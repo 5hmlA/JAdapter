@@ -579,6 +579,9 @@ public class LoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<RecyclerView
   @Override
   public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
     super.onDetachedFromRecyclerView(recyclerView);
+    if (mInnerAdapter!=null) {
+      mInnerAdapter.onDetachedFromRecyclerView(recyclerView);
+    }
     if (mLoadingBinder != null) {
       mLoadingBinder.onDetachedFromRecyclerView(recyclerView);
     }
