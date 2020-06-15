@@ -3,6 +3,7 @@ package first.lunar.yun.adapter.holder;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import androidx.annotation.ColorInt;
+import androidx.annotation.Keep;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,6 +23,7 @@ import java.lang.ref.WeakReference;
  * @since [https://github.com/mychoices]
  * <p><a href="https://github.com/mychoices">github</a>
  */
+@Keep
 public class JViewHolder extends RecyclerView.ViewHolder {
   private static final int NO_COLOR = -19910113;
   private static final int JVIEW_TAG = 0x20190601;

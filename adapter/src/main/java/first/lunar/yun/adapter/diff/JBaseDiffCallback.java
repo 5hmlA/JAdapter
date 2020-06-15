@@ -1,8 +1,8 @@
 package first.lunar.yun.adapter.diff;
 
+import androidx.annotation.Keep;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.DiffUtil;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +13,7 @@ import java.util.List;
  * @since [https://github.com/mychoices]
  * <p><a href="https://github.com/mychoices">github</a>
  */
+@Keep
 public abstract class JBaseDiffCallback<D> extends DiffUtil.Callback {
     private List<D> oldList = new ArrayList<>();
     private List<D> newList = new ArrayList<>();

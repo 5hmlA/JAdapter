@@ -1,5 +1,8 @@
 package first.lunar.yun.adapter;
 
+import androidx.annotation.Keep;
+
+@Keep
 public class LConsistent {
     public static final String DEFAULTSTR = "--";
     public static final String DIFF_TYPE = "doundle_typle";

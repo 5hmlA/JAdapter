@@ -1,6 +1,7 @@
 package first.lunar.yun.adapter.face;
 
 import android.view.View;
+import androidx.annotation.Keep;
 import first.lunar.yun.adapter.LConsistent;
 
 /**
@@ -10,6 +11,7 @@ import first.lunar.yun.adapter.LConsistent;
  * @since [https://github.com/mychoices]
  * <p><a href="https://github.com/mychoices">github</a>
  */
+@Keep
 public abstract class JOnClickListener implements View.OnClickListener {
 
   private static final int SHAKE_TIME = 500;

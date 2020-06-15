@@ -2,12 +2,13 @@ package first.lunar.yun.adapter.helper;
 
 import android.animation.ValueAnimator;
 import android.graphics.PointF;
-import androidx.annotation.NonNull;
-import androidx.interpolator.view.animation.LinearOutSlowInInterpolator;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.OvershootInterpolator;
 import android.widget.LinearLayout;
+import androidx.annotation.Keep;
+import androidx.annotation.NonNull;
+import androidx.interpolator.view.animation.LinearOutSlowInInterpolator;
 
 /**
  * @author yun.
@@ -16,6 +17,8 @@ import android.widget.LinearLayout;
  * @since [https://github.com/mychoices]
  * <p><a href="https://github.com/mychoices">github</a>
  */
+
+@Keep
 public class Damping implements View.OnTouchListener {
     private static final long ANIDURATION = 250;
     private static final int NODIRECTION = -110;

@@ -8,6 +8,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.view.View;
 import android.widget.Toast;
+import androidx.annotation.Keep;
 
 /**
  * @author yun.
@@ -16,6 +17,7 @@ import android.widget.Toast;
  * @since [https://github.com/mychoices]
  * <p><a href="https://github.com/mychoices">github</a>
  */
+@Keep
 public class LApp {
   private static Context sContext;
   private static final Handler sHandle;

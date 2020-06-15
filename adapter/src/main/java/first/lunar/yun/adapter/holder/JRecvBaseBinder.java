@@ -1,5 +1,6 @@
 package first.lunar.yun.adapter.holder;
 
+import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import java.util.List;
  * @another 江祖赟
  * @date 2017/10/28 0028.
  */
+@Keep
 public abstract class JRecvBaseBinder<T, VH extends RecyclerView.ViewHolder> {
 
     protected View mRootView;

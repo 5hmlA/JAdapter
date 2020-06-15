@@ -2,11 +2,13 @@ package first.lunar.yun.adapter.face;
 
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+import androidx.annotation.Keep;
 
 /**
  * @another 江祖赟
  * @date 2017/10/18 0018.
  */
+@Keep
 public class JSimpleOnGestureListener implements GestureDetector.OnGestureListener {
     @Override
     public boolean onDown(MotionEvent e){
