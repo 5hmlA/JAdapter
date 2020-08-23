@@ -6,6 +6,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.OvershootInterpolator;
 import android.widget.LinearLayout;
+import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
 import androidx.interpolator.view.animation.LinearOutSlowInInterpolator;
 
@@ -50,18 +51,20 @@ public class Damping implements View.OnTouchListener {
         return dampOnTouch(event);
     }
 
+    @Keep
     public static Damping wrapper(View view){
         view.setClickable(true);
         return new Damping(view);
     }
 
-    public Damping(@NonNull View view){
+    private Damping(@NonNull View view){
         mView = view;
         sHeightPixels = view.getContext().getResources().getDisplayMetrics().heightPixels;
         sWidthPixels = view.getContext().getResources().getDisplayMetrics().widthPixels;
         mView.setOnTouchListener(this);
     }
 
+    @Keep
     public Damping configDirection(int direction){
         this.direction = fixDirection = direction;
         return this;

@@ -16,15 +16,6 @@ import java.util.Objects;
 public class CheckHelper {
 
     public static final int EQUALTAG = 0x7f199101;
-    // 17 位加权因子
-    private static final int[] RATIO_ARR = {7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2};
-
-    // 校验码列表
-    private static final char[] CHECK_CODE_LIST = {'1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2'};
-
-    private static final int NUM_0 = '0';
-
-    private static final int ID_LENGTH = 17;
     private static final String DEFAULTSTR = "";
 
     /**
