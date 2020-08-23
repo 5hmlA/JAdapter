@@ -1,16 +1,19 @@
 package first.lunar.yun.adapter;
 
-import androidx.annotation.Keep;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import androidx.annotation.Keep;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import first.lunar.yun.adapter.face.OnViewClickListener;
+import first.lunar.yun.adapter.helper.LLog;
 import first.lunar.yun.adapter.holder.JViewHolder;
 import first.lunar.yun.adapter.vb.JViewBean;
 import java.util.ArrayList;
 import java.util.List;
+
+import static first.lunar.yun.adapter.helper.CheckHelper.checkLists;
 
 /**
  * @author yun.
@@ -110,4 +113,57 @@ public class JVBrecvAdapter<D extends JViewBean> extends RecyclerView.Adapter<JV
       mOnViewClickListener.onItemClicked(v, d);
     }
   }
+  @Keep
+  public void addMoreList(@NonNull List<D> data) {
+    if (checkLists(data)) {
+      int startposition = mDataList.size();
+      mDataList.addAll(data);
+      notifyItemRangeInserted(startposition, data.size());
+    }
+  }
+
+  @Keep
+  public void refreshAllData(@NonNull List<D> data) {
+    changeAllData(data);
+  }
+
+  @Keep
+  public void changeAllData(@NonNull List<D> data) {
+    if (checkLists(data)) {
+      int size = mDataList.size();
+      if (size > 0) {
+        mDataList.clear();
+        notifyItemRangeRemoved(0, size);
+      }
+      notifyDataSetChanged();
+    }
+  }
+
+  @Keep
+  public void removeItem(int position) {
+    if (position < mDataList.size()) {
+      mDataList.remove(position);
+      notifyItemRemoved(position);
+    }
+  }
+
+  @Keep
+  public void removeItem(D item) {
+    int index = mDataList.indexOf(item);
+    if (index > -1) {
+      removeItem(index);
+    }
+  }
+
+
+  @Keep
+  public void addItem(D data, int position) {
+    if (position > mDataList.size()) {
+      LLog.llog("JVBrecvAdapter", position + " > mData.size():" + mDataList.size());
+      return;
+    }
+    mDataList.add(position, data);
+    notifyItemInserted(position);
+  }
+
 }

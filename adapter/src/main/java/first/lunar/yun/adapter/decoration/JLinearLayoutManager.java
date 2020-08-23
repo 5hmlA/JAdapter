@@ -1,10 +1,11 @@
 package first.lunar.yun.adapter.decoration;
 
 import android.content.Context;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.Log;
+import androidx.annotation.Keep;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import first.lunar.yun.adapter.helper.LLog;
 
 /**
@@ -12,6 +13,8 @@ import first.lunar.yun.adapter.helper.LLog;
  * @date 2017/9/27 0027.
  */
 public class JLinearLayoutManager extends LinearLayoutManager {
+
+    @Keep
     public JLinearLayoutManager(Context context){
         super(context);
     }

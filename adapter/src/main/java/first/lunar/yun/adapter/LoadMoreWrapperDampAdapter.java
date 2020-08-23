@@ -1,7 +1,6 @@
 package first.lunar.yun.adapter;
 
 import android.widget.LinearLayout;
-import androidx.annotation.Keep;
 import androidx.recyclerview.widget.RecyclerView;
 import first.lunar.yun.adapter.helper.Damping;
 import java.util.List;
@@ -10,7 +9,6 @@ import java.util.List;
 /**
  * @des [recycleview适配器 基类，上拉加载更多,多类型布局,拖拽,滑动删除 支持]
  */
-@Keep
 public class LoadMoreWrapperDampAdapter<T> extends LoadMoreWrapperAdapter<T> {
 
     public boolean mIsNeedDamp = true;

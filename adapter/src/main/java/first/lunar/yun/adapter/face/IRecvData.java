@@ -12,6 +12,7 @@ import java.util.List;
  */
 @Keep
 public interface IRecvData {
+
   void onViewDetachedFromWindow(@NonNull JViewHolder holder);
 
   void onViewAttachedToWindow(@NonNull JViewHolder holder);

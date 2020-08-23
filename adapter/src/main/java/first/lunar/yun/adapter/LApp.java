@@ -17,7 +17,6 @@ import androidx.annotation.Keep;
  * @since [https://github.com/mychoices]
  * <p><a href="https://github.com/mychoices">github</a>
  */
-@Keep
 public class LApp {
   private static Context sContext;
   private static final Handler sHandle;
@@ -39,26 +38,36 @@ public class LApp {
     };
   }
 
+  @Keep
+  private LApp() {
+  }
+
+  @Keep
   public static int findColor(int paramInt) {
     return sContext.getResources().getColor(paramInt);
   }
 
+  @Keep
   public static float findDimens(int paramInt) {
     return sContext.getResources().getDimension(paramInt);
   }
 
+  @Keep
   public static String findString(int paramInt) {
     return sContext.getString(paramInt);
   }
 
+  @Keep
   public static String findString(int paramInt, Object[] paramArrayOfObject) {
     return sContext.getString(paramInt, paramArrayOfObject);
   }
 
+  @Keep
   public static final void fly(Context paramContext) {
     sContext = paramContext.getApplicationContext();
   }
 
+  @Keep
   public static Activity getAct4View(View paramView) {
     for (Context localContext = paramView.getContext(); (localContext instanceof ContextWrapper); localContext = ((ContextWrapper) localContext).getBaseContext())
       if ((localContext instanceof Activity))
@@ -66,14 +75,17 @@ public class LApp {
     return null;
   }
 
+  @Keep
   public static Context getContext() {
     return sContext;
   }
 
+  @Keep
   public static boolean isDebug() {
     return sIsDebug;
   }
 
+  @Keep
   public static void setDebug(boolean isDebug) {
     sIsDebug = isDebug;
   }

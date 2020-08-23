@@ -10,6 +10,8 @@ import android.view.View;
 import androidx.annotation.Keep;
 import first.lunar.yun.adapter.LApp;
 import java.util.Collection;
+import java.util.Objects;
+
 @Keep
 public class CheckHelper {
 
@@ -25,46 +27,13 @@ public class CheckHelper {
     private static final int ID_LENGTH = 17;
     private static final String DEFAULTSTR = "";
 
-    public static boolean verifyId18(String idNo) {
-        if (idNo == null || idNo.isEmpty()) {
-            return false;
-        }
-        idNo = idNo.trim();
-        if (idNo.length() != 18) {
-            return false;
-        }
-        // 获取身份证号字符数组
-        char[] idCharArr = idNo.toCharArray();
-        // 获取最后一位（身份证校验码）
-        char verifyCode = idCharArr[ID_LENGTH];
-        // 身份证号第1-17加权和
-        int idSum = 0;
-        // 余数
-        int residue;
-
-        for (int i = 0; i < ID_LENGTH; i++) {
-            int value = idCharArr[i] - NUM_0;
-            idSum += value * RATIO_ARR[i];
-        }
-        // 取得余数   为什么要 mod11
-        //https://www.zhihu.com/question/20205184
-        residue = idSum % 11;
-
-        return Character.toUpperCase(verifyCode) == CHECK_CODE_LIST[residue];
-    }
-
     /**
      * 检查对象是否相同/都不为空
      *
      * @return true 安全的对象 都不为空
      */
     public static boolean isEqual(Object object1, Object object2){
-        if(checkObjects(object1, object2)) {
-            if(object2.equals(object1)) {
-                return true;
-            }
-        }
-        return false;
+        return Objects.equals(object1, object2);
     }
 
     /**
@@ -87,7 +56,7 @@ public class CheckHelper {
     public static boolean checkObjectStr(Object... strs){
         if(strs != null) {
             for(Object str : strs) {
-                if(str == null || TextUtils.isEmpty(str.toString())) {
+                if(TextUtils.isEmpty(str.toString())) {
                     return false;
                 }
             }
@@ -184,11 +153,7 @@ public class CheckHelper {
      * @return 为空则返回“”
      */
     public static String safeString(Object str){
-        if(str != null) {
-            return str.toString().trim();
-        }else {
-            return DEFAULTSTR;
-        }
+        return Objects.toString(str, DEFAULTSTR);
     }
 
     public static boolean viewTagBoolean(View view, int viewTag){

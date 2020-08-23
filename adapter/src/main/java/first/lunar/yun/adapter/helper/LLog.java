@@ -2,7 +2,6 @@ package first.lunar.yun.adapter.helper;
 
 import android.text.TextUtils;
 import android.util.Log;
-import androidx.annotation.Keep;
 import first.lunar.yun.adapter.LApp;
 
 import static first.lunar.yun.adapter.LConsistent.SPLIT_DOS;
@@ -14,7 +13,6 @@ import static first.lunar.yun.adapter.LConsistent.SPLIT_DOS;
  * @since [https://github.com/mychoices]
  * <p><a href="https://github.com/mychoices">github</a>
  */
-@Keep
 public class LLog {
   public static void llog(CharSequence... msgs) {
     if (LApp.isDebug()) {

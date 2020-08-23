@@ -1,6 +1,7 @@
 package first.lunar.yun.adapter.decoration;
 
 import android.graphics.Rect;
+import androidx.annotation.Keep;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 
@@ -21,6 +22,7 @@ public class JDividerItemDecoration extends RecyclerView.ItemDecoration {
     private float mScrolledPx;
     private float mScall;
 
+    @Keep
     public JDividerItemDecoration(int divider){
         mDivider = divider;
 //        mListener = new Onscroll();

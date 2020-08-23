@@ -32,7 +32,6 @@ import static first.lunar.yun.adapter.holder.BaseLoadMoreBinder.FOOT_STATE_LOAD_
  * @des [recycleview适配器 基类，上拉加载更多,多类型布局,拖拽,滑动删除 支持] 分页列表 涉及到改变数据的比如回复删除 获取分页数据最好用索引 从哪个索引开始取多少条数据
  * 关于回复评论/回复回复，需要自己伪造新增的回复数据添加的被回复的评论中去 （涉及到分页不能重新刷洗数据）
  */
-@Keep
 public class LoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements OnViewClickListener {
 
   /**
@@ -403,6 +402,7 @@ public class LoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<RecyclerView
   /**
    * 是否 需要 底部的 上拉加载holder
    */
+  @Keep
   public boolean isShowLoadMoreHolder() {
     return mLoadmoreitem == NEED_UP2LOAD_MORE;
   }
@@ -533,7 +533,7 @@ public class LoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<RecyclerView
   }
 
   @Keep
-  public void removeItem(Object item) {
+  public void removeItem(T item) {
     int index = mData.indexOf(item);
     if (index > -1) {
       mData.remove(index);
@@ -549,7 +549,7 @@ public class LoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<RecyclerView
 
 
   @Keep
-  public void addItem(Object data, int position) {
+  public void addItem(T data, int position) {
     mInLoadingMore = false;
     if (position > mData.size()) {
       LLog.llog(TAG, position + " > mData.size():" + mData.size());

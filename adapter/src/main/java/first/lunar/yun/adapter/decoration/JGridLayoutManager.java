@@ -1,9 +1,10 @@
 package first.lunar.yun.adapter.decoration;
 
 import android.content.Context;
+import android.util.AttributeSet;
+import androidx.annotation.Keep;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import android.util.AttributeSet;
 
 /**
  * @another 江祖赟
@@ -11,7 +12,7 @@ import android.util.AttributeSet;
  */
 public class JGridLayoutManager extends GridLayoutManager {
 
-
+    @Keep
     public JGridLayoutManager(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes){
         super(context, attrs, defStyleAttr, defStyleRes);
     }

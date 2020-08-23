@@ -1,6 +1,7 @@
 package first.lunar.yun.adapter.decoration;
 
 import android.graphics.Rect;
+import androidx.annotation.Keep;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
@@ -17,6 +18,7 @@ public class GrideDividerDecoration extends RecyclerView.ItemDecoration {
     private int mDivider;
     private boolean mRepading;
 
+    @Keep
     public GrideDividerDecoration(int divider){
         mDivider = divider;
     }
