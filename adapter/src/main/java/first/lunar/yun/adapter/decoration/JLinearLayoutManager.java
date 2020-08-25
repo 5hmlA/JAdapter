@@ -12,9 +12,9 @@ import first.lunar.yun.adapter.helper.LLog;
  * @another 江祖赟
  * @date 2017/9/27 0027.
  */
+@Keep
 public class JLinearLayoutManager extends LinearLayoutManager {
 
-    @Keep
     public JLinearLayoutManager(Context context){
         super(context);
     }

@@ -10,9 +10,9 @@ import androidx.recyclerview.widget.RecyclerView;
  * @another 江祖赟
  * @date 2017/10/20 0020.
  */
+@Keep
 public class JGridLayoutManager extends GridLayoutManager {
 
-    @Keep
     public JGridLayoutManager(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes){
         super(context, attrs, defStyleAttr, defStyleRes);
     }

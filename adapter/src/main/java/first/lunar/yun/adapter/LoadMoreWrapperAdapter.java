@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+import first.lunar.yun.adapter.face.LayoutManagers.FullSpan;
 import first.lunar.yun.adapter.face.OnMoreloadListener;
 import first.lunar.yun.adapter.face.OnViewClickListener;
 import first.lunar.yun.adapter.helper.LLog;
@@ -243,13 +244,7 @@ public class LoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<RecyclerView
       if (layoutManager instanceof StaggeredGridLayoutManager) {
         mStaggeredGridLayoutManager = (StaggeredGridLayoutManager) layoutManager;
       } else if (layoutManager instanceof GridLayoutManager) {
-        ((GridLayoutManager) layoutManager).setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-          @Override
-          public int getSpanSize(int position) {
-            return ITEMTYPE_LOADMORE == getItemViewType(position) ? ((GridLayoutManager) layoutManager)
-                .getSpanCount() : 1;
-          }
-        });
+        ((GridLayoutManager) layoutManager).setSpanSizeLookup(new LoadMoreSpanSizeLookup((GridLayoutManager) layoutManager,mData));
       }
     } else {
       Log.e(TAG, "LayoutManager 为空,请先设置 recycleView.setLayoutManager(...)");
@@ -628,5 +623,25 @@ public class LoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<RecyclerView
   @Keep
   public JRecvBaseBinder getLoadingHolderBinder() {
     return mLoadingBinder;
+  }
+
+  @Keep
+  public static class LoadMoreSpanSizeLookup extends GridLayoutManager.SpanSizeLookup {
+
+    GridLayoutManager mGridLayoutManager;
+    List<Object> mItems;
+
+    public LoadMoreSpanSizeLookup(GridLayoutManager gridLayoutManager, List<Object> items) {
+      mGridLayoutManager = gridLayoutManager;
+      mItems = items;
+    }
+
+    @Override
+    public int getSpanSize(int position) {
+      if (position == mItems.size()) {
+        return mGridLayoutManager.getSpanCount();
+      }
+      return mItems.get(position) instanceof FullSpan ? mGridLayoutManager.getSpanCount() : 1;
+    }
   }
 }

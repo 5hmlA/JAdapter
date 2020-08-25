@@ -9,7 +9,10 @@ import android.text.TextUtils;
 import android.view.View;
 import androidx.annotation.Keep;
 import first.lunar.yun.adapter.LApp;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 @Keep
@@ -119,6 +122,24 @@ public class CheckHelper {
             return "";
         }else {
             return o;
+        }
+    }
+
+
+    public static <D> List<D> safeList(List<D> list){
+        if(list == null) {
+            return Collections.EMPTY_LIST;
+        }else {
+            return list;
+        }
+    }
+
+
+    public static <D> ArrayList<D> safeArrayList(ArrayList<D> list){
+        if(list == null) {
+            return new ArrayList<>();
+        }else {
+            return list;
         }
     }
 
