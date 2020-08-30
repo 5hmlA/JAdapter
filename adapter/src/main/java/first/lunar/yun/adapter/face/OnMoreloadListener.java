@@ -11,6 +11,6 @@ public interface OnMoreloadListener {
     /**
      * 发起请求 加载更多数据/重试
      */
-    void onup2LoadingMore();
+    void onUpLoadingMore();
     void retryUp2LoadingMore();
 }

@@ -27,17 +27,22 @@ public abstract class JViewBean implements IRecvDataDiff {
   }
 
   @Override
-  public boolean areItemsTheSame(IRecvDataDiff oldData, IRecvDataDiff newData) {
+  public int compare(IRecvDataDiff newData) {
+    return 0;
+  }
+
+  @Override
+  public boolean areItemsTheSame(IRecvDataDiff newData) {
     return false;
   }
 
   @Override
-  public boolean areContentsTheSame(IRecvDataDiff oldData, IRecvDataDiff newData) {
+  public boolean areContentsTheSame(IRecvDataDiff newData) {
     return false;
   }
 
   @Override
-  public Object getChangePayload(IRecvDataDiff oldData, IRecvDataDiff newData) {
+  public Object getChangePayload(IRecvDataDiff newData) {
     return null;
   }
 

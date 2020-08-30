@@ -3,6 +3,7 @@ package first.lunar.yun.adapter.diff;
 import androidx.annotation.Keep;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.DiffUtil;
+import first.lunar.yun.adapter.face.IRecvDataDiff;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,12 +15,23 @@ import java.util.List;
  * <p><a href="https://github.com/mychoices">github</a>
  */
 @Keep
-public abstract class JBaseDiffCallback<D> extends DiffUtil.Callback {
+public class JBaseDiffCallback<D extends IRecvDataDiff> extends DiffUtil.Callback {
     private List<D> oldList = new ArrayList<>();
     private List<D> newList = new ArrayList<>();
 
+    public JBaseDiffCallback() {
+    }
+
+    public JBaseDiffCallback(List<D> oldList) {
+        this.oldList = oldList;
+    }
+
     public JBaseDiffCallback(List<D> oldList, List<D> newList){
         this.oldList = oldList;
+        this.newList = newList;
+    }
+
+    public void setNewList(List<D> newList) {
         this.newList = newList;
     }
 
@@ -35,24 +47,17 @@ public abstract class JBaseDiffCallback<D> extends DiffUtil.Callback {
 
     @Override
     public boolean areItemsTheSame(int oldItemPosition, int newItemPosition){
-        return areItemsTheSame(oldList.get(oldItemPosition), newList.get(newItemPosition));
+        return oldList.get(oldItemPosition).areItemsTheSame(newList.get(newItemPosition));
     }
-
-    protected abstract boolean areItemsTheSame(D oldData, D newData);
 
     @Override
     public boolean areContentsTheSame(int oldItemPosition, int newItemPosition){
-        return areContentsTheSame(oldList.get(oldItemPosition), newList.get(newItemPosition));
+        return oldList.get(oldItemPosition).areContentsTheSame(newList.get(newItemPosition));
     }
-
-    protected abstract boolean areContentsTheSame(D oldData, D newData);
 
     @Nullable
     @Override
     public Object getChangePayload(int oldItemPosition, int newItemPosition){
-        return getChangePayload(oldList.get(oldItemPosition), newList.get(newItemPosition));
+        return newList.get(oldItemPosition).getChangePayload(oldList.get(newItemPosition));
     }
-
-    protected abstract Object getChangePayload(D oldData, D newData);
-
 }

@@ -19,4 +19,9 @@ public class LLog {
       Log.d("JAdapter", TextUtils.join(SPLIT_DOS, msgs));
     }
   }
+  public static void llogi(CharSequence... msgs) {
+    if (LApp.isDebug()) {
+      Log.i("JAdapter", TextUtils.join(SPLIT_DOS, msgs));
+    }
+  }
 }

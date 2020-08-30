@@ -15,6 +15,7 @@ import first.lunar.yun.adapter.LoadMoreWrapperAdapter;
 import first.lunar.yun.adapter.face.JOnClickListener;
 import first.lunar.yun.adapter.face.OnMoreloadListener;
 import first.lunar.yun.adapter.face.OnViewClickListener;
+import first.lunar.yun.adapter.helper.LLog;
 import first.lunar.yun.adapter.holder.JViewHolder;
 import first.lunar.yun.adapter.vb.JViewBean;
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements OnViewClickListen
     mRefreshLayout = findViewById(R.id.refresh);
     mRefreshLayout.setOnRefreshListener(this);
     mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-    mAdapter = new LoadMoreWrapperAdapter(new JVBrecvAdapter(dataTests, this), dataTests);
+    mAdapter = new LoadMoreWrapperAdapter(new JVBrecvAdapter(dataTests, this));
     mRecyclerView.setAdapter(mAdapter);
     mAdapter.enAbleLoadMore(true);
     mAdapter.setOnMoreloadListener(this);
@@ -52,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements OnViewClickListen
         }
         mAdapter.refreshAllData(dataTests);
       }
-    }, 1000);
+    }, 100);
   }
 
   @Override
@@ -61,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements OnViewClickListen
   }
 
   @Override
-  public void onup2LoadingMore() {
+  public void onUpLoadingMore() {
     mRecyclerView.postDelayed(new Runnable() {
       @Override
       public void run() {
@@ -70,21 +71,24 @@ public class MainActivity extends AppCompatActivity implements OnViewClickListen
           for (int i = 0; i < 20; i++) {
             dataTests.add(new DataTest());
           }
+          System.out.println(" add more data ");
           mAdapter.addMoreList(dataTests);
         } else {
           if (new Random().nextBoolean()) {
             mAdapter.loadError();
+            System.out.println(" load more error ");
           } else {
+            System.out.println(" load more finish ");
             mAdapter.enAbleLoadMore(false, "啦啦啦");
           }
         }
       }
-    }, 1000);
+    }, 500);
   }
 
   @Override
   public void retryUp2LoadingMore() {
-    onup2LoadingMore();
+    onUpLoadingMore();
   }
 
   @Override
@@ -126,6 +130,6 @@ class DataTest extends JViewBean {
   @Override
   public void onViewDetachedFromWindow(@NonNull JViewHolder holder) {
     super.onViewDetachedFromWindow(holder);
-    System.out.println("onViewDetachedFromWindow - "+getPosition() +" - " + holder);
+    LLog.llog("onViewDetachedFromWindow - "+getPosition() +" - " + holder);
   }
 }

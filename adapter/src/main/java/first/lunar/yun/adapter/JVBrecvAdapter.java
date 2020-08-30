@@ -1,17 +1,25 @@
 package first.lunar.yun.adapter;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
+import first.lunar.yun.adapter.diff.JBaseDiffCallback;
+import first.lunar.yun.adapter.face.IVBrecvAdapter;
 import first.lunar.yun.adapter.face.OnViewClickListener;
+import first.lunar.yun.adapter.helper.CheckHelper;
 import first.lunar.yun.adapter.helper.LLog;
 import first.lunar.yun.adapter.holder.JViewHolder;
 import first.lunar.yun.adapter.vb.JViewBean;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import static first.lunar.yun.adapter.helper.CheckHelper.checkLists;
 
@@ -22,26 +30,59 @@ import static first.lunar.yun.adapter.helper.CheckHelper.checkLists;
  * @since [https://github.com/mychoices]
  * <p><a href="https://github.com/mychoices">github</a>
  */
-public class JVBrecvAdapter<D extends JViewBean> extends RecyclerView.Adapter<JViewHolder> implements View.OnClickListener {
+public class JVBrecvAdapter<D extends JViewBean> extends RecyclerView.Adapter<JViewHolder> implements IVBrecvAdapter<D>,View.OnClickListener {
+
+  private static class MainThreadExecutor implements Executor {
+    final Handler mHandler = new Handler(Looper.getMainLooper());
+    MainThreadExecutor() {}
+    @Override
+    public void execute(@NonNull Runnable command) {
+      mHandler.post(command);
+    }
+  }
+
+  // TODO: use MainThreadExecutor from supportlib once one exists
+  private static final Executor sMainThreadExecutor = new MainThreadExecutor();
+
+  private static Executor sDiffExecutor = Executors.newFixedThreadPool(2);
 
   private List<D> mDataList = new ArrayList<>();
-
   private OnViewClickListener<D> mOnViewClickListener;
+  private JBaseDiffCallback<D> mDJBaseDiffCallback = new JBaseDiffCallback<>(mDataList);
 
   @Keep
-  public JVBrecvAdapter(List<D> list) {
-    mDataList = list;
+  public JVBrecvAdapter() {
   }
 
   @Keep
+  public JVBrecvAdapter(OnViewClickListener<D> onViewClickListener) {
+    mOnViewClickListener = onViewClickListener;
+  }
+
+  @Keep
+  @Deprecated
+  public JVBrecvAdapter(List<D> list) {
+    this(list, null);
+  }
+
+  @Keep
+  @Deprecated
   public JVBrecvAdapter(List<D> dataList, OnViewClickListener<D> onViewClickListener) {
     mDataList = dataList;
     mOnViewClickListener = onViewClickListener;
+    mDJBaseDiffCallback = new JBaseDiffCallback<>(mDataList);
   }
 
   @Keep
   public List<D> getDataList() {
     return mDataList;
+  }
+
+  protected void setDataList(List<D> dataList) {
+    mDataList.clear();
+    if (CheckHelper.checkLists(dataList)) {
+      mDataList.addAll(dataList);
+    }
   }
 
   @Override
@@ -113,6 +154,7 @@ public class JVBrecvAdapter<D extends JViewBean> extends RecyclerView.Adapter<JV
       mOnViewClickListener.onItemClicked(v, d);
     }
   }
+
   @Keep
   public void addMoreList(@NonNull List<D> data) {
     if (checkLists(data)) {
@@ -124,19 +166,7 @@ public class JVBrecvAdapter<D extends JViewBean> extends RecyclerView.Adapter<JV
 
   @Keep
   public void refreshAllData(@NonNull List<D> data) {
-    changeAllData(data);
-  }
-
-  @Keep
-  public void changeAllData(@NonNull List<D> data) {
-    if (checkLists(data)) {
-      int size = mDataList.size();
-      if (size > 0) {
-        mDataList.clear();
-        notifyItemRangeRemoved(0, size);
-      }
-      notifyDataSetChanged();
-    }
+    diffAll(data);
   }
 
   @Keep
@@ -166,4 +196,46 @@ public class JVBrecvAdapter<D extends JViewBean> extends RecyclerView.Adapter<JV
     notifyItemInserted(position);
   }
 
+  @Keep
+  public void diffAll(List<D> newData) {
+    diffAll(newData, false);
+  }
+
+  @Keep
+  public void diffAll(final List<D> newData, final boolean detectMoves) {
+    if (!CheckHelper.checkLists(newData)) {
+      mDataList.clear();
+      notifyDataSetChanged();
+      return;
+    }
+    if (!mDataList.isEmpty()) {
+      sDiffExecutor.execute(new Runnable() {
+        @Override
+        public void run() {
+          mDJBaseDiffCallback.setNewList(newData);
+          final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(mDJBaseDiffCallback, detectMoves);
+          sMainThreadExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+              latchList(newData, diffResult);
+            }
+          });
+        }
+      });
+    } else {
+      mDataList.addAll(newData);
+      notifyDataSetChanged();
+    }
+  }
+
+  @Override
+  public int getDataSize() {
+    return mDataList.size();
+  }
+
+  void latchList(@NonNull List<D> newList, @NonNull DiffUtil.DiffResult diffResult) {
+    mDataList.clear();
+    mDataList.addAll(newList);
+    diffResult.dispatchUpdatesTo(this);
+  }
 }
