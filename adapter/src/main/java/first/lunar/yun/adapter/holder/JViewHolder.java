@@ -37,6 +37,7 @@ public class JViewHolder extends RecyclerView.ViewHolder {
   private final WeakReference<Activity> mActivityWeakReference;
   private JViewBean mHoldVBean;
   private JVBrecvAdapter mAdatper;
+  private Object extra;
 
   @Keep
   public <E> E getExtra() {
@@ -47,8 +48,6 @@ public class JViewHolder extends RecyclerView.ViewHolder {
   public <E> void setExtra(E extra) {
     this.extra = extra;
   }
-
-  private Object extra;
 
   @Keep
   public JViewHolder(View itemView) {
