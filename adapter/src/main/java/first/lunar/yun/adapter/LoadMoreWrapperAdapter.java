@@ -41,6 +41,7 @@ public class LoadMoreWrapperAdapter<T extends JViewBean> extends AbsLoadMoreWrap
 
   @Override
   public void refreshAllData(@NonNull List<T> data) {
+    enAbleLoadMore(true);
     mInnerAdapter.diffAll(data);
     notifyBottomItem();
   }

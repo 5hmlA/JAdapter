@@ -117,12 +117,13 @@ class DataTest extends JViewBean {
   }
 
   @Override
-  public void onBindViewHolder(JViewHolder holder, final int position, @Nullable List<Object> payloads, OnViewClickListener viewClickListener) {
+  public void onBindViewHolder(final JViewHolder holder, final int position, @Nullable List<Object> payloads, OnViewClickListener viewClickListener) {
     holder.setText(R.id.tv, position + "    " + text)
         .setOnClickListener(new JOnClickListener() {
           @Override
           public void throttleFirstclick(View v) {
             Toast.makeText(v.getContext(), getPosition() + "", Toast.LENGTH_SHORT).show();
+            holder.getAdatper().removeItem(position);
           }
         }, R.id.iv);
   }

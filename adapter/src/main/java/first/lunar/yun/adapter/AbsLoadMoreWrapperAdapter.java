@@ -45,20 +45,18 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
    * 设置{@link #enAbleLoadMore(boolean)}为false之后 将会隐藏底部loadingholder
    */
   public static final int STYLE_LOADING_HOLDER_GONE = 130;
-  public int mLoadMoreWrapperStyle = STYLE_FIX_LOADING_HOLDER;
-
   public static final int ITEMTYPE_LOADMORE = -13;
   public static final String FOOT_STATE_LOAD_LOADING = "loadingholder_up2load_loading";
   public static final String FOOT_STATE_LOAD_ERROR = "up2load_error";
   public static final String FOOT_STATE_LOAD_NOMORE = "up2load_nomore";
+  public final static String TAG = AbsLoadMoreWrapperAdapter.class.getSimpleName();
   /**
    * 当状态为需要上拉加载 但是数量少于PAGESIZE的时候 关闭上拉加载 情况一般不存在，告诉有下一页一定有，只有第一页数据不够显示完整一屏幕才会 数据只有0条但是 外部设置需要上拉加载 还是需要显示上啦加载ITEM
    */
   public int PAGESIZE = 0;
-  public final static String TAG = AbsLoadMoreWrapperAdapter.class.getSimpleName();
   public BaseLoadMoreBinder mLoadingBinder;
   public OnMoreloadListener mListener;
-
+  public int mLoadMoreWrapperStyle = STYLE_FIX_LOADING_HOLDER;
   public StaggeredGridLayoutManager mStaggeredGridLayoutManager;
   public RecyclerView mRecyclerView;
   public int mLastCheckDataSize;
@@ -418,7 +416,7 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
 
   @Keep
   public void loadMoreFinish() {
-
+    enAbleLoadMore(false, "");
   }
 
   @Keep
@@ -589,5 +587,32 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
   @Override
   public void registerAdapterDataObserver(@NonNull RecyclerView.AdapterDataObserver observer) {
     getInnerAdapter().registerAdapterDataObserver(observer);
+  }
+
+  public static enum LoadMoreStyle{
+    STYLE_FIX_LOADING_HOLDER("固定"),STYLE_LOADING_HOLDER_GONE("可移除");
+    private String desc;
+
+    LoadMoreStyle(String desc) {
+      this.desc = desc;
+    }
+
+    public String getDesc() {
+      return desc;
+    }
+
+    public void setDesc(String desc) {
+      this.desc = desc;
+    }
+  }
+
+  public static class LoadMoreConfig{
+    int pageSize;
+    int loadMoreEnable;
+    LoadMoreStyle loadMoreStyle = LoadMoreStyle.STYLE_FIX_LOADING_HOLDER;//load finis remove bottom holder or not
+    String loadingTips;
+    String finishTips;
+    String emptyTips;
+    GridLayoutManager.SpanSizeLookup spanSizeLookup;
   }
 }

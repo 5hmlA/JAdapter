@@ -1,6 +1,7 @@
 package first.lunar.yun.adapter.holder;
 
 import android.app.Activity;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.text.TextUtils;
 import android.util.SparseArray;
@@ -8,10 +9,14 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.ColorInt;
+import androidx.annotation.ColorRes;
+import androidx.annotation.DrawableRes;
 import androidx.annotation.Keep;
 import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
+import first.lunar.yun.adapter.JVBrecvAdapter;
 import first.lunar.yun.adapter.LApp;
 import first.lunar.yun.adapter.vb.JViewBean;
 import java.lang.ref.WeakReference;
@@ -31,6 +36,7 @@ public class JViewHolder extends RecyclerView.ViewHolder {
   public static final String TAG_LOADING = "loadingholder";
   private final WeakReference<Activity> mActivityWeakReference;
   private JViewBean mHoldVBean;
+  private JVBrecvAdapter mAdatper;
 
   @Keep
   public <E> E getExtra() {
@@ -89,18 +95,43 @@ public class JViewHolder extends RecyclerView.ViewHolder {
     return (V) view;
   }
 
+
+  @Keep
+  public JViewHolder setText(int viewId, int strRes, @ColorRes int colorRes) {
+    TextView textView = getView(viewId);
+//    if (textView != null) { //不判断空 好知道是否写错了ID
+    String text = textView.getContext().getResources().getString(strRes);
+    setText(viewId, text, colorRes);
+    return this;
+  }
+
+
+  @Keep
+  public JViewHolder setText(int viewId, @StringRes int strRes) {
+    return setText(viewId, strRes, NO_COLOR);
+  }
+
   @Keep
   public JViewHolder setText(int viewId, CharSequence text) {
     return setText(viewId, text, NO_COLOR);
   }
 
   @Keep
-  public JViewHolder setText(int viewId, CharSequence text, int colorRes) {
+  public JViewHolder setText(int viewId, CharSequence text, @ColorRes int colorRes) {
+    int color = NO_COLOR;
+    if (NO_COLOR != colorRes) {
+      color = ContextCompat.getColor(getView(viewId).getContext(), colorRes);
+    }
+    return setTextWithColor(viewId,text,color);
+  }
+
+  @Keep
+  public JViewHolder setTextWithColor(int viewId, CharSequence text, @ColorInt int color) {
     TextView textView = getView(viewId);
     if (!TextUtils.isEmpty(text)) {
       textView.setVisibility(View.VISIBLE);
-      if (colorRes != NO_COLOR) {
-        textView.setTextColor(ContextCompat.getColor(textView.getContext(), colorRes));
+      if (color != NO_COLOR) {
+        textView.setTextColor(color);
       }
       textView.setText(text);
     }
@@ -140,26 +171,10 @@ public class JViewHolder extends RecyclerView.ViewHolder {
     return this;
   }
 
-  @Keep
-  public JViewHolder setText(int viewId, int strRes, int colorRes) {
-    TextView textView = getView(viewId);
-//    if (textView != null) { //不判断空 好知道是否写错了ID
-    String text = textView.getContext().getResources().getString(strRes);
-    if (!TextUtils.isEmpty(text)) {
-      textView.setVisibility(View.VISIBLE);
-      if (colorRes != NO_COLOR) {
-        textView.setTextColor(ContextCompat.getColor(textView.getContext(), colorRes));
-      }
-      textView.setText(text);
-//      }
-    }
+  public JViewHolder setTextColorState(int viewId, ColorStateList colors) {
+    TextView tv = getView(viewId);
+    tv.setTextColor(colors);
     return this;
-  }
-
-
-  @Keep
-  public JViewHolder setText(int viewId, int strRes) {
-    return setText(viewId, strRes, NO_COLOR);
   }
 
   @Keep
@@ -175,23 +190,11 @@ public class JViewHolder extends RecyclerView.ViewHolder {
 
   @Keep
   public JViewHolder goneViews(int... viewIds) {
-//    for (int i : viewIds) {
-//      View view = getView(i);
-//      if (view!=null) {
-//        view.setVisibility(View.GONE);
-//      }
-//    }
     return setVisibility(View.GONE, viewIds);
   }
 
   @Keep
   public JViewHolder visibleViews(int... viewIds) {
-//    for (int i : viewIds) {
-//      View view = getView(i);
-//      if (view!=null) {
-//        view.setVisibility(View.VISIBLE);
-//      }
-//    }
     return setVisibility(View.VISIBLE, viewIds);
   }
 
@@ -208,7 +211,7 @@ public class JViewHolder extends RecyclerView.ViewHolder {
    * 为ImageView设置图片
    */
   @Keep
-  public JViewHolder setImageResource(int viewId, int drawableId) {
+  public JViewHolder setImageResource(int viewId, @DrawableRes int drawableId) {
     ImageView view = getView(viewId);
     view.setImageResource(drawableId);
     return this;
@@ -226,10 +229,7 @@ public class JViewHolder extends RecyclerView.ViewHolder {
 
   @Keep
   public JViewHolder setOnLongClickListener(int viewId, View.OnLongClickListener l) {
-    View view = getView(viewId);
-    if (view != null) {
-      view.setOnLongClickListener(l);
-    }
+    getView(viewId).setOnLongClickListener(l);
     return this;
   }
 
@@ -284,5 +284,13 @@ public class JViewHolder extends RecyclerView.ViewHolder {
   @Keep
   public JViewBean getHoldVBean() {
     return mHoldVBean;
+  }
+
+  public <D extends JViewBean> void setAdatper(JVBrecvAdapter adatper) {
+    mAdatper = adatper;
+  }
+
+  public JVBrecvAdapter getAdatper() {
+    return mAdatper;
   }
 }

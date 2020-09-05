@@ -16,6 +16,9 @@ import first.lunar.yun.adapter.holder.JViewHolder;
 @Keep
 public abstract class JViewBean implements IRecvDataDiff {
 
+  /**
+   * after notifyRemove or notifyInsert will be useless
+   */
   private int mPosition;
 
   public int getPosition() {

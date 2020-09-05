@@ -106,6 +106,7 @@ public class JVBrecvAdapter<D extends JViewBean> extends RecyclerView.Adapter<JV
   public void onBindViewHolder(@NonNull JViewHolder holder, int position, @NonNull List<Object> payloads) {
     final D d = mDataList.get(position);
     holder.setHoldVBean(d);
+    holder.setAdatper(this);
     d.setPosition(position);
     if (mOnViewClickListener != null) {
       JViewHolder.setViewTag(holder.itemView, d);
