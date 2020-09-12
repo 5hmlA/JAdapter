@@ -63,28 +63,29 @@ public class MainActivity extends AppCompatActivity implements OnViewClickListen
 
   @Override
   public void onUpLoadingMore() {
-    mRecyclerView.postDelayed(new Runnable() {
-      @Override
-      public void run() {
-        if (new Random().nextBoolean()) {
-          List<DataTest> dataTests = new ArrayList<>();
-          for (int i = 0; i < 20; i++) {
-            dataTests.add(new DataTest());
-          }
-          LLog.llogi(" add more data ");
-          mAdapter.addMoreList(dataTests);
-        } else {
-          if (new Random().nextBoolean()) {
-            mAdapter.loadError();
-            LLog.lloge("load_more load more error >>> ");
-          } else {
-            LLog.lloge("load_more load finish >>> ");
-            mAdapter.LoadMoreFinish("啦啦啦");
-//            mAdapter.enAbleLoadMore(false, "啦啦啦");
-          }
-        }
-      }
-    }, 200);
+    mAdapter.LoadMoreFinish("啦啦啦");
+
+//    mRecyclerView.postDelayed(new Runnable() {
+//      @Override
+//      public void run() {
+//        if (new Random().nextBoolean()) {
+//          List<DataTest> dataTests = new ArrayList<>();
+//          for (int i = 0; i < 20; i++) {
+//            dataTests.add(new DataTest());
+//          }
+//          LLog.llogi(" add more data ");
+//          mAdapter.addMoreList(dataTests);
+//        } else {
+//          if (new Random().nextBoolean()) {
+//            mAdapter.loadError();
+//            LLog.lloge("load_more load more error >>> ");
+//          } else {
+//            LLog.lloge("load_more load finish >>> ");
+//            mAdapter.LoadMoreFinish("啦啦啦");
+//          }
+//        }
+//      }
+//    }, 200);
   }
 
   @Override

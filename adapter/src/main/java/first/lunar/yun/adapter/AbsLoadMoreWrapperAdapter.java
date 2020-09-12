@@ -471,6 +471,9 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
         }
       }
 //      notifyItemChanged(getRowDataSize());//会导致 上拉加载holder再次创建
+      if (mLoadingBinder != null) {
+        mLoadingBinder.onNomoreLoadTips(tips);
+      }
       notifyItemChanged(getRowDataSize(), "上拉加载状态更新:" + enable);
       mInLoadingMore = false;
 //    } else {
