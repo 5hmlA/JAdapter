@@ -1,6 +1,8 @@
 package first.lunar.yun.adapter.decoration;
 
 import android.graphics.Rect;
+import android.util.Pair;
+import android.util.SparseArray;
 import android.view.View;
 import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
@@ -15,6 +17,12 @@ import androidx.recyclerview.widget.RecyclerView;
  * <p><a href="https://github.com/ZuYun">github</a>
  */
 public class GrideSpreadInsideDecoration extends RecyclerView.ItemDecoration {
+
+    /**
+     * first : item left interval
+     * sec   : item right interval
+     */
+    SparseArray<Pair<Integer, Integer>> mCacheIntervalIndex = new SparseArray<>();
 
     /**
      * 中间边距
@@ -45,22 +53,40 @@ public class GrideSpreadInsideDecoration extends RecyclerView.ItemDecoration {
         mBottomInterval = interval;
     }
 
-
     @Override
-    public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
-        super.getItemOffsets(outRect, view, parent, state);
-        int position = parent.getChildAdapterPosition(view);
-        int totalWidth = parent.getMeasuredWidth() - parent.getPaddingStart() - parent.getPaddingEnd();
-        RecyclerView.LayoutManager layoutManager = parent.getLayoutManager();
+    public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.State state) {
+        super.getItemOffsets(outRect, view, recyclerView, state);
+
+        if (outRect.left + outRect.right > 0) {
+            return;
+        }
+
+        int position = recyclerView.getChildAdapterPosition(view);
+        int totalWidth = recyclerView.getMeasuredWidth() - recyclerView.getPaddingStart() - recyclerView.getPaddingEnd();
+        RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
         if (layoutManager instanceof GridLayoutManager) {
-            int spanCount = ((GridLayoutManager)layoutManager).getSpanCount();
+            GridLayoutManager gridLayoutManager = (GridLayoutManager) layoutManager;
+            int spanCount = gridLayoutManager.getSpanCount();
+            int spanSize = gridLayoutManager.getSpanSizeLookup().getSpanSize(position);
+            if (spanCount != spanSize) {
+                throw new RuntimeException("Not yet supported ( SpanSizeLookup )");
+            }
+            //每个位置所对应的横向第几个位置
+            int index = position % spanCount;
+
+            //try to read cache
+            Pair<Integer, Integer> intervalOfIndex = mCacheIntervalIndex.get(index);
+            if (intervalOfIndex != null ){
+                outRect.left = intervalOfIndex.first;
+                outRect.right = intervalOfIndex.second;
+                outRect.bottom = mBottomInterval;
+                return;
+            }
+
             //横向 扣除 中间的间隔之后每个item最多能分配多少空间
             float itemWidthAfterInterval = (totalWidth - mMiddleInterval * (spanCount - 1)) * 1F / spanCount;
             //默认GridLayoutManager为每个item最多能分配多少空间(outRect就是在这个空间里面设置内边距的且设置的最终效果不超过这个空间)
             float itemWidthStanded = totalWidth * 1F / spanCount;
-
-            //每个位置所对应的横向第几个位置
-            int index = position % spanCount;
 
             if (index == 0) {
                 //横向第一个item
@@ -75,6 +101,8 @@ public class GrideSpreadInsideDecoration extends RecyclerView.ItemDecoration {
             //计算好下一个item左边所在的位置
             mItemLeftAbscissa += itemWidthAfterInterval + mMiddleInterval;
             mItemRightAbscissa += itemWidthAfterInterval + mMiddleInterval;
+            //cache
+            mCacheIntervalIndex.put(index, Pair.create(outRect.left, outRect.right));
         }
 
     }

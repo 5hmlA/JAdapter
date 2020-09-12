@@ -82,9 +82,11 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
    */
   private int mLoadmoreitem = NON_UP2LOAD_MORE;
 
+  private AbsLoadMoreWrapperAdapter.LoadMoreSpanSizeLookup mSpanSizeLookup;
+  
   private BaseLoadMoreBinder.LoadMoreState mLoadMoreState;
   private RecyclerView.AdapterDataObserver mAdapterDataObserver = new RecyclerView.AdapterDataObserver() {
-
+    boolean mIsRemoveAll = false;
     @Override
     public void onItemRangeChanged(int positionStart, int itemCount) {
       super.onItemRangeChanged(positionStart, itemCount);
@@ -102,22 +104,33 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
       super.onItemRangeInserted(positionStart, itemCount);
       mLastCheckDataSize = getRowDataSize();
       LLog.llogi("load_more onItemRangeInserted mLastCheckDataSize " + mLastCheckDataSize);
+      if (mIsRemoveAll) {
+        mIsRemoveAll = false;
+        mRecyclerView.scrollToPosition(0);
+      }
     }
 
     @Override
     public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
       super.onItemRangeMoved(fromPosition, toPosition, itemCount);
+      mIsRemoveAll = false;
     }
 
     @Override
     public void onItemRangeRemoved(int positionStart, int itemCount) {
+      final int orignSize = mLastCheckDataSize;
+      mIsRemoveAll = mLastCheckDataSize == itemCount;
       checkUp2loadMore(RecyclerView.SCROLL_STATE_IDLE);
       mLastCheckDataSize = getRowDataSize();
-      LLog.llogi("load_more onItemRangeRemoved mLastCheckDataSize " + mLastCheckDataSize);
+      LLog.llogi("load_more onItemRangeRemoved mLastCheckDataSize "
+          + mLastCheckDataSize + " reomved count:" + itemCount
+          + " orignSize:" + orignSize + " mIsRemoveAll:" + mIsRemoveAll);
     }
 
     @Override
     public void onChanged() {
+      mIsRemoveAll = false;
+      LLog.llogi("onChanged " + mLastCheckDataSize);
       //数据数量 变化了才需要判断
       if (isShowLoadMoreHolder() && getRowDataSize() != mLastCheckDataSize) {
         //                if(mLoadmoreitem == NEED_UP2LOAD_MORE && mLastCheckDataSize == 0 || getRowDataSize() != mLastCheckDataSize) {
@@ -128,6 +141,10 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
     }
   };
 
+  /**
+   * 不包括底部加载item
+   * @return
+   */
   protected abstract int getRowDataSize();
 
   private RecyclerView.OnScrollListener mOnScrollListener = new RecyclerView.OnScrollListener() {
@@ -152,7 +169,6 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
     //                }
     //            }
   };
-  private AbsLoadMoreWrapperAdapter.LoadMoreSpanSizeLookup mSpanSizeLookup;
 
   @Override
   public void onAttachedToRecyclerView(RecyclerView recyclerView) {
@@ -170,7 +186,7 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
    * 检查 是否loadingholder可见，可见则回掉监听的onup2LoadingMore 去加载下一页数据
    */
   private void checkUp2loadMore(int newState) {
-    LLog.llog("checkUp2loadMore >>> ");
+    LLog.llog("checkUp2loadMore >>> " + mInLoadingMore);
     RecyclerView.LayoutManager layoutManager = mRecyclerView.getLayoutManager();
     int lastPosition = 0;
     //当前状态为停止滑动状态SCROLL_STATE_IDLE时
@@ -196,7 +212,7 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
           loadLoading();
           mInLoadingMore = true;
           if (mListener != null) {
-            LLog.llogi("mListener.onup2LoadingMore() >>>>");
+            LLog.llogi("mListener.onup2LoadingMore() >>>> " + mListener);
             mListener.onUpLoadingMore();
           }
         }

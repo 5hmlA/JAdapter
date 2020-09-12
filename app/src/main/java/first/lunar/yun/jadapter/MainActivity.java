@@ -71,19 +71,20 @@ public class MainActivity extends AppCompatActivity implements OnViewClickListen
           for (int i = 0; i < 20; i++) {
             dataTests.add(new DataTest());
           }
-          System.out.println(" add more data ");
+          LLog.llogi(" add more data ");
           mAdapter.addMoreList(dataTests);
         } else {
           if (new Random().nextBoolean()) {
             mAdapter.loadError();
-            System.out.println(" load more error ");
+            LLog.lloge("load_more load more error >>> ");
           } else {
-            System.out.println(" load more finish ");
-            mAdapter.enAbleLoadMore(false, "啦啦啦");
+            LLog.lloge("load_more load finish >>> ");
+            mAdapter.LoadMoreFinish("啦啦啦");
+//            mAdapter.enAbleLoadMore(false, "啦啦啦");
           }
         }
       }
-    }, 500);
+    }, 200);
   }
 
   @Override
@@ -122,7 +123,7 @@ class DataTest extends JViewBean {
         .setOnClickListener(new JOnClickListener() {
           @Override
           public void throttleFirstclick(View v) {
-            Toast.makeText(v.getContext(), getPosition() + "", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(v.getContext(), getPosition() + "", Toast.LENGTH_SHORT).show();
             holder.getAdatper().removeItem(position);
           }
         }, R.id.iv);
