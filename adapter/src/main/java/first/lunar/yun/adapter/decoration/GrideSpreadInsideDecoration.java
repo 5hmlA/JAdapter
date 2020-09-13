@@ -87,6 +87,12 @@ public class GrideSpreadInsideDecoration extends RecyclerView.ItemDecoration {
             float itemWidthAfterInterval = (totalWidth - mMiddleInterval * (spanCount - 1)) * 1F / spanCount;
             //默认GridLayoutManager为每个item最多能分配多少空间(outRect就是在这个空间里面设置内边距的且设置的最终效果不超过这个空间)
             float itemWidthStanded = totalWidth * 1F / spanCount;
+            // GridLayoutManger在绘制子View的时候，会先为它们分配固定的空间。
+            // 比如，我们这里是4列，则每列分配父布局宽度（这里是屏幕宽度） 4的宽度大小的空间，
+            // 每列占据的宽度相等。每列由图片和空隙组成。空隙包括左空隙和右空隙，分布在图片的左右。
+            // 每列中的图片会局限在列分配的空间内，不会超出这个空间。如果图片宽度小于列宽，则剩余的宽度会分配给空隙；
+            // 如果图片的宽度大于列宽，则不会有空隙，且图片超出列的部分会被遮盖。如果使用ItemDecoration设置间隙，
+            // 则间隙不会被压缩，如果图片过宽，则会占用当前图片的空间，图片会被压缩。
 
             if (index == 0) {
                 //横向第一个item
