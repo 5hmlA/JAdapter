@@ -57,7 +57,7 @@ public class DefaultLoadMoreBinder extends BaseLoadMoreBinder<BaseLoadMoreBinder
     rootViewLoadingTag(FOOT_STATE_LOAD_NOMORE);//holder处于 loadmore状态
     mLoadMoreHolder.itemView.setOnClickListener(new JOnClickListener() {
       @Override
-      protected void throttleFirstclick(View v) {
+      protected void doClick(View v) {
         onLoadErrorClick(mLoadMoreHolder);
       }
     });

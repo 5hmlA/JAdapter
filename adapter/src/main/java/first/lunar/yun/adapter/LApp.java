@@ -14,8 +14,8 @@ import androidx.annotation.Keep;
  * @author yun.
  * @date 2019/6/1 0001
  * @des [一句话描述]
- * @since [https://github.com/mychoices]
- * <p><a href="https://github.com/mychoices">github</a>
+ * @since [https://github.com/ZuYun]
+ * <p><a href="https://github.com/ZuYun">github</a>
  */
 public class LApp {
   private static Context sContext;

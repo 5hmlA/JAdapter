@@ -123,7 +123,7 @@ class DataTest extends JViewBean {
     holder.setText(R.id.tv, position + "    " + text)
         .setOnClickListener(new JOnClickListener() {
           @Override
-          public void throttleFirstclick(View v) {
+          public void doClick(View v) {
 //            Toast.makeText(v.getContext(), getPosition() + "", Toast.LENGTH_SHORT).show();
             holder.getAdatper().removeItem(position);
           }

@@ -20,7 +20,7 @@ public class LoadMoreWrapperAdapter<T extends JViewBean> extends AbsLoadMoreWrap
 
   @Override
   protected int getRowDataSize() {
-    return mInnerAdapter.getDataSize();
+    return mInnerAdapter.getItemCount();
   }
 
   @Override
@@ -42,7 +42,7 @@ public class LoadMoreWrapperAdapter<T extends JViewBean> extends AbsLoadMoreWrap
   @Override
   public void refreshAllData(@NonNull List<T> data) {
     enAbleLoadMore(true);
-    mInnerAdapter.diffAll(data);
+    mInnerAdapter.refreshAllData(data);
     notifyBottomItem();
   }
 
@@ -62,21 +62,5 @@ public class LoadMoreWrapperAdapter<T extends JViewBean> extends AbsLoadMoreWrap
   public void addItem(T data, int position) {
     mInnerAdapter.addItem(data, position);
     notifyBottomItem();
-  }
-
-  @Override
-  public void diffAll(List<T> newData) {
-    mInnerAdapter.diffAll(newData);
-  }
-
-  @Override
-  public void diffAll(List<T> newData, boolean detectMoves) {
-    mInnerAdapter.diffAll(newData, detectMoves);
-    notifyBottomItem();
-  }
-
-  @Override
-  public int getDataSize() {
-    return mInnerAdapter.getDataSize();
   }
 }

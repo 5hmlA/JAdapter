@@ -14,8 +14,8 @@ import androidx.interpolator.view.animation.LinearOutSlowInInterpolator;
  * @author yun.
  * @date 2017/7/15
  * @des [一句话描述]
- * @since [https://github.com/mychoices]
- * <p><a href="https://github.com/mychoices">github</a>
+ * @since [https://github.com/ZuYun]
+ * <p><a href="https://github.com/ZuYun">github</a>
  */
 
 public class Damping implements View.OnTouchListener {

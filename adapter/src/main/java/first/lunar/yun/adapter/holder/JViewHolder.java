@@ -20,23 +20,24 @@ import first.lunar.yun.adapter.JVBrecvAdapter;
 import first.lunar.yun.adapter.LApp;
 import first.lunar.yun.adapter.vb.JViewBean;
 import java.lang.ref.WeakReference;
+import java.util.List;
 
 /**
  * @author yun.
  * @date 2019/6/1 0001
  * @des [一句话描述]
- * @since [https://github.com/mychoices]
- * <p><a href="https://github.com/mychoices">github</a>
+ * @since [https://github.com/ZuYun]
+ * <p><a href="https://github.com/ZuYun">github</a>
  */
 public class JViewHolder extends RecyclerView.ViewHolder {
   private static final int NO_COLOR = -19910113;
   private static final int JVIEW_TAG = 0x20190601;
   private final SparseArray<WeakReference<View>> mCacheViews;
   private String tag = JViewHolder.class.getSimpleName();
-  public static final String TAG_LOADING = "loadingholder";
   private final WeakReference<Activity> mActivityWeakReference;
   private JViewBean mHoldVBean;
   private JVBrecvAdapter mAdatper;
+  private List mList;
   private Object extra;
 
   @Keep
@@ -258,8 +259,9 @@ public class JViewHolder extends RecyclerView.ViewHolder {
   }
 
   @Keep
-  public void setTag(String tag) {
+  public JViewHolder setTag(String tag) {
     this.tag = tag;
+    return this;
   }
 
   @Keep
@@ -276,8 +278,9 @@ public class JViewHolder extends RecyclerView.ViewHolder {
   }
 
   @Keep
-  public <D extends JViewBean> void setHoldVBean(JViewBean holdVBean) {
+  public <D extends JViewBean> JViewHolder setHoldVBean(JViewBean holdVBean) {
     mHoldVBean = holdVBean;
+    return this;
   }
 
   @Keep
@@ -285,11 +288,22 @@ public class JViewHolder extends RecyclerView.ViewHolder {
     return mHoldVBean;
   }
 
-  public <D extends JViewBean> void setAdatper(JVBrecvAdapter adatper) {
+  public <D extends JViewBean> JViewHolder setAdatper(JVBrecvAdapter adatper) {
     mAdatper = adatper;
+    return this;
   }
 
   public JVBrecvAdapter getAdatper() {
     return mAdatper;
   }
+
+  public List getList() {
+    return mList;
+  }
+
+  public JViewHolder keepList(List list) {
+    mList = list;
+    return this;
+  }
+
 }

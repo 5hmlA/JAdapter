@@ -8,8 +8,8 @@ import java.util.List;
  * @author yun.
  * @date 2020/8/29 0029
  * @des [一句话描述]
- * @since [https://github.com/mychoices]
- * <p><a href="https://github.com/mychoices">github</a>
+ * @since [https://github.com/ZuYun]
+ * <p><a href="https://github.com/ZuYun">github</a>
  */
 @Keep
 public interface IVBrecvAdapter<D> {
@@ -28,10 +28,4 @@ public interface IVBrecvAdapter<D> {
   @Keep
   public void addItem(D data, int position);
 
-  @Keep
-  public void diffAll(List<D> newData);
-
-  void diffAll(final List<D> newData, final boolean detectMoves);
-
-  int getDataSize();
 }

@@ -17,5 +17,7 @@ public interface IRecvData {
 
   void onViewAttachedToWindow(@NonNull JViewHolder holder);
 
+  public void onViewRecycled(@NonNull JViewHolder holder);
+
   void onBindViewHolder(JViewHolder holder, int position, @Nullable List<Object> payloads, @Nullable OnViewClickListener viewClickListener);
 }

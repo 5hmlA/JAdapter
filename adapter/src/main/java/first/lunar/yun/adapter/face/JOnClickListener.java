@@ -2,19 +2,19 @@ package first.lunar.yun.adapter.face;
 
 import android.view.View;
 import androidx.annotation.Keep;
-import first.lunar.yun.adapter.LConsistent;
 
 /**
  * @author yun.
  * @date 2019/6/2 0002
  * @des [一句话描述]
- * @since [https://github.com/mychoices]
- * <p><a href="https://github.com/mychoices">github</a>
+ * @since [https://github.com/ZuYun]
+ * <p><a href="https://github.com/ZuYun">github</a>
  */
 @Keep
 public abstract class JOnClickListener implements View.OnClickListener {
 
   private static final int SHAKE_TIME = 500;
+  private static final int TAG_CLICK = 0x7654321d;
   private int mShakeTime = SHAKE_TIME;
 
   public JOnClickListener(int shakeTime) {
@@ -26,13 +26,13 @@ public abstract class JOnClickListener implements View.OnClickListener {
 
   @Override
   public void onClick(View v) {
-    Object tag = v.getTag(LConsistent.ViewTag.view_click);
+    Object tag = v.getTag(TAG_CLICK);
     if (tag != null && (System.currentTimeMillis() - ((Long) tag) < mShakeTime)) {
       return;
     }
-    v.setTag(LConsistent.ViewTag.view_click, System.currentTimeMillis());
-    throttleFirstclick(v);
+    v.setTag(TAG_CLICK, System.currentTimeMillis());
+    doClick(v);
   }
 
-  protected abstract void throttleFirstclick(View v);
+  protected abstract void doClick(View v);
 }
