@@ -20,7 +20,7 @@ public class LoadMoreChecker {
   private RecyclerView.Adapter mAdapter;
 
   public enum LoadState {
-    DISLOAD("关闭加载"), LOADING("加载中"), LOADSUCCED("加载成功");
+    DISLOAD("关闭加载"), LOADFINISH("加载完成"), LOADING("加载中"), LOADSUCCED("加载成功");
     private String desc;
     private String tips;
 
@@ -159,6 +159,10 @@ public class LoadMoreChecker {
   }
 
   public boolean canLoadMore(){
+    return mLoadState.compareTo(LoadState.LOADFINISH) > 0;
+  }
+
+  public boolean enableLoadMore(){
     return mLoadState.compareTo(LoadState.DISLOAD) > 0;
   }
 
@@ -180,6 +184,14 @@ public class LoadMoreChecker {
       mAdapter.registerAdapterDataObserver(mAdapterDataObserver);
     } else if (canLoadMore()) {
       mLoadState = LoadState.DISLOAD;
+      mAdapter.unregisterAdapterDataObserver(mAdapterDataObserver);
+      mRecyclerView.removeOnScrollListener(mOnScrollListener);
+    }
+  }
+
+  public void loadFinish() {
+    if (canLoadMore()) {
+      mLoadState = LoadState.LOADFINISH;
       mAdapter.unregisterAdapterDataObserver(mAdapterDataObserver);
       mRecyclerView.removeOnScrollListener(mOnScrollListener);
     }

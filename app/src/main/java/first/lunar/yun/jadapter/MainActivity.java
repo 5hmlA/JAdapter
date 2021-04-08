@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements OnViewClickListen
   @Override
   public void onItemClicked(View view, DataTest itemData) {
     Toast.makeText(view.getContext(), itemData.text + "", Toast.LENGTH_SHORT).show();
+    mAdapter.loadMoreFinish("fff");
   }
 
 
@@ -121,6 +122,7 @@ class DataTest extends JViewBean {
           public void doClick(View v) {
 //            Toast.makeText(v.getContext(), getPosition() + "", Toast.LENGTH_SHORT).show();
             holder.getAdatper().removeItem(holder.getAdapterPosition());
+//            ((LoadMoreWrapperAdapter) holder.getAdatper()).loadMoreFinish("9090");
           }
         }, R.id.iv);
   }

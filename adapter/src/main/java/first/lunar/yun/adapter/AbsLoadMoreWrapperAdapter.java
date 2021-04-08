@@ -26,7 +26,6 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
 
   LoadMoreChecker mLoadMoreChecker;
   public final static String TAG = AbsLoadMoreWrapperAdapter.class.getSimpleName();
-  public JViewHolder mLoadMoreHolder;
   LoadMoreConfig mLoadMoreConfig = new LoadMoreConfig();
   private AbsLoadMoreWrapperAdapter.LoadMoreSpanSizeLookup mSpanSizeLookup;
   LoadMoreChecker.LoadMoreCallBack mLoadMoreCallBack;
@@ -88,15 +87,19 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
 
   @Override
   public int getItemCount() {
-    if (mLoadMoreChecker.canLoadMore()) {
-      return getInnerAdapter().getItemCount() + 1;
+    int itemCount = getInnerAdapter().getItemCount();
+    if (itemCount == 0) {
+      return 0;
     }
-    return getInnerAdapter().getItemCount();
+    if (mLoadMoreChecker.enableLoadMore()) {
+      return itemCount + 1;
+    }
+    return itemCount;
   }
 
   @Override
   public final int getItemViewType(int position) {
-    if (mLoadMoreChecker.canLoadMore()) {
+    if (mLoadMoreChecker.enableLoadMore()) {
       if (position < getInnerAdapter().getItemCount()) {
         return getInnerAdapter().getItemViewType(position);
       }
@@ -127,6 +130,7 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
     if (position < getInnerAdapter().getItemCount()) {
       getInnerAdapter().onBindViewHolder(holder, position, payloads);
     } else {
+
       mLoadMoreConfig.getLoadMoreVb().onBindViewHolder((JViewHolder) holder, position, payloads,this);
     }
   }
@@ -164,7 +168,7 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
 
   @Keep
   public void loadMoreFinish(CharSequence finishTips) {
-    mLoadMoreChecker.toggleLoadMore(false);
+    mLoadMoreChecker.loadFinish();
     LoadMoreConfig.HolderState disload = LoadMoreConfig.HolderState.LOADFINISH;
     disload.setTips(finishTips);
     notifyLoadMore(disload);
@@ -178,18 +182,21 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
   }
 
   private void notifyLoadMore(LoadMoreConfig.HolderState loadState) {
-    notifyItemChanged(getItemCount() -1, loadState);
+    mLoadMoreConfig.getLoadMoreVb().setLoadState(loadState);
+    notifyItemChanged(getInnerAdapter().getItemCount(), loadState);
   }
 
 
   @Override
   public void registerAdapterDataObserver(@NonNull RecyclerView.AdapterDataObserver observer) {
+    super.registerAdapterDataObserver(observer);
     getInnerAdapter().registerAdapterDataObserver(observer);
   }
 
   @Override
   public void unregisterAdapterDataObserver(@NonNull RecyclerView.AdapterDataObserver observer) {
     getInnerAdapter().unregisterAdapterDataObserver(observer);
+    super.unregisterAdapterDataObserver(observer);
   }
 
   @Keep

@@ -14,18 +14,18 @@ import static first.lunar.yun.adapter.LConsistent.SPLIT_DOS;
  * <p><a href="https://github.com/ZuYun">github</a>
  */
 public class LLog {
-  public static void llog(CharSequence... msgs) {
+  public static void llog(Object... msgs) {
     if (LApp.isDebug()) {
       Log.d("JAdapter", TextUtils.join(SPLIT_DOS, msgs));
     }
   }
 
-  public static void llogi(CharSequence... msgs) {
+  public static void llogi(Object... msgs) {
     if (LApp.isDebug()) {
       Log.i("JAdapter", TextUtils.join(SPLIT_DOS, msgs));
     }
   }
-  public static void lloge(CharSequence... msgs) {
+  public static void lloge(Object... msgs) {
     if (LApp.isDebug()) {
       Log.e("JAdapter", TextUtils.join(SPLIT_DOS, msgs));
     }

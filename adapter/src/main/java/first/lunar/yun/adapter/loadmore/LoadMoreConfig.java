@@ -1,7 +1,6 @@
 package first.lunar.yun.adapter.loadmore;
 
 import first.lunar.yun.adapter.vb.JLoadMoreVb;
-import first.lunar.yun.adapter.vb.JViewBean;
 
 /**
  * @author yun.
@@ -12,11 +11,11 @@ import first.lunar.yun.adapter.vb.JViewBean;
  */
 public class LoadMoreConfig {
 
-  private JViewBean loadMoreVb = new JLoadMoreVb();
+  private JLoadMoreVb loadMoreVb = new JLoadMoreVb();
   private Style style;
   private CharSequence loadingTips;
 
-  public JViewBean getLoadMoreVb() {
+  public JLoadMoreVb getLoadMoreVb() {
     return loadMoreVb;
   }
 
