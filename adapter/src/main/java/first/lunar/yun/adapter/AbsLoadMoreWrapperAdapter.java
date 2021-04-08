@@ -8,13 +8,13 @@ import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import first.lunar.yun.adapter.face.IVBrecvAdapter;
 import first.lunar.yun.adapter.face.LayoutManagers.FullSpan;
 import first.lunar.yun.adapter.face.OnViewClickListener;
 import first.lunar.yun.adapter.helper.LLog;
 import first.lunar.yun.adapter.holder.JViewHolder;
 import first.lunar.yun.adapter.loadmore.LoadMoreChecker;
 import first.lunar.yun.adapter.loadmore.LoadMoreConfig;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -22,14 +22,14 @@ import java.util.List;
  * @des [recycleview适配器 基类，上拉加载更多,多类型布局,拖拽,滑动删除 支持] 分页列表 涉及到改变数据的比如回复删除 获取分页数据最好用索引 从哪个索引开始取多少条数据
  * 关于回复评论/回复回复，需要自己伪造新增的回复数据添加的被回复的评论中去 （涉及到分页不能重新刷洗数据）
  */
-public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements IVBrecvAdapter<T>
-    , OnViewClickListener, LoadMoreChecker.LoadMoreCallBack {
+public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<JViewHolder> implements OnViewClickListener, LoadMoreChecker.LoadMoreCallBack {
 
   LoadMoreChecker mLoadMoreChecker;
   public final static String TAG = AbsLoadMoreWrapperAdapter.class.getSimpleName();
   public JViewHolder mLoadMoreHolder;
   LoadMoreConfig mLoadMoreConfig = new LoadMoreConfig();
   private AbsLoadMoreWrapperAdapter.LoadMoreSpanSizeLookup mSpanSizeLookup;
+  LoadMoreChecker.LoadMoreCallBack mLoadMoreCallBack;
 
   @Override
   public void onAttachedToRecyclerView(RecyclerView recyclerView) {
@@ -40,7 +40,7 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
   }
 
   @Override
-  public void onViewAttachedToWindow(RecyclerView.ViewHolder holder) {
+  public void onViewAttachedToWindow(JViewHolder holder) {
     super.onViewAttachedToWindow(holder);
     if (getInnerAdapter() != null) {
       getInnerAdapter().onViewAttachedToWindow(holder);
@@ -56,7 +56,7 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
   }
 
   @Override
-  public void onViewDetachedFromWindow(RecyclerView.ViewHolder holder) {
+  public void onViewDetachedFromWindow(JViewHolder holder) {
     super.onViewDetachedFromWindow(holder);
     if (getInnerAdapter() != null) {
       getInnerAdapter().onViewDetachedFromWindow(holder);
@@ -64,7 +64,7 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
   }
 
   @Override
-  public void onViewRecycled(@NonNull RecyclerView.ViewHolder holder) {
+  public void onViewRecycled(@NonNull JViewHolder holder) {
     super.onViewRecycled(holder);
     LLog.llog(" ****** onViewRecycled : " + holder.itemView);
     if (getInnerAdapter() != null) {
@@ -106,10 +106,10 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
     }
   }
 
-  protected abstract RecyclerView.Adapter getInnerAdapter();
+  protected abstract RecyclerView.Adapter<JViewHolder> getInnerAdapter();
 
   @Override
-  public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+  public JViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
     int layout = mLoadMoreConfig.getLoadMoreVb().bindLayout();
     if (layout == viewType) {
       return new JViewHolder(LayoutInflater.from(parent.getContext()).inflate(layout, parent, false));
@@ -118,12 +118,12 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
   }
 
   @Override
-  public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
-    this.onBindViewHolder(holder, position, null);
+  public void onBindViewHolder(JViewHolder holder, final int position) {
+    this.onBindViewHolder(holder, position, Collections.emptyList());
   }
 
   @Override
-  public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position, List<Object> payloads) {
+  public void onBindViewHolder(JViewHolder holder, final int position, List<Object> payloads) {
     if (position < getInnerAdapter().getItemCount()) {
       getInnerAdapter().onBindViewHolder(holder, position, payloads);
     } else {
@@ -170,6 +170,13 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
     notifyLoadMore(disload);
   }
 
+  @Override
+  public void onLoadMore(boolean retry) {
+    if (mLoadMoreCallBack != null) {
+      mLoadMoreCallBack.onLoadMore(retry);
+    }
+  }
+
   private void notifyLoadMore(LoadMoreConfig.HolderState loadState) {
     notifyItemChanged(getItemCount() -1, loadState);
   }
@@ -205,6 +212,7 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
     }
   }
 
-
-
+  public void setLoadMoreCallBack(LoadMoreChecker.LoadMoreCallBack loadMoreCallBack) {
+    mLoadMoreCallBack = loadMoreCallBack;
+  }
 }

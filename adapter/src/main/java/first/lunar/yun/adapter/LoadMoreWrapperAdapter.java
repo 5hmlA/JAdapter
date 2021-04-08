@@ -1,7 +1,7 @@
 package first.lunar.yun.adapter;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import first.lunar.yun.adapter.holder.JViewHolder;
 import first.lunar.yun.adapter.vb.JViewBean;
 import java.util.List;
 
@@ -12,55 +12,24 @@ import java.util.List;
  */
 public class LoadMoreWrapperAdapter<T extends JViewBean> extends AbsLoadMoreWrapperAdapter<T> {
 
-  JVBrecvAdapter<T> mInnerAdapter;
+  JVBrecvDiffAdapter<T> mInnerAdapter;
 
-  public LoadMoreWrapperAdapter(JVBrecvAdapter<T> innerAdapter) {
+  public LoadMoreWrapperAdapter(JVBrecvDiffAdapter<T> innerAdapter) {
     mInnerAdapter = innerAdapter;
   }
 
   @Override
-  protected int getRowDataSize() {
-    return mInnerAdapter.getItemCount();
-  }
-
-  @Override
-  protected List<T> getRowData() {
-    return mInnerAdapter.getDataList();
-  }
-
-  @Override
-  protected RecyclerView.Adapter getInnerAdapter() {
+  protected RecyclerView.Adapter<JViewHolder> getInnerAdapter() {
     return mInnerAdapter;
   }
 
   @Override
-  public void addMoreList(@NonNull List<T> data) {
-    mInnerAdapter.addMoreList(data);
-    notifyBottomItem();
+  public void loadMoreSucceed(List<T> moreData) {
+    super.loadMoreSucceed(moreData);
+    mInnerAdapter.addMoreList(moreData);
   }
 
-  @Override
-  public void refreshAllData(@NonNull List<T> data) {
-    enAbleLoadMore(true);
-    mInnerAdapter.refreshAllData(data);
-    notifyBottomItem();
-  }
-
-  @Override
-  public void removeItem(int position) {
-    mInnerAdapter.removeItem(position);
-    notifyBottomItem();
-  }
-
-  @Override
-  public void removeItem(T item) {
-    mInnerAdapter.removeItem(item);
-    notifyBottomItem();
-  }
-
-  @Override
-  public void addItem(T data, int position) {
-    mInnerAdapter.addItem(data, position);
-    notifyBottomItem();
+  public void refreshData(List<T> data) {
+    mInnerAdapter.submitList(data);
   }
 }

@@ -46,21 +46,21 @@ public class JLoadMoreVb extends JViewBean implements View.OnClickListener {
   /**
    * 重新设置holder到loaderror界面和状态
    */
-  public void showLoadError(JViewHolder holder, CharSequence tips) {
+  protected void showLoadError(JViewHolder holder, CharSequence tips) {
     holder.visibleViews(R.id.recyc_item_pb_loadmore);
     holder.setText(R.id.recyc_item_tv_loadmore,
         TextUtils.isEmpty(tips) ? findString(R.string.jonas_recyc_load_retry) : tips);
     holder.setOnClickListener(this);
   }
 
-  public void showLoading(JViewHolder holder, CharSequence msg) {
+  protected void showLoading(JViewHolder holder, CharSequence msg) {
     holder.setText(R.id.recyc_item_tv_loadmore, msg);
     holder.goneViews(R.id.recyc_item_pb_loadmore);
     holder.setOnClickListener(null);
   }
 
 
-  public void showLoadFinish(JViewHolder holder, CharSequence msg) {
+  protected void showLoadFinish(JViewHolder holder, CharSequence msg) {
     holder.goneViews(R.id.recyc_item_pb_loadmore);
     if (!TextUtils.isEmpty(msg)) {
       holder.setText(R.id.recyc_item_tv_loadmore, msg);

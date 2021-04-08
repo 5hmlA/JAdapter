@@ -13,15 +13,16 @@ public class LoadMoreWrapperDampAdapter<T extends JViewBean> extends LoadMoreWra
 
     public boolean mIsNeedDamp = true;
 
-    public LoadMoreWrapperDampAdapter(JVBrecvAdapter innerAdapter) {
+    public LoadMoreWrapperDampAdapter(JVBrecvDiffAdapter<T> innerAdapter) {
         super(innerAdapter);
     }
+
 
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView){
         super.onAttachedToRecyclerView(recyclerView);
         if(mIsNeedDamp) {
-            Damping.wrapper(mRecyclerView).configDirection(LinearLayout.VERTICAL);
+            Damping.wrapper(recyclerView).configDirection(LinearLayout.VERTICAL);
         }
     }
 }

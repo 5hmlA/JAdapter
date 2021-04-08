@@ -1,6 +1,7 @@
 package first.lunar.yun.jadapter;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -9,20 +10,20 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import first.lunar.yun.adapter.JVBrecvAdapter;
+import first.lunar.yun.adapter.JVBrecvDiffAdapter;
 import first.lunar.yun.adapter.LApp;
 import first.lunar.yun.adapter.LoadMoreWrapperAdapter;
 import first.lunar.yun.adapter.face.JOnClickListener;
-import first.lunar.yun.adapter.face.OnMoreloadListener;
 import first.lunar.yun.adapter.face.OnViewClickListener;
 import first.lunar.yun.adapter.helper.LLog;
 import first.lunar.yun.adapter.holder.JViewHolder;
+import first.lunar.yun.adapter.loadmore.LoadMoreChecker;
 import first.lunar.yun.adapter.vb.JViewBean;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class MainActivity extends AppCompatActivity implements OnViewClickListener<DataTest>, OnMoreloadListener, SwipeRefreshLayout.OnRefreshListener {
+public class MainActivity extends AppCompatActivity implements OnViewClickListener<DataTest>, SwipeRefreshLayout.OnRefreshListener, LoadMoreChecker.LoadMoreCallBack {
 
   private LoadMoreWrapperAdapter mAdapter;
   private RecyclerView mRecyclerView;
@@ -39,10 +40,9 @@ public class MainActivity extends AppCompatActivity implements OnViewClickListen
     mRefreshLayout = findViewById(R.id.refresh);
     mRefreshLayout.setOnRefreshListener(this);
     mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-    mAdapter = new LoadMoreWrapperAdapter(new JVBrecvAdapter(dataTests, this));
+    mAdapter = new LoadMoreWrapperAdapter(new JVBrecvDiffAdapter(this));
     mRecyclerView.setAdapter(mAdapter);
-    mAdapter.enAbleLoadMore(true);
-    mAdapter.setOnMoreloadListener(this);
+    mAdapter.setLoadMoreCallBack(this);
 
     mRecyclerView.postDelayed(new Runnable() {
       @Override
@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements OnViewClickListen
         for (int i = 0; i < 20; i++) {
           dataTests.add(new DataTest());
         }
-        mAdapter.refreshAllData(dataTests);
+        mAdapter.refreshData(dataTests);
       }
     }, 100);
   }
@@ -61,37 +61,6 @@ public class MainActivity extends AppCompatActivity implements OnViewClickListen
     Toast.makeText(view.getContext(), itemData.text + "", Toast.LENGTH_SHORT).show();
   }
 
-  @Override
-  public void onUpLoadingMore() {
-    mAdapter.LoadMoreFinish("啦啦啦");
-
-//    mRecyclerView.postDelayed(new Runnable() {
-//      @Override
-//      public void run() {
-//        if (new Random().nextBoolean()) {
-//          List<DataTest> dataTests = new ArrayList<>();
-//          for (int i = 0; i < 20; i++) {
-//            dataTests.add(new DataTest());
-//          }
-//          LLog.llogi(" add more data ");
-//          mAdapter.addMoreList(dataTests);
-//        } else {
-//          if (new Random().nextBoolean()) {
-//            mAdapter.loadError();
-//            LLog.lloge("load_more load more error >>> ");
-//          } else {
-//            LLog.lloge("load_more load finish >>> ");
-//            mAdapter.LoadMoreFinish("啦啦啦");
-//          }
-//        }
-//      }
-//    }, 200);
-  }
-
-  @Override
-  public void retryUp2LoadingMore() {
-    onUpLoadingMore();
-  }
 
   @Override
   public void onRefresh() {
@@ -102,10 +71,36 @@ public class MainActivity extends AppCompatActivity implements OnViewClickListen
         for (int i = 0; i < 20; i++) {
           dataTests.add(new DataTest());
         }
-        mAdapter.refreshAllData(dataTests);
+        mAdapter.refreshData(dataTests);
         mRefreshLayout.setRefreshing(false);
       }
     }, 1000);
+  }
+
+  @Override
+  public void onLoadMore(boolean retry) {
+    Log.d("DFJ", "onLoadMore ");
+    mRecyclerView.postDelayed(new Runnable() {
+      @Override
+      public void run() {
+        if (new Random().nextBoolean()) {
+          List<DataTest> dataTests = new ArrayList<>();
+          for (int i = 0; i < 20; i++) {
+            dataTests.add(new DataTest());
+          }
+          LLog.llogi(" add more data ");
+          mAdapter.loadMoreSucceed(dataTests);
+        } else {
+          if (new Random().nextBoolean()) {
+            mAdapter.loadError("加载失败啦");
+            LLog.lloge("load_more load more error >>> ");
+          } else {
+            LLog.lloge("load_more load finish >>> ");
+            mAdapter.loadMoreFinish("啦啦啦");
+          }
+        }
+      }
+    }, 200);
   }
 }
 
@@ -125,7 +120,7 @@ class DataTest extends JViewBean {
           @Override
           public void doClick(View v) {
 //            Toast.makeText(v.getContext(), getPosition() + "", Toast.LENGTH_SHORT).show();
-            holder.getAdatper().removeItem(position);
+            holder.getAdatper().removeItem(holder.getAdapterPosition());
           }
         }, R.id.iv);
   }
