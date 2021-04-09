@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements OnViewClickListen
       @Override
       public void run() {
         List<DataTest> dataTests = new ArrayList<>();
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 13; i++) {
           dataTests.add(new DataTest());
         }
         mAdapter.refreshData(dataTests);
@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements OnViewClickListen
   @Override
   public void onItemClicked(View view, DataTest itemData) {
     Toast.makeText(view.getContext(), itemData.text + "", Toast.LENGTH_SHORT).show();
-    mAdapter.loadMoreFinish("fff");
+    mAdapter.noMoreLoad("fff");
   }
 
 
@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements OnViewClickListen
       @Override
       public void run() {
         List<DataTest> dataTests = new ArrayList<>();
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 13; i++) {
           dataTests.add(new DataTest());
         }
         mAdapter.refreshData(dataTests);
@@ -93,11 +93,11 @@ public class MainActivity extends AppCompatActivity implements OnViewClickListen
           mAdapter.loadMoreSucceed(dataTests);
         } else {
           if (new Random().nextBoolean()) {
-            mAdapter.loadError("加载失败啦");
+            mAdapter.loadMoreError("加载失败啦");
             LLog.lloge("load_more load more error >>> ");
           } else {
             LLog.lloge("load_more load finish >>> ");
-            mAdapter.loadMoreFinish("啦啦啦");
+            mAdapter.noMoreLoad("啦啦啦");
           }
         }
       }

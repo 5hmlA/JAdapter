@@ -14,13 +14,13 @@ import first.lunar.yun.adapter.helper.LLog;
  */
 public class LoadMoreChecker {
   public RecyclerView mRecyclerView;
-  public int mLastCheckDataSize;
-  LoadState mLoadState = LoadState.LOADSUCCED;
+  public int mLastDataSize;
+  LoadState mLoadState = LoadState.LOADCHECK;
   LoadMoreCallBack mLoadMoreCallBack;
   private RecyclerView.Adapter mAdapter;
 
   public enum LoadState {
-    DISLOAD("关闭加载"), LOADFINISH("加载完成"), LOADING("加载中"), LOADSUCCED("加载成功");
+    LOADDISABLE("关闭加载"), LOADNOMORE("加载结束,不再检查加载"), LOADING("加载中"), LOADCHECK("要检查加载更多");
     private String desc;
     private String tips;
 
@@ -61,60 +61,55 @@ public class LoadMoreChecker {
   };
 
   private RecyclerView.AdapterDataObserver mAdapterDataObserver = new RecyclerView.AdapterDataObserver() {
-    boolean mIsRemoveAll = false;
+
     @Override
     public void onItemRangeChanged(int positionStart, int itemCount) {
       super.onItemRangeChanged(positionStart, itemCount);
-      mLastCheckDataSize = mAdapter.getItemCount();
     }
 
     @Override
     public void onItemRangeChanged(int positionStart, int itemCount, Object payload) {
       super.onItemRangeChanged(positionStart, itemCount, payload);
-      mLastCheckDataSize = mAdapter.getItemCount();
     }
 
     @Override
     public void onItemRangeInserted(int positionStart, int itemCount) {
       super.onItemRangeInserted(positionStart, itemCount);
-      mLastCheckDataSize = mAdapter.getItemCount();
-      LLog.llogi("load_more onItemRangeInserted mLastCheckDataSize " + mLastCheckDataSize);
-      if (mIsRemoveAll) {
-        mIsRemoveAll = false;
-        mRecyclerView.scrollToPosition(0);
-      }
+      updateDataSize();
+      LLog.llogi("load_more onItemRangeInserted mLastCheckDataSize " + mLastDataSize);
     }
 
     @Override
     public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
       super.onItemRangeMoved(fromPosition, toPosition, itemCount);
-      mIsRemoveAll = false;
     }
 
     @Override
     public void onItemRangeRemoved(int positionStart, int itemCount) {
-      final int orignSize = mLastCheckDataSize;
-      mIsRemoveAll = mLastCheckDataSize == itemCount;
-      checkUp2loadMore(RecyclerView.SCROLL_STATE_IDLE);
-      mLastCheckDataSize = mAdapter.getItemCount();
       LLog.llogi("load_more onItemRangeRemoved mLastCheckDataSize "
-          + mLastCheckDataSize + " reomved count:" + itemCount
-          + " orignSize:" + orignSize + " mIsRemoveAll:" + mIsRemoveAll);
+          + mLastDataSize + " reomved count:" + itemCount);
+      if (isRemoveAll(itemCount)) {
+        return;
+      }
+      checkUp2loadMore(RecyclerView.SCROLL_STATE_IDLE);
+      updateDataSize();
     }
 
     @Override
     public void onChanged() {
-      mIsRemoveAll = false;
-      LLog.llogi("onChanged " + mLastCheckDataSize);
+      LLog.llogi("onChanged " + mLastDataSize);
       //数据数量 变化了才需要判断
-      if (shouldCheckLoadMore() && mAdapter.getItemCount() != mLastCheckDataSize) {
-        //                if(mLoadmoreitem == NEED_UP2LOAD_MORE && mLastCheckDataSize == 0 || mAdapter.getItemCount() != mLastCheckDataSize) {
+      if (shouldCheckLoadMore()) {
         LLog.llogi("load_more 数据发生变化同时数据数量发生变化 检测是否需要触发上拉加载");
-        mLastCheckDataSize = mAdapter.getItemCount();
+        updateDataSize();
         checkUp2loadMore(RecyclerView.SCROLL_STATE_IDLE);
       }
     }
   };
+
+  private void updateDataSize() {
+    mLastDataSize = mAdapter.getItemCount() - (enableLoadMore() ? 1 : 0);
+  }
 
 
   /**
@@ -129,10 +124,10 @@ public class LoadMoreChecker {
     if (newState != RecyclerView.SCROLL_STATE_IDLE) {
       return;
     }
-    if (mAdapter.getItemCount() <= 0) {
+    if (!shouldCheckLoadMore()) {
       return;
     }
-    if (!shouldCheckLoadMore()) {
+    if (mAdapter.getItemCount() <= 0) {
       return;
     }
     RecyclerView.LayoutManager layoutManager = mRecyclerView.getLayoutManager();
@@ -146,24 +141,30 @@ public class LoadMoreChecker {
     //时判断界面显示的最后item的position是否等于itemCount总数-1也就是最后一个item的position
     //如果相等则说明已经滑动到最后了
     LLog.llogi("find lastPosition " + lastPosition);
-    if (lastPosition >= mAdapter.getItemCount() - 1) {
+    if (lastPosition >= mAdapter.getItemCount() - 1) {//上拉检查一定有loading
       LLog.llogi("loading 上拉提示 item 可见", mLoadMoreCallBack.toString());
       mLoadState = LoadState.LOADING;
       mLoadMoreCallBack.onLoadMore(false);
     }
   }
 
-
-  private boolean shouldCheckLoadMore(){
+  /**
+   * 加载中的时候 不再需要检测上拉加载 加载成功之后 滚动/数据量变化的时候需要再次检测上拉加载
+   *
+   * @return
+   */
+  private boolean shouldCheckLoadMore() {
+    //加载中不需要检测, 没有更多数据的时候不需要上拉检测
     return mLoadState.compareTo(LoadState.LOADING) > 0;
   }
 
-  public boolean canLoadMore(){
-    return mLoadState.compareTo(LoadState.LOADFINISH) > 0;
-  }
-
-  public boolean enableLoadMore(){
-    return mLoadState.compareTo(LoadState.DISLOAD) > 0;
+  /**
+   * 是否关闭了上拉加载检测  和 没有更多数据不检测不一样
+   *
+   * @return
+   */
+  public boolean enableLoadMore() {
+    return mLoadState.compareTo(LoadState.LOADDISABLE) > 0;
   }
 
   public void attach(RecyclerView recyclerView, LoadMoreCallBack loadMoreCallBack) {
@@ -171,42 +172,56 @@ public class LoadMoreChecker {
     mRecyclerView = recyclerView;
     mAdapter = recyclerView.getAdapter();
     assert mAdapter != null;
-    mLoadState = LoadState.LOADSUCCED;
+    mLoadState = LoadState.LOADCHECK;
     mAdapter.registerAdapterDataObserver(mAdapterDataObserver);
     mRecyclerView.removeOnScrollListener(mOnScrollListener);
     mRecyclerView.addOnScrollListener(mOnScrollListener);
   }
 
-  public void toggleLoadMore(boolean enable) {
-    if (enable && !canLoadMore()) {
-      mLoadState = LoadState.LOADSUCCED;
+  /**
+   * 没有更多数据了, 不再需要上拉加载
+   */
+  public void noMoreLoad() {
+    if (mLoadState.compareTo(LoadState.LOADNOMORE) <= 0) {
+      return;
+    }
+    mLoadState = LoadState.LOADNOMORE;
+    mRecyclerView.removeOnScrollListener(mOnScrollListener);
+  }
+
+  /**
+   * 设置需要上拉加载检测了
+   */
+  public void loadMoreCheck() {
+    if (mLoadState.compareTo(LoadState.LOADNOMORE) <= 0) {
       mRecyclerView.addOnScrollListener(mOnScrollListener);
-      mAdapter.registerAdapterDataObserver(mAdapterDataObserver);
-    } else if (canLoadMore()) {
-      mLoadState = LoadState.DISLOAD;
-      mAdapter.unregisterAdapterDataObserver(mAdapterDataObserver);
+    }
+    mLoadState = LoadState.LOADCHECK;
+  }
+
+  public void toggleLoadMore(boolean enable) {
+    if (enable && !enableLoadMore()) {
+      mLoadState = LoadState.LOADCHECK;
+      mRecyclerView.addOnScrollListener(mOnScrollListener);
+    } else if (!enable && enableLoadMore()) {
+      mLoadState = LoadState.LOADDISABLE;
       mRecyclerView.removeOnScrollListener(mOnScrollListener);
     }
   }
 
-  public void loadFinish() {
-    if (canLoadMore()) {
-      mLoadState = LoadState.LOADFINISH;
-      mAdapter.unregisterAdapterDataObserver(mAdapterDataObserver);
-      mRecyclerView.removeOnScrollListener(mOnScrollListener);
-    }
-  }
-
-  public void loadMoreSucceed() {
-    mLoadState = LoadState.LOADSUCCED;
-  }
-
-  public void loadMoreRetry(){
+  /**
+   * 设置正在加载中 不需要上拉检测了
+   */
+  public void loadingMore() {
     mLoadState = LoadState.LOADING;
     mLoadMoreCallBack.onLoadMore(true);
   }
 
-  public static interface LoadMoreCallBack{
+  public boolean isRemoveAll(int itemCount) {
+    return mLastDataSize == itemCount;
+  }
+
+  public static interface LoadMoreCallBack {
     void onLoadMore(boolean retry);
   }
 }

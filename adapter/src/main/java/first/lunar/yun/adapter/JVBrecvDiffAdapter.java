@@ -30,15 +30,7 @@ public class JVBrecvDiffAdapter<D extends JViewBean> extends JVBrecvAdapter<D>{
       };
 
   public JVBrecvDiffAdapter() {
-    mDiffer = new JAsyncListDiffer<>(new AdapterListUpdateCallback(this),
-        new AsyncDifferConfig.Builder<>(new JitemDiffCallback<D>()).build());
-    mDiffer.addListListener(mListener);
-  }
-
-  @SuppressWarnings("unused")
-  protected JVBrecvDiffAdapter(@NonNull AsyncDifferConfig<D> config) {
-    mDiffer = new JAsyncListDiffer<>(new AdapterListUpdateCallback(this), config);
-    mDiffer.addListListener(mListener);
+    this(null);
   }
 
   public JVBrecvDiffAdapter(OnViewClickListener<D> onViewClickListener) {

@@ -16,6 +16,7 @@ public class LoadMoreWrapperAdapter<T extends JViewBean> extends AbsLoadMoreWrap
 
   public LoadMoreWrapperAdapter(JVBrecvDiffAdapter<T> innerAdapter) {
     mInnerAdapter = innerAdapter;
+    innerAdapter.mDiffer.setUpdateCallback(this);
   }
 
   @Override
@@ -29,7 +30,9 @@ public class LoadMoreWrapperAdapter<T extends JViewBean> extends AbsLoadMoreWrap
     mInnerAdapter.addMoreList(moreData);
   }
 
-  public void refreshData(List<T> data) {
+  @Override
+  public void onRefreshData(List<T> data) {
     mInnerAdapter.submitList(data);
   }
+
 }

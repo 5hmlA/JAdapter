@@ -19,6 +19,7 @@ import static first.lunar.yun.adapter.LApp.findString;
  * <p><a href="https://github.com/ZuYun">github</a>
  */
 public class JLoadMoreVb extends JViewBean implements View.OnClickListener {
+
   @Nullable
   private OnViewClickListener mViewClickListener;
   LoadMoreConfig.HolderState mLoadState = LoadMoreConfig.HolderState.LOADING;
@@ -29,13 +30,14 @@ public class JLoadMoreVb extends JViewBean implements View.OnClickListener {
   }
 
   @Override
-  public void onBindViewHolder(JViewHolder holder, int position, @Nullable List<Object> payloads, @Nullable OnViewClickListener viewClickListener) {
+  public final void onBindViewHolder(JViewHolder holder, int position, @Nullable List<Object> payloads,
+                                @Nullable OnViewClickListener viewClickListener) {
     mViewClickListener = viewClickListener;
     if (!payloads.isEmpty()) {
       mLoadState = (LoadMoreConfig.HolderState) payloads.get(0);
     }
-    if (mLoadState == LoadMoreConfig.HolderState.LOADFINISH) {
-      showLoadFinish(holder, mLoadState.getTips());
+    if (mLoadState == LoadMoreConfig.HolderState.LOADNOMORE) {
+      showNoMoreLoad(holder, mLoadState.getTips());
     } else if (mLoadState == LoadMoreConfig.HolderState.LOADING) {
       showLoading(holder, mLoadState.getTips());
     } else if (mLoadState == LoadMoreConfig.HolderState.LOADERETRY) {
@@ -55,12 +57,12 @@ public class JLoadMoreVb extends JViewBean implements View.OnClickListener {
 
   protected void showLoading(JViewHolder holder, CharSequence msg) {
     holder.setText(R.id.recyc_item_tv_loadmore, TextUtils.isEmpty(msg) ? findString(R.string.jonas_recyc_loading_more) : msg);
-    holder.goneViews(R.id.recyc_item_pb_loadmore);
+    holder.visibleViews(R.id.recyc_item_pb_loadmore);
     holder.setOnClickListener(null);
   }
 
 
-  protected void showLoadFinish(JViewHolder holder, CharSequence msg) {
+  protected void showNoMoreLoad(JViewHolder holder, CharSequence msg) {
     holder.goneViews(R.id.recyc_item_pb_loadmore);
     if (!TextUtils.isEmpty(msg)) {
       holder.setText(R.id.recyc_item_tv_loadmore, msg);
@@ -71,11 +73,11 @@ public class JLoadMoreVb extends JViewBean implements View.OnClickListener {
   }
 
   @Override
-  public void onClick(View v) {
+  public final void onClick(View v) {
     mViewClickListener.onItemClicked(v, this);
   }
 
-  public void setLoadState(LoadMoreConfig.HolderState loadState) {
+  public final void setLoadState(LoadMoreConfig.HolderState loadState) {
     mLoadState = loadState;
   }
 }

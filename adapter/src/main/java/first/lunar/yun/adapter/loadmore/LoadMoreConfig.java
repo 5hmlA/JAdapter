@@ -9,11 +9,22 @@ import first.lunar.yun.adapter.vb.JLoadMoreVb;
  * @since [https://github.com/ZuYun]
  * <p><a href="https://github.com/ZuYun">github</a>
  */
-public class LoadMoreConfig {
+public final class LoadMoreConfig {
 
   private JLoadMoreVb loadMoreVb = new JLoadMoreVb();
-  private Style style;
+  private boolean enableLoadMore = true;
   private CharSequence loadingTips;
+  private Style style;
+
+  public LoadMoreConfig() {
+  }
+
+  private LoadMoreConfig(JLoadMoreVb loadMoreVb, Style style, CharSequence loadingTips, boolean enableLoadMore) {
+    this.loadMoreVb = loadMoreVb;
+    this.style = style;
+    this.loadingTips = loadingTips;
+    this.enableLoadMore = enableLoadMore;
+  }
 
   public JLoadMoreVb getLoadMoreVb() {
     return loadMoreVb;
@@ -27,6 +38,41 @@ public class LoadMoreConfig {
     return loadingTips;
   }
 
+  public boolean isEnableLoadMore() {
+    return enableLoadMore;
+  }
+
+  public static class Builder {
+    private JLoadMoreVb loadMoreVb = new JLoadMoreVb();
+    private LoadMoreConfig.Style style;
+    private CharSequence loadingTips;
+    private boolean enableLoadMore = true;
+
+    public Builder setLoadMoreVb(JLoadMoreVb loadMoreVb) {
+      this.loadMoreVb = loadMoreVb;
+      return this;
+    }
+
+    public Builder setStyle(LoadMoreConfig.Style style) {
+      this.style = style;
+      return this;
+    }
+
+    public Builder setLoadingTips(CharSequence loadingTips) {
+      this.loadingTips = loadingTips;
+      return this;
+    }
+
+    public Builder setEnableLoadMore(boolean enableLoadMore) {
+      this.enableLoadMore = enableLoadMore;
+      return this;
+    }
+
+    public LoadMoreConfig build() {
+      return new LoadMoreConfig(loadMoreVb, style, loadingTips, enableLoadMore);
+    }
+  }
+
   public static enum Style{
     FIX("固定"),GONE("可移除");
     private String desc;
@@ -37,7 +83,7 @@ public class LoadMoreConfig {
   }
 
   public static enum HolderState{
-    LOADFINISH("关闭加载"), LOADING("加载中"), LOADSUCCED("加载成功"), LOADERETRY("重试");
+    LOADNOMORE("没有更多"), LOADING("加载中"), LOADERETRY("重试");
     private String desc;
     private CharSequence tips;
 

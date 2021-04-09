@@ -6,7 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.ListUpdateCallback;
 import androidx.recyclerview.widget.RecyclerView;
 import first.lunar.yun.adapter.face.LayoutManagers.FullSpan;
 import first.lunar.yun.adapter.face.OnViewClickListener;
@@ -22,17 +24,19 @@ import java.util.List;
  * @des [recycleview适配器 基类，上拉加载更多,多类型布局,拖拽,滑动删除 支持] 分页列表 涉及到改变数据的比如回复删除 获取分页数据最好用索引 从哪个索引开始取多少条数据
  * 关于回复评论/回复回复，需要自己伪造新增的回复数据添加的被回复的评论中去 （涉及到分页不能重新刷洗数据）
  */
-public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<JViewHolder> implements OnViewClickListener, LoadMoreChecker.LoadMoreCallBack {
+public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<JViewHolder> implements
+    OnViewClickListener, LoadMoreChecker.LoadMoreCallBack, ListUpdateCallback {
 
-  LoadMoreChecker mLoadMoreChecker;
   public final static String TAG = AbsLoadMoreWrapperAdapter.class.getSimpleName();
-  LoadMoreConfig mLoadMoreConfig = new LoadMoreConfig();
+  LoadMoreConfig mLoadMoreConfig = new LoadMoreConfig.Builder().build();
+  LoadMoreChecker mLoadMoreChecker;
   private AbsLoadMoreWrapperAdapter.LoadMoreSpanSizeLookup mSpanSizeLookup;
   LoadMoreChecker.LoadMoreCallBack mLoadMoreCallBack;
 
   @Override
   public void onAttachedToRecyclerView(RecyclerView recyclerView) {
     mLoadMoreChecker = new LoadMoreChecker();
+    mLoadMoreChecker.toggleLoadMore(mLoadMoreConfig.isEnableLoadMore());
     mLoadMoreChecker.attach(recyclerView, this);
     super.onAttachedToRecyclerView(recyclerView);
     setSpanCount(recyclerView);
@@ -109,13 +113,13 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
     }
   }
 
-  protected abstract RecyclerView.Adapter<JViewHolder> getInnerAdapter();
-
   @Override
   public JViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-    int layout = mLoadMoreConfig.getLoadMoreVb().bindLayout();
-    if (layout == viewType) {
-      return new JViewHolder(LayoutInflater.from(parent.getContext()).inflate(layout, parent, false));
+    if (mLoadMoreChecker.enableLoadMore()) {
+      int layout = mLoadMoreConfig.getLoadMoreVb().bindLayout();
+      if (layout == viewType) {
+        return new JViewHolder(LayoutInflater.from(parent.getContext()).inflate(layout, parent, false));
+      }
     }
     return getInnerAdapter().onCreateViewHolder(parent, viewType);
   }
@@ -130,25 +134,38 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
     if (position < getInnerAdapter().getItemCount()) {
       getInnerAdapter().onBindViewHolder(holder, position, payloads);
     } else {
-
-      mLoadMoreConfig.getLoadMoreVb().onBindViewHolder((JViewHolder) holder, position, payloads,this);
+      mLoadMoreConfig.getLoadMoreVb().onBindViewHolder((JViewHolder) holder, position, payloads, this);
     }
   }
 
   @Override
   public void onItemClicked(View view, Object itemData) {
-    //点击重试
-    mLoadMoreChecker.loadMoreRetry();
+    //点击重试 就是开始加载
+    mLoadMoreChecker.loadingMore();
     showLoading();
+  }
+
+  @Keep
+  public final void refreshData(List<T> data) {
+    //刷新数据之后 需要允许上拉加载检测
+    if (mLoadMoreConfig.getStyle() == LoadMoreConfig.Style.GONE) {
+      mLoadMoreChecker.toggleLoadMore(true);
+      notifyItemInserted(getInnerAdapter().getItemCount());
+    } else {
+      mLoadMoreChecker.loadMoreCheck();
+    }
+    showLoading();
+    onRefreshData(data);
   }
 
   /**
    * 外部手动调用 加载错误
    */
   @Keep
-  public void loadError(CharSequence tips) {
+  public void loadMoreError(CharSequence tips) {
     LLog.llogi("loadError >>>");
-    mLoadMoreChecker.loadMoreSucceed();
+    //加载失败之后 需要允许上拉加载检测
+    mLoadMoreChecker.loadMoreCheck();
     LoadMoreConfig.HolderState loadError = LoadMoreConfig.HolderState.LOADERETRY;
     loadError.setTips(tips);
     notifyLoadMore(loadError);
@@ -156,8 +173,22 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
 
   @Keep
   public void loadMoreSucceed(List<T> moreData) {
-    mLoadMoreChecker.loadMoreSucceed();
+    //更多数据加载成功之后 需要允许上拉加载检测
+    mLoadMoreChecker.loadMoreCheck();
     showLoading();
+  }
+
+  @Keep
+  public void noMoreLoad(CharSequence finishTips) {
+    if (mLoadMoreConfig.getStyle() == LoadMoreConfig.Style.GONE) {
+        mLoadMoreChecker.toggleLoadMore(false);
+        notifyItemRemoved(getItemCount());
+    } else {
+        mLoadMoreChecker.noMoreLoad();
+        LoadMoreConfig.HolderState disload = LoadMoreConfig.HolderState.LOADNOMORE;
+        disload.setTips(finishTips);
+        notifyLoadMore(disload);
+    }
   }
 
   private void showLoading() {
@@ -166,12 +197,9 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
     notifyLoadMore(loading);
   }
 
-  @Keep
-  public void loadMoreFinish(CharSequence finishTips) {
-    mLoadMoreChecker.loadFinish();
-    LoadMoreConfig.HolderState disload = LoadMoreConfig.HolderState.LOADFINISH;
-    disload.setTips(finishTips);
-    notifyLoadMore(disload);
+  private void notifyLoadMore(LoadMoreConfig.HolderState loadState) {
+    mLoadMoreConfig.getLoadMoreVb().setLoadState(loadState);
+    notifyItemChanged(getInnerAdapter().getItemCount(), loadState);
   }
 
   @Override
@@ -181,11 +209,9 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
     }
   }
 
-  private void notifyLoadMore(LoadMoreConfig.HolderState loadState) {
-    mLoadMoreConfig.getLoadMoreVb().setLoadState(loadState);
-    notifyItemChanged(getInnerAdapter().getItemCount(), loadState);
+  public void setLoadMoreConfig(LoadMoreConfig loadMoreConfig) {
+    mLoadMoreConfig = loadMoreConfig;
   }
-
 
   @Override
   public void registerAdapterDataObserver(@NonNull RecyclerView.AdapterDataObserver observer) {
@@ -198,6 +224,40 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
     getInnerAdapter().unregisterAdapterDataObserver(observer);
     super.unregisterAdapterDataObserver(observer);
   }
+
+
+  private boolean isRemoveAll(int itemCount) {
+    return mLoadMoreChecker.isRemoveAll(itemCount);
+  }
+
+
+  @Override
+  public void onInserted(int position, int count) {
+    notifyItemRangeInserted(position, count);
+  }
+
+  @Override
+  public void onRemoved(int position, int count) {
+    if (isRemoveAll(count)) {
+      count += 1;//移除全部要把loading也移除否则insert的时候会滚动到loading
+    }
+    notifyItemRangeRemoved(position, count);
+  }
+
+  @Override
+  public void onMoved(int fromPosition, int toPosition) {
+    notifyItemMoved(fromPosition, toPosition);
+  }
+
+  @Override
+  public void onChanged(int position, int count, @Nullable Object payload) {
+    notifyItemRangeChanged(position, count, payload);
+  }
+
+
+  protected abstract RecyclerView.Adapter<JViewHolder> getInnerAdapter();
+
+  protected abstract void onRefreshData(List<T> data);
 
   @Keep
   public static class LoadMoreSpanSizeLookup extends GridLayoutManager.SpanSizeLookup {

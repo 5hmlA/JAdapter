@@ -117,7 +117,7 @@ import java.util.concurrent.Executor;
  * @see AdapterListUpdateCallback
  */
 public class JAsyncListDiffer<T> {
-    private final ListUpdateCallback mUpdateCallback;
+    private ListUpdateCallback mUpdateCallback;
     @SuppressWarnings("WeakerAccess") /* synthetic access */
     final AsyncDifferConfig<T> mConfig;
 
@@ -434,5 +434,9 @@ public class JAsyncListDiffer<T> {
             listener.onCurrentListChanged(previousList, mReadOnlyList);
         }
         adapter.notifyItemInserted(position);
+    }
+
+    public void setUpdateCallback(ListUpdateCallback updateCallback) {
+        mUpdateCallback = updateCallback;
     }
 }
