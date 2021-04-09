@@ -10,7 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ListUpdateCallback;
 import androidx.recyclerview.widget.RecyclerView;
-import first.lunar.yun.adapter.face.LayoutManagers.FullSpan;
+import first.lunar.yun.adapter.vb.FullSpan;
 import first.lunar.yun.adapter.face.OnViewClickListener;
 import first.lunar.yun.adapter.helper.LLog;
 import first.lunar.yun.adapter.holder.JViewHolder;
@@ -35,10 +35,10 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
 
   @Override
   public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+    getInnerAdapter().onAttachedToRecyclerView(recyclerView);
     mLoadMoreChecker = new LoadMoreChecker();
     mLoadMoreChecker.toggleLoadMore(mLoadMoreConfig.isEnableLoadMore());
     mLoadMoreChecker.attach(recyclerView, this);
-    super.onAttachedToRecyclerView(recyclerView);
     setSpanCount(recyclerView);
   }
 

@@ -2,9 +2,7 @@ package first.lunar.yun.adapter.helper;
 
 import android.text.TextUtils;
 import android.util.Log;
-import first.lunar.yun.adapter.LApp;
-
-import static first.lunar.yun.adapter.LConsistent.SPLIT_DOS;
+import first.lunar.yun.LApp;
 
 /**
  * @author yun.
@@ -14,6 +12,9 @@ import static first.lunar.yun.adapter.LConsistent.SPLIT_DOS;
  * <p><a href="https://github.com/ZuYun">github</a>
  */
 public class LLog {
+
+  public static final String SPLIT_DOS = ", ";
+
   public static void llog(Object... msgs) {
     if (LApp.isDebug()) {
       Log.d("JAdapter", TextUtils.join(SPLIT_DOS, msgs));

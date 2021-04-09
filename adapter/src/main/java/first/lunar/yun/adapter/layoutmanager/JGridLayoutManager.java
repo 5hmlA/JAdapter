@@ -1,4 +1,4 @@
-package first.lunar.yun.adapter.decoration;
+package first.lunar.yun.adapter.layoutmanager;
 
 import android.content.Context;
 import android.util.AttributeSet;

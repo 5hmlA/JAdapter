@@ -17,7 +17,7 @@ import androidx.annotation.StringRes;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import first.lunar.yun.adapter.JVBrecvAdapter;
-import first.lunar.yun.adapter.LApp;
+import first.lunar.yun.LApp;
 import first.lunar.yun.adapter.vb.JViewBean;
 import java.lang.ref.WeakReference;
 import java.util.List;

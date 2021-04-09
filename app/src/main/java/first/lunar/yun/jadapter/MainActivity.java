@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import first.lunar.yun.adapter.JVBrecvDiffAdapter;
-import first.lunar.yun.adapter.LApp;
+import first.lunar.yun.LApp;
 import first.lunar.yun.adapter.LoadMoreWrapperAdapter;
 import first.lunar.yun.adapter.face.JOnClickListener;
 import first.lunar.yun.adapter.face.OnViewClickListener;

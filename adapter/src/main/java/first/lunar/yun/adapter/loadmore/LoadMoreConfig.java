@@ -16,9 +16,6 @@ public final class LoadMoreConfig {
   private CharSequence loadingTips;
   private Style style;
 
-  public LoadMoreConfig() {
-  }
-
   private LoadMoreConfig(JLoadMoreVb loadMoreVb, Style style, CharSequence loadingTips, boolean enableLoadMore) {
     this.loadMoreVb = loadMoreVb;
     this.style = style;
@@ -44,7 +41,7 @@ public final class LoadMoreConfig {
 
   public static class Builder {
     private JLoadMoreVb loadMoreVb = new JLoadMoreVb();
-    private LoadMoreConfig.Style style;
+    private LoadMoreConfig.Style style = Style.FIX;
     private CharSequence loadingTips;
     private boolean enableLoadMore = true;
 

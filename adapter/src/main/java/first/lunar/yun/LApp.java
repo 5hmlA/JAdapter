@@ -1,4 +1,4 @@
-package first.lunar.yun.adapter;
+package first.lunar.yun;
 
 import android.app.Activity;
 import android.content.Context;

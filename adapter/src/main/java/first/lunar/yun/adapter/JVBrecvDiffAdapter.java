@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.AdapterListUpdateCallback;
 import androidx.recyclerview.widget.AsyncDifferConfig;
 import first.lunar.yun.adapter.diff.JitemDiffCallback;
 import first.lunar.yun.adapter.face.OnViewClickListener;
-import first.lunar.yun.adapter.holder.JAsyncListDiffer;
+import first.lunar.yun.adapter.helper.JAsyncListDiffer;
 import first.lunar.yun.adapter.vb.JViewBean;
 import java.util.List;
 

@@ -9,7 +9,7 @@ import first.lunar.yun.adapter.holder.JViewHolder;
 import first.lunar.yun.adapter.loadmore.LoadMoreConfig;
 import java.util.List;
 
-import static first.lunar.yun.adapter.LApp.findString;
+import static first.lunar.yun.LApp.findString;
 
 /**
  * @author yun.

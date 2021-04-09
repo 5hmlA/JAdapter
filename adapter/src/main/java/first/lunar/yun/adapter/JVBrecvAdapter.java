@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import first.lunar.yun.adapter.face.IVBrecvAdapter;
+import first.lunar.yun.LApp;
 import first.lunar.yun.adapter.face.JOnClickListener;
 import first.lunar.yun.adapter.face.OnViewClickListener;
 import first.lunar.yun.adapter.helper.LLog;
@@ -16,8 +16,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static first.lunar.yun.adapter.helper.CheckHelper.checkLists;
-
 /**
  * @author yun.
  * @date 2019/6/1 0001
@@ -25,7 +23,7 @@ import static first.lunar.yun.adapter.helper.CheckHelper.checkLists;
  * @since [https://github.com/ZuYun]
  * <p><a href="https://github.com/ZuYun">github</a>
  */
-public class JVBrecvAdapter<D extends JViewBean> extends RecyclerView.Adapter<JViewHolder> implements IVBrecvAdapter<D> {
+public class JVBrecvAdapter<D extends JViewBean> extends RecyclerView.Adapter<JViewHolder> {
 
   protected List<D> mDataList = new ArrayList<>();
   private OnViewClickListener<D> mOnViewClickListener;
@@ -61,6 +59,12 @@ public class JVBrecvAdapter<D extends JViewBean> extends RecyclerView.Adapter<JV
     this();
     mDataList = dataList;
     mOnViewClickListener = onViewClickListener;
+  }
+
+  @Override
+  public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
+    super.onAttachedToRecyclerView(recyclerView);
+    LApp.fly(recyclerView.getContext().getApplicationContext());
   }
 
   @Keep
@@ -135,11 +139,9 @@ public class JVBrecvAdapter<D extends JViewBean> extends RecyclerView.Adapter<JV
 
   @Keep
   public void addMoreList(@NonNull List<D> data) {
-    if (checkLists(data)) {
-      int startposition = mDataList.size();
-      mDataList.addAll(data);
-      notifyItemRangeInserted(startposition, data.size());
-    }
+    int startposition = mDataList.size();
+    mDataList.addAll(data);
+    notifyItemRangeInserted(startposition, data.size());
   }
 
   @Keep

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package first.lunar.yun.adapter.holder;
+package first.lunar.yun.adapter.helper;
 
 import android.os.Handler;
 import android.os.Looper;
