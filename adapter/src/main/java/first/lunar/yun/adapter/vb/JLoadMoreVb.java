@@ -2,6 +2,7 @@ package first.lunar.yun.adapter.vb;
 
 import android.text.TextUtils;
 import android.view.View;
+import androidx.annotation.Keep;
 import androidx.annotation.Nullable;
 import first.lunar.yun.adapter.R;
 import first.lunar.yun.adapter.face.OnViewClickListener;
@@ -19,6 +20,10 @@ import static first.lunar.yun.LApp.findString;
  * <p><a href="https://github.com/ZuYun">github</a>
  */
 public class JLoadMoreVb extends JViewBean implements View.OnClickListener {
+
+  @Keep
+  public JLoadMoreVb() {
+  }
 
   @Nullable
   private OnViewClickListener mViewClickListener;

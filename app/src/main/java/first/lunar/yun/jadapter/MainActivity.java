@@ -10,20 +10,20 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import first.lunar.yun.adapter.JVBrecvDiffAdapter;
 import first.lunar.yun.LApp;
+import first.lunar.yun.adapter.JVBrecvDiffAdapter;
 import first.lunar.yun.adapter.LoadMoreWrapperAdapter;
 import first.lunar.yun.adapter.face.JOnClickListener;
+import first.lunar.yun.adapter.face.LoadMoreCallBack;
 import first.lunar.yun.adapter.face.OnViewClickListener;
 import first.lunar.yun.adapter.helper.LLog;
 import first.lunar.yun.adapter.holder.JViewHolder;
-import first.lunar.yun.adapter.loadmore.LoadMoreChecker;
 import first.lunar.yun.adapter.vb.JViewBean;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class MainActivity extends AppCompatActivity implements OnViewClickListener<DataTest>, SwipeRefreshLayout.OnRefreshListener, LoadMoreChecker.LoadMoreCallBack {
+public class MainActivity extends AppCompatActivity implements OnViewClickListener<DataTest>, SwipeRefreshLayout.OnRefreshListener, LoadMoreCallBack {
 
   private LoadMoreWrapperAdapter mAdapter;
   private RecyclerView mRecyclerView;
@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements OnViewClickListen
       public void run() {
         if (new Random().nextBoolean()) {
           List<DataTest> dataTests = new ArrayList<>();
-          for (int i = 0; i < 20; i++) {
+          for (int i = 0; i < 13; i++) {
             dataTests.add(new DataTest());
           }
           LLog.llogi(" add more data ");
@@ -121,7 +121,7 @@ class DataTest extends JViewBean {
           @Override
           public void doClick(View v) {
 //            Toast.makeText(v.getContext(), getPosition() + "", Toast.LENGTH_SHORT).show();
-            holder.getAdatper().removeItem(holder.getAdapterPosition());
+            ((JVBrecvDiffAdapter) holder.getAdatper()).removeItem(holder.getAdapterPosition());
 //            ((LoadMoreWrapperAdapter) holder.getAdatper()).loadMoreFinish("9090");
           }
         }, R.id.iv);

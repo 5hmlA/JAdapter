@@ -5,7 +5,8 @@ import androidx.annotation.Keep;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 
-import static androidx.viewpager.widget.ViewPager.SCROLL_STATE_DRAGGING;
+import static androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_DRAGGING;
+
 
 /**
  * @author yun.

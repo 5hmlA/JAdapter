@@ -10,12 +10,13 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ListUpdateCallback;
 import androidx.recyclerview.widget.RecyclerView;
-import first.lunar.yun.adapter.vb.FullSpan;
+import first.lunar.yun.adapter.face.LoadMoreCallBack;
 import first.lunar.yun.adapter.face.OnViewClickListener;
 import first.lunar.yun.adapter.helper.LLog;
 import first.lunar.yun.adapter.holder.JViewHolder;
 import first.lunar.yun.adapter.loadmore.LoadMoreChecker;
 import first.lunar.yun.adapter.loadmore.LoadMoreConfig;
+import first.lunar.yun.adapter.vb.FullSpan;
 import java.util.Collections;
 import java.util.List;
 
@@ -25,13 +26,13 @@ import java.util.List;
  * 关于回复评论/回复回复，需要自己伪造新增的回复数据添加的被回复的评论中去 （涉及到分页不能重新刷洗数据）
  */
 public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<JViewHolder> implements
-    OnViewClickListener, LoadMoreChecker.LoadMoreCallBack, ListUpdateCallback {
+    OnViewClickListener, LoadMoreCallBack, ListUpdateCallback {
 
   public final static String TAG = AbsLoadMoreWrapperAdapter.class.getSimpleName();
   LoadMoreConfig mLoadMoreConfig = new LoadMoreConfig.Builder().build();
   LoadMoreChecker mLoadMoreChecker;
   private AbsLoadMoreWrapperAdapter.LoadMoreSpanSizeLookup mSpanSizeLookup;
-  LoadMoreChecker.LoadMoreCallBack mLoadMoreCallBack;
+  LoadMoreCallBack mLoadMoreCallBack;
 
   @Override
   public void onAttachedToRecyclerView(RecyclerView recyclerView) {
@@ -43,6 +44,7 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
   }
 
   @Override
+  @Keep
   public void onViewAttachedToWindow(JViewHolder holder) {
     super.onViewAttachedToWindow(holder);
     if (getInnerAdapter() != null) {
@@ -59,6 +61,7 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
   }
 
   @Override
+  @Keep
   public void onViewDetachedFromWindow(JViewHolder holder) {
     super.onViewDetachedFromWindow(holder);
     if (getInnerAdapter() != null) {
@@ -67,6 +70,7 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
   }
 
   @Override
+  @Keep
   public void onViewRecycled(@NonNull JViewHolder holder) {
     super.onViewRecycled(holder);
     LLog.llog(" ****** onViewRecycled : " + holder.itemView);
@@ -114,6 +118,7 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
   }
 
   @Override
+  @Keep
   public JViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
     if (mLoadMoreChecker.enableLoadMore()) {
       int layout = mLoadMoreConfig.getLoadMoreVb().bindLayout();
@@ -125,11 +130,13 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
   }
 
   @Override
+  @Keep
   public void onBindViewHolder(JViewHolder holder, final int position) {
     this.onBindViewHolder(holder, position, Collections.emptyList());
   }
 
   @Override
+  @Keep
   public void onBindViewHolder(JViewHolder holder, final int position, List<Object> payloads) {
     if (position < getInnerAdapter().getItemCount()) {
       getInnerAdapter().onBindViewHolder(holder, position, payloads);
@@ -209,6 +216,7 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
     }
   }
 
+  @Keep
   public void setLoadMoreConfig(LoadMoreConfig loadMoreConfig) {
     mLoadMoreConfig = loadMoreConfig;
   }
@@ -254,9 +262,10 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
     notifyItemRangeChanged(position, count, payload);
   }
 
-
+  @Keep
   protected abstract RecyclerView.Adapter<JViewHolder> getInnerAdapter();
 
+  @Keep
   protected abstract void onRefreshData(List<T> data);
 
   @Keep
@@ -279,7 +288,8 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
     }
   }
 
-  public void setLoadMoreCallBack(LoadMoreChecker.LoadMoreCallBack loadMoreCallBack) {
+  @Keep
+  public void setLoadMoreCallBack(LoadMoreCallBack loadMoreCallBack) {
     mLoadMoreCallBack = loadMoreCallBack;
   }
 }

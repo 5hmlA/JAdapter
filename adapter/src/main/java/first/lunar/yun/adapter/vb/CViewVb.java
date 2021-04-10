@@ -1,5 +1,6 @@
 package first.lunar.yun.adapter.vb;
 
+import androidx.annotation.Keep;
 import androidx.annotation.Nullable;
 import first.lunar.yun.adapter.face.OnViewClickListener;
 import first.lunar.yun.adapter.holder.JViewHolder;
@@ -12,6 +13,7 @@ import java.util.List;
  * @since [https://github.com/ZuYun]
  * <p><a href="https://github.com/ZuYun">github</a>
  */
+@Keep
 public class CViewVb extends JViewBean{
 
   private int mLayoutRes;

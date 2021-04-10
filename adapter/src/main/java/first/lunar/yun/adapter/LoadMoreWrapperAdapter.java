@@ -1,5 +1,6 @@
 package first.lunar.yun.adapter;
 
+import androidx.annotation.Keep;
 import androidx.recyclerview.widget.RecyclerView;
 import first.lunar.yun.adapter.holder.JViewHolder;
 import first.lunar.yun.adapter.vb.JViewBean;
@@ -14,6 +15,7 @@ public class LoadMoreWrapperAdapter<T extends JViewBean> extends AbsLoadMoreWrap
 
   JVBrecvDiffAdapter<T> mInnerAdapter;
 
+  @Keep
   public LoadMoreWrapperAdapter(JVBrecvDiffAdapter<T> innerAdapter) {
     mInnerAdapter = innerAdapter;
     innerAdapter.mDiffer.setUpdateCallback(this);

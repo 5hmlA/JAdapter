@@ -1,5 +1,6 @@
 package first.lunar.yun.adapter.loadmore;
 
+import androidx.annotation.Keep;
 import first.lunar.yun.adapter.vb.JLoadMoreVb;
 
 /**
@@ -9,6 +10,7 @@ import first.lunar.yun.adapter.vb.JLoadMoreVb;
  * @since [https://github.com/ZuYun]
  * <p><a href="https://github.com/ZuYun">github</a>
  */
+@Keep
 public final class LoadMoreConfig {
 
   private JLoadMoreVb loadMoreVb = new JLoadMoreVb();

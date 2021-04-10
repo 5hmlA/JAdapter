@@ -1,5 +1,6 @@
 package first.lunar.yun.adapter;
 
+import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.AdapterListUpdateCallback;
@@ -29,10 +30,12 @@ public class JVBrecvDiffAdapter<D extends JViewBean> extends JVBrecvAdapter<D>{
         }
       };
 
+  @Keep
   public JVBrecvDiffAdapter() {
     this(null);
   }
 
+  @Keep
   public JVBrecvDiffAdapter(OnViewClickListener<D> onViewClickListener) {
     super(onViewClickListener);
     mDiffer = new JAsyncListDiffer<>(new AdapterListUpdateCallback(this),
@@ -48,6 +51,7 @@ public class JVBrecvDiffAdapter<D extends JViewBean> extends JVBrecvAdapter<D>{
    *
    * @param list The new list to be displayed.
    */
+  @Keep
   public void submitList(@Nullable List<D> list) {
     mDiffer.submitList(list);
   }
@@ -66,6 +70,7 @@ public class JVBrecvDiffAdapter<D extends JViewBean> extends JVBrecvAdapter<D>{
    * @param commitCallback Optional runnable that is executed when the List is committed, if
    *                       it is committed.
    */
+  @Keep
   public void submitList(@Nullable List<D> list, @Nullable final Runnable commitCallback) {
     mDiffer.submitList(list, commitCallback);
   }
@@ -84,6 +89,7 @@ public class JVBrecvDiffAdapter<D extends JViewBean> extends JVBrecvAdapter<D>{
    * @see #onCurrentListChanged(List, List)
    */
   @NonNull
+  @Keep
   public List<D> getCurrentList() {
     return mDiffer.getCurrentList();
   }
@@ -106,35 +112,31 @@ public class JVBrecvDiffAdapter<D extends JViewBean> extends JVBrecvAdapter<D>{
   }
 
   @Override
+  @Keep
   public List<D> getDataList() {
     return getCurrentList();
   }
 
-  @Override
+  @Keep
   public void addMoreList(@NonNull List<D> data) {
-    mDiffer.addAll(data, this);
+    mDiffer.addAll(data);
   }
 
-  @Override
+  @Keep
   public void removeItem(int position) {
-    mDiffer.remove(position, this);
+    mDiffer.remove(position);
   }
 
-  @Override
+  @Keep
   public void removeItem(D item) {
     int i = getDataList().indexOf(item);
     if (i > -1) {
-      mDiffer.remove(i, this);
+      mDiffer.remove(i);
     }
   }
 
-  @Override
-  public void refreshAllData(@NonNull List<D> data) {
-    submitList(data);
-  }
-
-  @Override
+  @Keep
   public void addItem(D data, int position) {
-    mDiffer.add(data, position, this);
+    mDiffer.add(data, position);
   }
 }

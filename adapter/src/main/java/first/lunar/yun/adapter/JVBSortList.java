@@ -1,5 +1,6 @@
 package first.lunar.yun.adapter;
 
+import androidx.annotation.Keep;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SortedList;
@@ -15,6 +16,7 @@ import first.lunar.yun.adapter.vb.JViewBean;
  */
 public class JVBSortList extends SortedList<JViewBean>{
 
+  @Keep
   public JVBSortList(JVBrecvAdapter<JViewBean> jvBrecvAdapter){
     super(JViewBean.class, new JVBSortListCallback(jvBrecvAdapter));
   }

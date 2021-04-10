@@ -1,6 +1,7 @@
 package first.lunar.yun.adapter;
 
 import android.widget.LinearLayout;
+import androidx.annotation.Keep;
 import androidx.recyclerview.widget.RecyclerView;
 import first.lunar.yun.adapter.helper.Damping;
 import first.lunar.yun.adapter.vb.JViewBean;
@@ -13,6 +14,7 @@ public class LoadMoreWrapperDampAdapter<T extends JViewBean> extends LoadMoreWra
 
     public boolean mIsNeedDamp = true;
 
+    @Keep
     public LoadMoreWrapperDampAdapter(JVBrecvDiffAdapter<T> innerAdapter) {
         super(innerAdapter);
     }

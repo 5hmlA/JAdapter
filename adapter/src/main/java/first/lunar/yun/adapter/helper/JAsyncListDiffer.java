@@ -18,6 +18,7 @@ package first.lunar.yun.adapter.helper;
 
 import android.os.Handler;
 import android.os.Looper;
+import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.AdapterListUpdateCallback;
@@ -138,6 +139,7 @@ public class JAsyncListDiffer<T> {
      *
      * @param <T> Type of items in List
      */
+    @Keep
     public interface ListListener<T> {
         /**
          * Called after the current List has been updated.
@@ -401,7 +403,7 @@ public class JAsyncListDiffer<T> {
         mListeners.remove(listener);
     }
 
-    public void remove(int position, RecyclerView.Adapter adapter) {
+    public void remove(int position) {
         T remove = mList.remove(position);
         final List<T> previousList = mReadOnlyList;
         mReadOnlyList = Collections.unmodifiableList(mList);
@@ -409,11 +411,11 @@ public class JAsyncListDiffer<T> {
             listener.onCurrentListChanged(previousList, mReadOnlyList);
         }
         if (remove != null) {
-            adapter.notifyItemRemoved(position);
+            mUpdateCallback.onRemoved(position, 1);
         }
     }
 
-    public void addAll(List<T> items, RecyclerView.Adapter adapter) {
+    public void addAll(List<T> items) {
         final List<T> previousList = mReadOnlyList;
         int startposition = mList.size();
         boolean add = mList.addAll(items);
@@ -422,18 +424,18 @@ public class JAsyncListDiffer<T> {
             listener.onCurrentListChanged(previousList, mReadOnlyList);
         }
         if (add) {
-            adapter.notifyItemRangeInserted(startposition, items.size());
+            mUpdateCallback.onInserted(startposition, items.size());
         }
     }
 
-    public void add(T item, int position, RecyclerView.Adapter adapter) {
+    public void add(T item, int position) {
         mList.add(position, item);
         final List<T> previousList = mReadOnlyList;
         mReadOnlyList = Collections.unmodifiableList(mList);
         for (ListListener<T> listener : mListeners) {
             listener.onCurrentListChanged(previousList, mReadOnlyList);
         }
-        adapter.notifyItemInserted(position);
+        mUpdateCallback.onInserted(position, 1);
     }
 
     public void setUpdateCallback(ListUpdateCallback updateCallback) {

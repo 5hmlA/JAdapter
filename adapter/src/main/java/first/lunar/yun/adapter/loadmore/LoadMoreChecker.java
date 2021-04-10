@@ -3,6 +3,7 @@ package first.lunar.yun.adapter.loadmore;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import first.lunar.yun.adapter.face.LoadMoreCallBack;
 import first.lunar.yun.adapter.helper.LLog;
 
 /**
@@ -219,9 +220,5 @@ public class LoadMoreChecker {
 
   public boolean isRemoveAll(int itemCount) {
     return mLastDataSize == itemCount;
-  }
-
-  public static interface LoadMoreCallBack {
-    void onLoadMore(boolean retry);
   }
 }

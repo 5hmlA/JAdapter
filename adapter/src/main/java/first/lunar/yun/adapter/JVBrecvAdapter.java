@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import first.lunar.yun.LApp;
 import first.lunar.yun.adapter.face.JOnClickListener;
 import first.lunar.yun.adapter.face.OnViewClickListener;
-import first.lunar.yun.adapter.helper.LLog;
 import first.lunar.yun.adapter.holder.JViewHolder;
 import first.lunar.yun.adapter.vb.JViewBean;
 import java.util.ArrayList;
@@ -80,6 +79,7 @@ public class JVBrecvAdapter<D extends JViewBean> extends RecyclerView.Adapter<JV
 
   @NonNull
   @Override
+  @Keep
   public JViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int itemLayout) {
     JViewHolder jViewHolder = new JViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(itemLayout, viewGroup, false));
     jViewHolder.itemView.setOnClickListener(jOnClickListener);
@@ -87,11 +87,13 @@ public class JVBrecvAdapter<D extends JViewBean> extends RecyclerView.Adapter<JV
   }
 
   @Override
+  @Keep
   public void onBindViewHolder(@NonNull JViewHolder jViewHolder, int position) {
     this.onBindViewHolder(jViewHolder, position, Collections.emptyList());
   }
 
   @Override
+  @Keep
   public void onBindViewHolder(@NonNull JViewHolder holder, int position, @NonNull List<Object> payloads) {
     final D d = getDataList().get(position);
     holder.setHoldVBean(d)
@@ -136,45 +138,4 @@ public class JVBrecvAdapter<D extends JViewBean> extends RecyclerView.Adapter<JV
       holdVBean.onViewRecycled(holder);
     }
   }
-
-  @Keep
-  public void addMoreList(@NonNull List<D> data) {
-    int startposition = mDataList.size();
-    mDataList.addAll(data);
-    notifyItemRangeInserted(startposition, data.size());
-  }
-
-  @Keep
-  public void refreshAllData(@NonNull List<D> data) {
-    mDataList = data;
-    notifyDataSetChanged();
-  }
-
-  @Keep
-  public void removeItem(int position) {
-    if (position < mDataList.size()) {
-      mDataList.remove(position);
-      notifyItemRemoved(position);
-    }
-  }
-
-  @Keep
-  public void removeItem(D item) {
-    int index = mDataList.indexOf(item);
-    if (index > -1) {
-      removeItem(index);
-    }
-  }
-
-
-  @Keep
-  public void addItem(D data, int position) {
-    if (position > mDataList.size()) {
-      LLog.llog("JVBrecvAdapter", position + " > mData.size():" + mDataList.size());
-      return;
-    }
-    mDataList.add(position, data);
-    notifyItemInserted(position);
-  }
-
 }

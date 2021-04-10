@@ -2,6 +2,7 @@ package first.lunar.yun.adapter.helper;
 
 import android.text.TextUtils;
 import android.util.Log;
+import androidx.annotation.Keep;
 import first.lunar.yun.LApp;
 
 /**
@@ -11,6 +12,7 @@ import first.lunar.yun.LApp;
  * @since [https://github.com/ZuYun]
  * <p><a href="https://github.com/ZuYun">github</a>
  */
+@Keep
 public class LLog {
 
   public static final String SPLIT_DOS = ", ";
