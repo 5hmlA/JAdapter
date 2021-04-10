@@ -16,8 +16,8 @@ import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
-import first.lunar.yun.adapter.JVBrecvAdapter;
 import first.lunar.yun.LApp;
+import first.lunar.yun.adapter.face.AdapterKnife;
 import first.lunar.yun.adapter.vb.JViewBean;
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -37,7 +37,7 @@ public class JViewHolder extends RecyclerView.ViewHolder {
   private String tag = JViewHolder.class.getSimpleName();
   private final WeakReference<Activity> mActivityWeakReference;
   private JViewBean mHoldVBean;
-  private JVBrecvAdapter mAdatper;
+  private AdapterKnife mAdapterKnife;
   private List mList;
   private Object extra;
 
@@ -261,13 +261,13 @@ public class JViewHolder extends RecyclerView.ViewHolder {
     return mHoldVBean;
   }
 
-  public <D extends JViewBean> JViewHolder setAdatper(JVBrecvAdapter adatper) {
-    mAdatper = adatper;
+  public <D extends JViewBean> JViewHolder setAdapterKnife(AdapterKnife adapterKnife) {
+    mAdapterKnife = adapterKnife;
     return this;
   }
 
-  public JVBrecvAdapter getAdatper() {
-    return mAdatper;
+  public AdapterKnife getAdapterKnife() {
+    return mAdapterKnife;
   }
 
   public List getList() {

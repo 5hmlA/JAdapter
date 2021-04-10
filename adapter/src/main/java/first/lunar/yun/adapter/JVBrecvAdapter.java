@@ -7,6 +7,7 @@ import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import first.lunar.yun.LApp;
+import first.lunar.yun.adapter.face.AdapterKnife;
 import first.lunar.yun.adapter.face.JOnClickListener;
 import first.lunar.yun.adapter.face.OnViewClickListener;
 import first.lunar.yun.adapter.holder.JViewHolder;
@@ -22,7 +23,7 @@ import java.util.List;
  * @since [https://github.com/ZuYun]
  * <p><a href="https://github.com/ZuYun">github</a>
  */
-public class JVBrecvAdapter<D extends JViewBean> extends RecyclerView.Adapter<JViewHolder> {
+public class JVBrecvAdapter<D extends JViewBean> extends RecyclerView.Adapter<JViewHolder> implements AdapterKnife<D> {
 
   protected List<D> mDataList = new ArrayList<>();
   private OnViewClickListener<D> mOnViewClickListener;
@@ -38,7 +39,6 @@ public class JVBrecvAdapter<D extends JViewBean> extends RecyclerView.Adapter<JV
 
   @Keep
   public JVBrecvAdapter() {
-
   }
 
   @Keep
@@ -76,7 +76,6 @@ public class JVBrecvAdapter<D extends JViewBean> extends RecyclerView.Adapter<JV
     return getDataList().get(position).bindLayout();
   }
 
-
   @NonNull
   @Override
   @Keep
@@ -95,15 +94,19 @@ public class JVBrecvAdapter<D extends JViewBean> extends RecyclerView.Adapter<JV
   @Override
   @Keep
   public void onBindViewHolder(@NonNull JViewHolder holder, int position, @NonNull List<Object> payloads) {
-    final D d = getDataList().get(position);
+    final D d = getItemData(position);
     holder.setHoldVBean(d)
-        .setAdatper(this)
+        .setAdapterKnife(this)
         .keepList(getDataList());
     d.setPosition(position);
     if (mOnViewClickListener != null) {
       JViewHolder.setViewTag(holder.itemView, d);
     }
     d.onBindViewHolder(holder, position, payloads, mOnViewClickListener);
+  }
+
+  protected D getItemData(int position) {
+    return getDataList().get(position);
   }
 
   @Keep
@@ -137,5 +140,34 @@ public class JVBrecvAdapter<D extends JViewBean> extends RecyclerView.Adapter<JV
     if (holdVBean != null) {
       holdVBean.onViewRecycled(holder);
     }
+  }
+
+  public void notifyDataSetChanged(List<D> dataList) {
+    mDataList.clear();
+    mDataList.addAll(dataList);
+    notifyDataSetChanged();
+  }
+
+  @Override
+  public void remove(int position) {
+    mDataList.remove(position);
+    notifyItemRemoved(position);
+  }
+
+  @Override
+  public void remove(D data) {
+    remove(mDataList.indexOf(data));
+  }
+
+  @Override
+  public void addData(List<D> datas) {
+    int size = mDataList.size();
+    addData(size, datas);
+  }
+
+  @Override
+  public void addData(int position, List<D> datas) {
+    mDataList.addAll(position, datas);
+    notifyItemRangeInserted(position, datas.size());
   }
 }

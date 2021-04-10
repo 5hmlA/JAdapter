@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.AdapterListUpdateCallback;
 import androidx.recyclerview.widget.AsyncDifferConfig;
+import androidx.recyclerview.widget.ListUpdateCallback;
 import first.lunar.yun.adapter.diff.JitemDiffCallback;
 import first.lunar.yun.adapter.face.OnViewClickListener;
 import first.lunar.yun.adapter.helper.JAsyncListDiffer;
@@ -20,15 +21,7 @@ import java.util.List;
  */
 public class JVBrecvDiffAdapter<D extends JViewBean> extends JVBrecvAdapter<D>{
 
-  final JAsyncListDiffer<D> mDiffer;
-  private final JAsyncListDiffer.ListListener<D> mListener =
-      new JAsyncListDiffer.ListListener<D>() {
-        @Override
-        public void onCurrentListChanged(
-            @NonNull List<D> previousList, @NonNull List<D> currentList) {
-          JVBrecvDiffAdapter.this.onCurrentListChanged(previousList, currentList);
-        }
-      };
+  private final JAsyncListDiffer<D> mDiffer;
 
   @Keep
   public JVBrecvDiffAdapter() {
@@ -40,7 +33,14 @@ public class JVBrecvDiffAdapter<D extends JViewBean> extends JVBrecvAdapter<D>{
     super(onViewClickListener);
     mDiffer = new JAsyncListDiffer<>(new AdapterListUpdateCallback(this),
         new AsyncDifferConfig.Builder<>(new JitemDiffCallback<D>()).build());
-    mDiffer.addListListener(mListener);
+    JAsyncListDiffer.ListListener<D> listener = new JAsyncListDiffer.ListListener<D>() {
+      @Override
+      public void onCurrentListChanged(
+          @NonNull List<D> previousList, @NonNull List<D> currentList) {
+        JVBrecvDiffAdapter.this.onCurrentListChanged(previousList, currentList);
+      }
+    };
+    mDiffer.addListListener(listener);
   }
 
   /**
@@ -94,6 +94,12 @@ public class JVBrecvDiffAdapter<D extends JViewBean> extends JVBrecvAdapter<D>{
     return mDiffer.getCurrentList();
   }
 
+  @Keep
+  @Override
+  public List<D> getDataList() {
+    return getCurrentList();
+  }
+
   /**
    * Called when the current List is updated.
    * <p>
@@ -111,32 +117,22 @@ public class JVBrecvDiffAdapter<D extends JViewBean> extends JVBrecvAdapter<D>{
     mDataList.addAll(currentList);
   }
 
-  @Override
-  @Keep
-  public List<D> getDataList() {
-    return getCurrentList();
-  }
-
   @Keep
   public void addMoreList(@NonNull List<D> data) {
-    mDiffer.addAll(data);
+    addData(data);
   }
 
-  @Keep
-  public void removeItem(int position) {
+  @Override
+  public void remove(int position) {
     mDiffer.remove(position);
   }
 
-  @Keep
-  public void removeItem(D item) {
-    int i = getDataList().indexOf(item);
-    if (i > -1) {
-      mDiffer.remove(i);
-    }
+  @Override
+  public void addData(int position, List<D> datas) {
+    mDiffer.addAll(position, datas);
   }
 
-  @Keep
-  public void addItem(D data, int position) {
-    mDiffer.add(data, position);
+  protected void setUpdateCallback(ListUpdateCallback updateCallback) {
+    mDiffer.setUpdateCallback(updateCallback);
   }
 }

@@ -16,7 +16,6 @@ import first.lunar.yun.adapter.helper.LLog;
 import first.lunar.yun.adapter.holder.JViewHolder;
 import first.lunar.yun.adapter.loadmore.LoadMoreChecker;
 import first.lunar.yun.adapter.loadmore.LoadMoreConfig;
-import first.lunar.yun.adapter.vb.FullSpan;
 import java.util.Collections;
 import java.util.List;
 
@@ -31,7 +30,6 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
   public final static String TAG = AbsLoadMoreWrapperAdapter.class.getSimpleName();
   LoadMoreConfig mLoadMoreConfig = new LoadMoreConfig.Builder().build();
   LoadMoreChecker mLoadMoreChecker;
-  private AbsLoadMoreWrapperAdapter.LoadMoreSpanSizeLookup mSpanSizeLookup;
   LoadMoreCallBack mLoadMoreCallBack;
 
   @Override
@@ -82,11 +80,8 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
   private void setSpanCount(RecyclerView recv) {
     final RecyclerView.LayoutManager layoutManager = recv.getLayoutManager();
     if (layoutManager != null) {
-      if (layoutManager instanceof GridLayoutManager && getInnerAdapter() instanceof JVBrecvAdapter) {
-        if (mSpanSizeLookup == null) {
-          mSpanSizeLookup = new LoadMoreSpanSizeLookup((GridLayoutManager) layoutManager, ((JVBrecvAdapter) getInnerAdapter()).getDataList());
-        }
-        ((GridLayoutManager) layoutManager).setSpanSizeLookup(mSpanSizeLookup);
+      if (layoutManager instanceof GridLayoutManager) {
+        ((GridLayoutManager) layoutManager).setSpanSizeLookup(mLoadMoreConfig.getSpanSizeLookup());
       }
     } else {
       Log.e(TAG, "LayoutManager 为空,请先设置 recycleView.setLayoutManager(...)");
@@ -173,14 +168,15 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
     LLog.llogi("loadError >>>");
     //加载失败之后 需要允许上拉加载检测
     mLoadMoreChecker.loadMoreCheck();
-    LoadMoreConfig.HolderState loadError = LoadMoreConfig.HolderState.LOADERETRY;
+    HolderState loadError = HolderState.LOADERETRY;
     loadError.setTips(tips);
     notifyLoadMore(loadError);
   }
 
   @Keep
-  public void loadMoreSucceed(List<T> moreData) {
+  public final void loadMoreSucceed(List<T> moreData) {
     //更多数据加载成功之后 需要允许上拉加载检测
+    onLoadMoreSucceed(moreData);
     mLoadMoreChecker.loadMoreCheck();
     showLoading();
   }
@@ -192,19 +188,19 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
         notifyItemRemoved(getItemCount());
     } else {
         mLoadMoreChecker.noMoreLoad();
-        LoadMoreConfig.HolderState disload = LoadMoreConfig.HolderState.LOADNOMORE;
+        HolderState disload = HolderState.LOADNOMORE;
         disload.setTips(finishTips);
         notifyLoadMore(disload);
     }
   }
 
   private void showLoading() {
-    LoadMoreConfig.HolderState loading = LoadMoreConfig.HolderState.LOADING;
+    HolderState loading = HolderState.LOADING;
     loading.setTips(mLoadMoreConfig.getLoadingTips());
     notifyLoadMore(loading);
   }
 
-  private void notifyLoadMore(LoadMoreConfig.HolderState loadState) {
+  private void notifyLoadMore(HolderState loadState) {
     mLoadMoreConfig.getLoadMoreVb().setLoadState(loadState);
     notifyItemChanged(getInnerAdapter().getItemCount(), loadState);
   }
@@ -268,28 +264,29 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
   @Keep
   protected abstract void onRefreshData(List<T> data);
 
-  @Keep
-  public static class LoadMoreSpanSizeLookup extends GridLayoutManager.SpanSizeLookup {
-
-    GridLayoutManager mGridLayoutManager;
-    List<? extends Object> mItems;
-
-    public LoadMoreSpanSizeLookup(GridLayoutManager gridLayoutManager, List<? extends Object> items) {
-      mGridLayoutManager = gridLayoutManager;
-      mItems = items;
-    }
-
-    @Override
-    public int getSpanSize(int position) {
-      if (position == mItems.size()) {
-        return mGridLayoutManager.getSpanCount();
-      }
-      return mItems.get(position) instanceof FullSpan ? mGridLayoutManager.getSpanCount() : 1;
-    }
-  }
+  protected abstract void onLoadMoreSucceed(List<T> moreData);
 
   @Keep
   public void setLoadMoreCallBack(LoadMoreCallBack loadMoreCallBack) {
     mLoadMoreCallBack = loadMoreCallBack;
+  }
+
+  @Keep
+  public static enum HolderState{
+    LOADNOMORE("没有更多"), LOADING("加载中"), LOADERETRY("重试");
+    private String desc;
+    private CharSequence tips;
+
+    HolderState(String desc) {
+      this.desc = desc;
+    }
+
+    public CharSequence getTips() {
+      return tips;
+    }
+
+    public void setTips(CharSequence tips) {
+      this.tips = tips;
+    }
   }
 }

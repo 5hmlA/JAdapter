@@ -415,27 +415,16 @@ public class JAsyncListDiffer<T> {
         }
     }
 
-    public void addAll(List<T> items) {
+    public void addAll(int position, List<T> items) {
         final List<T> previousList = mReadOnlyList;
-        int startposition = mList.size();
-        boolean add = mList.addAll(items);
+        boolean add = mList.addAll(position, items);
         mReadOnlyList = Collections.unmodifiableList(mList);
         for (ListListener<T> listener : mListeners) {
             listener.onCurrentListChanged(previousList, mReadOnlyList);
         }
         if (add) {
-            mUpdateCallback.onInserted(startposition, items.size());
+            mUpdateCallback.onInserted(position, items.size());
         }
-    }
-
-    public void add(T item, int position) {
-        mList.add(position, item);
-        final List<T> previousList = mReadOnlyList;
-        mReadOnlyList = Collections.unmodifiableList(mList);
-        for (ListListener<T> listener : mListeners) {
-            listener.onCurrentListChanged(previousList, mReadOnlyList);
-        }
-        mUpdateCallback.onInserted(position, 1);
     }
 
     public void setUpdateCallback(ListUpdateCallback updateCallback) {

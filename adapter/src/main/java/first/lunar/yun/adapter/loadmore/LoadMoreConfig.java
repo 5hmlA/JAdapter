@@ -1,6 +1,9 @@
 package first.lunar.yun.adapter.loadmore;
 
 import androidx.annotation.Keep;
+import androidx.recyclerview.widget.GridLayoutManager;
+import first.lunar.yun.adapter.face.IDataProvider;
+import first.lunar.yun.adapter.vb.FullSpan;
 import first.lunar.yun.adapter.vb.JLoadMoreVb;
 
 /**
@@ -15,6 +18,7 @@ public final class LoadMoreConfig {
 
   private JLoadMoreVb loadMoreVb = new JLoadMoreVb();
   private boolean enableLoadMore = true;
+  private GridLayoutManager.SpanSizeLookup spanSizeLookup;
   private CharSequence loadingTips;
   private Style style;
 
@@ -39,6 +43,10 @@ public final class LoadMoreConfig {
 
   public boolean isEnableLoadMore() {
     return enableLoadMore;
+  }
+
+  public GridLayoutManager.SpanSizeLookup getSpanSizeLookup() {
+    return spanSizeLookup;
   }
 
   public static class Builder {
@@ -70,8 +78,10 @@ public final class LoadMoreConfig {
     public LoadMoreConfig build() {
       return new LoadMoreConfig(loadMoreVb, style, loadingTips, enableLoadMore);
     }
+
   }
 
+  @Keep
   public static enum Style{
     FIX("固定"),GONE("可移除");
     private String desc;
@@ -81,22 +91,22 @@ public final class LoadMoreConfig {
     }
   }
 
-  public static enum HolderState{
-    LOADNOMORE("没有更多"), LOADING("加载中"), LOADERETRY("重试");
-    private String desc;
-    private CharSequence tips;
+  @Keep
+  public static class LoadMoreSpanSizeLookup extends GridLayoutManager.SpanSizeLookup {
+    GridLayoutManager mGridLayoutManager;
+    IDataProvider mIDataProvider;
 
-    HolderState(String desc) {
-      this.desc = desc;
+    public LoadMoreSpanSizeLookup(GridLayoutManager gridLayoutManager, IDataProvider JVBrecvAdapter) {
+      mGridLayoutManager = gridLayoutManager;
+      mIDataProvider = JVBrecvAdapter;
     }
 
-    public CharSequence getTips() {
-      return tips;
-    }
-
-    public void setTips(CharSequence tips) {
-      this.tips = tips;
+    @Override
+    public int getSpanSize(int position) {
+      if (position == mIDataProvider.getDataSize()) {
+        return mGridLayoutManager.getSpanCount();
+      }
+      return mIDataProvider.getItemData(position) instanceof FullSpan ? mGridLayoutManager.getSpanCount() : 1;
     }
   }
-
 }

@@ -4,10 +4,10 @@ import android.text.TextUtils;
 import android.view.View;
 import androidx.annotation.Keep;
 import androidx.annotation.Nullable;
+import first.lunar.yun.adapter.AbsLoadMoreWrapperAdapter;
 import first.lunar.yun.adapter.R;
 import first.lunar.yun.adapter.face.OnViewClickListener;
 import first.lunar.yun.adapter.holder.JViewHolder;
-import first.lunar.yun.adapter.loadmore.LoadMoreConfig;
 import java.util.List;
 
 import static first.lunar.yun.LApp.findString;
@@ -27,7 +27,8 @@ public class JLoadMoreVb extends JViewBean implements View.OnClickListener {
 
   @Nullable
   private OnViewClickListener mViewClickListener;
-  LoadMoreConfig.HolderState mLoadState = LoadMoreConfig.HolderState.LOADING;
+
+  AbsLoadMoreWrapperAdapter.HolderState mLoadState = AbsLoadMoreWrapperAdapter.HolderState.LOADING;
 
   @Override
   public int bindLayout() {
@@ -39,13 +40,13 @@ public class JLoadMoreVb extends JViewBean implements View.OnClickListener {
                                 @Nullable OnViewClickListener viewClickListener) {
     mViewClickListener = viewClickListener;
     if (!payloads.isEmpty()) {
-      mLoadState = (LoadMoreConfig.HolderState) payloads.get(0);
+      mLoadState = (AbsLoadMoreWrapperAdapter.HolderState) payloads.get(0);
     }
-    if (mLoadState == LoadMoreConfig.HolderState.LOADNOMORE) {
+    if (mLoadState == AbsLoadMoreWrapperAdapter.HolderState.LOADNOMORE) {
       showNoMoreLoad(holder, mLoadState.getTips());
-    } else if (mLoadState == LoadMoreConfig.HolderState.LOADING) {
+    } else if (mLoadState == AbsLoadMoreWrapperAdapter.HolderState.LOADING) {
       showLoading(holder, mLoadState.getTips());
-    } else if (mLoadState == LoadMoreConfig.HolderState.LOADERETRY) {
+    } else if (mLoadState == AbsLoadMoreWrapperAdapter.HolderState.LOADERETRY) {
       showLoadError(holder, mLoadState.getTips());
     }
   }
@@ -82,7 +83,7 @@ public class JLoadMoreVb extends JViewBean implements View.OnClickListener {
     mViewClickListener.onItemClicked(v, this);
   }
 
-  public final void setLoadState(LoadMoreConfig.HolderState loadState) {
+  public final void setLoadState(AbsLoadMoreWrapperAdapter.HolderState loadState) {
     mLoadState = loadState;
   }
 }

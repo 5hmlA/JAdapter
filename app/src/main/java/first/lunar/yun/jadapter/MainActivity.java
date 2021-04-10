@@ -11,8 +11,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import first.lunar.yun.LApp;
-import first.lunar.yun.adapter.JVBrecvDiffAdapter;
-import first.lunar.yun.adapter.LoadMoreWrapperAdapter;
+import first.lunar.yun.adapter.AbsLoadMoreWrapperAdapter;
+import first.lunar.yun.adapter.LoadMoreDiffDampAdapter;
 import first.lunar.yun.adapter.face.JOnClickListener;
 import first.lunar.yun.adapter.face.LoadMoreCallBack;
 import first.lunar.yun.adapter.face.OnViewClickListener;
@@ -23,9 +23,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class MainActivity extends AppCompatActivity implements OnViewClickListener<DataTest>, SwipeRefreshLayout.OnRefreshListener, LoadMoreCallBack {
+public class MainActivity extends AppCompatActivity implements OnViewClickListener<JViewBean>, SwipeRefreshLayout.OnRefreshListener,
+    LoadMoreCallBack {
 
-  private LoadMoreWrapperAdapter mAdapter;
+  private AbsLoadMoreWrapperAdapter mAdapter;
   private RecyclerView mRecyclerView;
   private SwipeRefreshLayout mRefreshLayout;
 
@@ -34,13 +35,13 @@ public class MainActivity extends AppCompatActivity implements OnViewClickListen
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
     LApp.setDebug(true);
-    List<DataTest> dataTests = new ArrayList<>();
+    List<JViewBean> dataTests = new ArrayList<>();
 
     mRecyclerView = findViewById(R.id.rcv);
     mRefreshLayout = findViewById(R.id.refresh);
     mRefreshLayout.setOnRefreshListener(this);
     mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-    mAdapter = new LoadMoreWrapperAdapter(new JVBrecvDiffAdapter(this));
+    mAdapter = new LoadMoreDiffDampAdapter(this);
     mRecyclerView.setAdapter(mAdapter);
     mAdapter.setLoadMoreCallBack(this);
 
@@ -57,8 +58,8 @@ public class MainActivity extends AppCompatActivity implements OnViewClickListen
   }
 
   @Override
-  public void onItemClicked(View view, DataTest itemData) {
-    Toast.makeText(view.getContext(), itemData.text + "", Toast.LENGTH_SHORT).show();
+  public void onItemClicked(View view, JViewBean itemData) {
+    Toast.makeText(view.getContext(), ((DataTest) itemData).text + "", Toast.LENGTH_SHORT).show();
     mAdapter.noMoreLoad("fff");
   }
 
@@ -121,8 +122,8 @@ class DataTest extends JViewBean {
           @Override
           public void doClick(View v) {
 //            Toast.makeText(v.getContext(), getPosition() + "", Toast.LENGTH_SHORT).show();
-            ((JVBrecvDiffAdapter) holder.getAdatper()).removeItem(holder.getAdapterPosition());
-//            ((LoadMoreWrapperAdapter) holder.getAdatper()).loadMoreFinish("9090");
+            holder.getAdapterKnife().remove(holder.getAdapterPosition());
+//            ((LoadMoreDiffAdapter) holder.getAdatper()).loadMoreFinish("9090");
           }
         }, R.id.iv);
   }
