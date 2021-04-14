@@ -16,17 +16,17 @@ import first.lunar.yun.adapter.vb.JLoadMoreVb;
 public final class LoadMoreConfig {
 
   private JLoadMoreVb loadMoreVb = new JLoadMoreVb();
-  private boolean enableLoadMore = true;
+  private boolean isEnable = true;
   private GridLayoutManager.SpanSizeLookup spanSizeLookup;
   private CharSequence loadingTips;
   private Style style;
 
   @Keep
-  private LoadMoreConfig(JLoadMoreVb loadMoreVb, Style style, CharSequence loadingTips, boolean enableLoadMore) {
+  private LoadMoreConfig(JLoadMoreVb loadMoreVb, Style style, CharSequence loadingTips, boolean isEnable) {
     this.loadMoreVb = loadMoreVb;
     this.style = style;
     this.loadingTips = loadingTips;
-    this.enableLoadMore = enableLoadMore;
+    this.isEnable = isEnable;
   }
 
   public JLoadMoreVb getLoadMoreVb() {
@@ -43,8 +43,8 @@ public final class LoadMoreConfig {
   }
 
   @Keep
-  public boolean isEnableLoadMore() {
-    return enableLoadMore;
+  public boolean isEnable() {
+    return isEnable;
   }
 
   public GridLayoutManager.SpanSizeLookup getSpanSizeLookup() {
@@ -56,7 +56,7 @@ public final class LoadMoreConfig {
     private JLoadMoreVb loadMoreVb = new JLoadMoreVb();
     private LoadMoreConfig.Style style = Style.FIX;
     private CharSequence loadingTips;
-    private boolean enableLoadMore = true;
+    private boolean enable = true;
 
     public Builder setLoadMoreVb(JLoadMoreVb loadMoreVb) {
       this.loadMoreVb = loadMoreVb;
@@ -73,13 +73,13 @@ public final class LoadMoreConfig {
       return this;
     }
 
-    public Builder setEnableLoadMore(boolean enableLoadMore) {
-      this.enableLoadMore = enableLoadMore;
+    public Builder setEnable(boolean enable) {
+      this.enable = enable;
       return this;
     }
 
     public LoadMoreConfig build() {
-      return new LoadMoreConfig(loadMoreVb, style, loadingTips, enableLoadMore);
+      return new LoadMoreConfig(loadMoreVb, style, loadingTips, enable);
     }
 
   }

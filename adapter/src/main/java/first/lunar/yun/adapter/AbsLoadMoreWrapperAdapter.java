@@ -46,7 +46,7 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
     getInnerAdapter().onAttachedToRecyclerView(recyclerView);
     mLoadMoreChecker = new LoadMoreChecker();
     mLoadMoreChecker.attach(recyclerView, this);
-    mLoadMoreChecker.toggleLoadMore(mLoadMoreConfig.isEnableLoadMore());
+    mLoadMoreChecker.toggleLoadMore(mLoadMoreConfig.isEnable());
     setSpanCount(recyclerView);
   }
 
@@ -164,7 +164,7 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
 
   @Keep
   public final void refreshData(List<T> data) {
-    if (mLoadMoreConfig.isEnableLoadMore()) {
+    if (mLoadMoreConfig.isEnable()) {
       //刷新数据之后 需要允许上拉加载检测
       if (mLoadMoreConfig.getStyle() == LoadMoreConfig.Style.GONE) {
         mLoadMoreChecker.toggleLoadMore(true);
@@ -182,7 +182,7 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
    */
   @Keep
   public void loadMoreError(CharSequence tips) {
-    if (mLoadMoreConfig.isEnableLoadMore()) {
+    if (mLoadMoreConfig.isEnable()) {
       LLog.llogi("loadError >>>");
       //加载失败之后 需要允许上拉加载检测
       mLoadMoreChecker.loadMoreCheck();
@@ -196,7 +196,7 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
 
   @Keep
   public final void loadMoreSucceed(List<T> moreData) {
-    if (!mLoadMoreConfig.isEnableLoadMore()) {
+    if (!mLoadMoreConfig.isEnable()) {
       throw new RuntimeException("loadmore check is disable");
     }
     LLog.llog("loadMoreSucceed >>> ");
@@ -208,7 +208,7 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
 
   @Keep
   public void noMoreLoad(CharSequence finishTips) {
-    if (!mLoadMoreConfig.isEnableLoadMore()) {
+    if (!mLoadMoreConfig.isEnable()) {
       throw new RuntimeException("loadmore check is disable");
     }
     if (mLoadMoreConfig.getStyle() == LoadMoreConfig.Style.GONE) {

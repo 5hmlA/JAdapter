@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements OnViewClickListen
     mRefreshLayout.setOnRefreshListener(this);
     mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     mAdapter = new LoadMoreDiffDampAdapter(this);
-    mAdapter.setLoadMoreConfig(new LoadMoreConfig.Builder().setStyle(LoadMoreConfig.Style.GONE).build());
+    mAdapter.setLoadMoreConfig(new LoadMoreConfig.Builder().setEnable(false).setStyle(LoadMoreConfig.Style.GONE).build());
     mRecyclerView.setAdapter(mAdapter);
     mAdapter.setLoadMoreCallBack(this);
     mRecyclerView.postDelayed(new Runnable() {
