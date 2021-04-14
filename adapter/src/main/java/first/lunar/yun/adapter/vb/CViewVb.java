@@ -13,11 +13,11 @@ import java.util.List;
  * @since [https://github.com/ZuYun]
  * <p><a href="https://github.com/ZuYun">github</a>
  */
-@Keep
 public class CViewVb extends JViewBean{
 
   private int mLayoutRes;
 
+  @Keep
   public CViewVb(int layoutRes) {
     mLayoutRes = layoutRes;
   }

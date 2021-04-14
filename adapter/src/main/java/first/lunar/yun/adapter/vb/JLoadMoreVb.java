@@ -36,7 +36,7 @@ public class JLoadMoreVb extends JViewBean implements View.OnClickListener {
   }
 
   @Override
-  public final void onBindViewHolder(JViewHolder holder, int position, @Nullable List<Object> payloads,
+  public void onBindViewHolder(JViewHolder holder, int position, @Nullable List<Object> payloads,
                                 @Nullable OnViewClickListener viewClickListener) {
     mViewClickListener = viewClickListener;
     if (!payloads.isEmpty()) {

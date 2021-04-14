@@ -1,9 +1,10 @@
 package first.lunar.yun.adapter;
 
+import androidx.annotation.Keep;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.ListUpdateCallback;
 import first.lunar.yun.adapter.face.OnViewClickListener;
-import first.lunar.yun.adapter.loadmore.JLoadMoreVBSortList;
+import first.lunar.yun.adapter.helper.JVBSortList;
 import first.lunar.yun.adapter.vb.JViewBean;
 import java.util.List;
 
@@ -16,7 +17,7 @@ import java.util.List;
  */
 public class JVBSortListAdapter extends JVBrecvAdapter<JViewBean> implements ListUpdateCallback {
 
-  JLoadMoreVBSortList mSortList = new JLoadMoreVBSortList(this);
+  JVBSortList mSortList = new JVBSortList(this);
   ListUpdateCallback mUpdateCallback = new ListUpdateCallback() {
     @Override
     public void onInserted(int position, int count) {
@@ -39,15 +40,20 @@ public class JVBSortListAdapter extends JVBrecvAdapter<JViewBean> implements Lis
     }
   };
 
+  @Keep
+  public JVBSortListAdapter() {
+  }
+
+  @Keep
   public JVBSortListAdapter(OnViewClickListener<JViewBean> onViewClickListener) {
     super(onViewClickListener);
   }
 
-  public JLoadMoreVBSortList getSortList() {
+  public JVBSortList getSortList() {
     return mSortList;
   }
 
-  public void setSortList(JLoadMoreVBSortList sortList) {
+  public void setSortList(JVBSortList sortList) {
     mSortList = sortList;
   }
 
@@ -57,22 +63,22 @@ public class JVBSortListAdapter extends JVBrecvAdapter<JViewBean> implements Lis
 
   @Override
   public void onInserted(int position, int count) {
-    mUpdateCallback.onInserted(position,count);
+    mUpdateCallback.onInserted(position, count);
   }
 
   @Override
   public void onRemoved(int position, int count) {
-    mUpdateCallback.onRemoved(position,count);
+    mUpdateCallback.onRemoved(position, count);
   }
 
   @Override
   public void onMoved(int fromPosition, int toPosition) {
-    mUpdateCallback.onMoved(fromPosition,toPosition);
+    mUpdateCallback.onMoved(fromPosition, toPosition);
   }
 
   @Override
   public void onChanged(int position, int count, @Nullable Object payload) {
-    mUpdateCallback.onChanged(position,count, payload);
+    mUpdateCallback.onChanged(position, count, payload);
   }
 
   @Override

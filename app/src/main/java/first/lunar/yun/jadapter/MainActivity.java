@@ -13,6 +13,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import first.lunar.yun.LApp;
 import first.lunar.yun.adapter.AbsLoadMoreWrapperAdapter;
 import first.lunar.yun.adapter.LoadMoreDiffDampAdapter;
+import first.lunar.yun.adapter.face.IRecvDataDiff;
 import first.lunar.yun.adapter.face.JOnClickListener;
 import first.lunar.yun.adapter.face.LoadMoreCallBack;
 import first.lunar.yun.adapter.face.OnViewClickListener;
@@ -20,22 +21,23 @@ import first.lunar.yun.adapter.helper.LLog;
 import first.lunar.yun.adapter.holder.JViewHolder;
 import first.lunar.yun.adapter.vb.JViewBean;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements OnViewClickListener<JViewBean>, SwipeRefreshLayout.OnRefreshListener,
     LoadMoreCallBack {
 
-  private AbsLoadMoreWrapperAdapter mAdapter;
+  private AbsLoadMoreWrapperAdapter<JViewBean> mAdapter;
   private RecyclerView mRecyclerView;
   private SwipeRefreshLayout mRefreshLayout;
+  List<JViewBean> dataTests = new ArrayList<>();
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
     LApp.setDebug(true);
-    List<JViewBean> dataTests = new ArrayList<>();
 
     mRecyclerView = findViewById(R.id.rcv);
     mRefreshLayout = findViewById(R.id.refresh);
@@ -44,13 +46,11 @@ public class MainActivity extends AppCompatActivity implements OnViewClickListen
     mAdapter = new LoadMoreDiffDampAdapter(this);
     mRecyclerView.setAdapter(mAdapter);
     mAdapter.setLoadMoreCallBack(this);
-
     mRecyclerView.postDelayed(new Runnable() {
       @Override
       public void run() {
-        List<DataTest> dataTests = new ArrayList<>();
         for (int i = 0; i < 13; i++) {
-          dataTests.add(new DataTest());
+          dataTests.add(new DataTest("初始化数据 " + i));
         }
         mAdapter.refreshData(dataTests);
       }
@@ -69,10 +69,13 @@ public class MainActivity extends AppCompatActivity implements OnViewClickListen
     mRecyclerView.postDelayed(new Runnable() {
       @Override
       public void run() {
-        List<DataTest> dataTests = new ArrayList<>();
-        for (int i = 0; i < 13; i++) {
-          dataTests.add(new DataTest());
-        }
+        dataTests = new ArrayList(dataTests);
+        Collections.swap(dataTests,0,3);
+//        Collections.shuffle(dataTests);
+//        List<DataTest> dataTests = new ArrayList<>();
+//        for (int i = 0; i < 13; i++) {
+//          dataTests.add(new DataTest());
+//        }
         mAdapter.refreshData(dataTests);
         mRefreshLayout.setRefreshing(false);
       }
@@ -86,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements OnViewClickListen
       @Override
       public void run() {
         if (new Random().nextBoolean()) {
-          List<DataTest> dataTests = new ArrayList<>();
+          List<JViewBean> dataTests = new ArrayList<>();
           for (int i = 0; i < 13; i++) {
             dataTests.add(new DataTest());
           }
@@ -110,6 +113,13 @@ class DataTest extends JViewBean {
 
   String text = "测试:" + String.valueOf(new Random().nextInt());
 
+  public DataTest(String text) {
+    this.text = text;
+  }
+
+  public DataTest() {
+  }
+
   @Override
   public int bindLayout() {
     return R.layout.item_test_vb;
@@ -126,6 +136,21 @@ class DataTest extends JViewBean {
 //            ((LoadMoreDiffAdapter) holder.getAdatper()).loadMoreFinish("9090");
           }
         }, R.id.iv);
+  }
+
+  @Override
+  public boolean areItemsTheSame(IRecvDataDiff newData) {
+    return ((DataTest) newData).text.equals(text);
+  }
+
+  @Override
+  public boolean areContentsTheSame(IRecvDataDiff newData) {
+    return ((DataTest) newData).text.equals(text);
+  }
+
+  @Override
+  public Object getChangePayload(IRecvDataDiff oldData) {
+    return text = ((DataTest) oldData).text;
   }
 
   @Override

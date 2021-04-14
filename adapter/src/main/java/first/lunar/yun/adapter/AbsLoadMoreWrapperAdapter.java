@@ -229,11 +229,9 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
     super.unregisterAdapterDataObserver(observer);
   }
 
-
   private boolean isRemoveAll(int itemCount) {
     return mLoadMoreChecker.isRemoveAll(itemCount);
   }
-
 
   @Override
   public void onInserted(int position, int count) {
@@ -264,6 +262,7 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
   @Keep
   protected abstract void onRefreshData(List<T> data);
 
+  @Keep
   protected abstract void onLoadMoreSucceed(List<T> moreData);
 
   @Keep

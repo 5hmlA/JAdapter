@@ -67,13 +67,13 @@ public class JVBrecvAdapter<D extends JViewBean> extends RecyclerView.Adapter<JV
   }
 
   @Keep
-  public List<D> getDataList() {
+  public List<D> getCurrentList() {
     return mDataList;
   }
 
   @Override
   public int getItemViewType(int position) {
-    return getDataList().get(position).bindLayout();
+    return getCurrentList().get(position).bindLayout();
   }
 
   @NonNull
@@ -82,6 +82,7 @@ public class JVBrecvAdapter<D extends JViewBean> extends RecyclerView.Adapter<JV
   public JViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int itemLayout) {
     JViewHolder jViewHolder = new JViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(itemLayout, viewGroup, false));
     jViewHolder.itemView.setOnClickListener(jOnClickListener);
+    System.out.println("onCreateViewHolder");
     return jViewHolder;
   }
 
@@ -97,7 +98,7 @@ public class JVBrecvAdapter<D extends JViewBean> extends RecyclerView.Adapter<JV
     final D d = getItemData(position);
     holder.setHoldVBean(d)
         .setAdapterKnife(this)
-        .keepList(getDataList());
+        .keepList(getCurrentList());
     d.setPosition(position);
     if (mOnViewClickListener != null) {
       JViewHolder.setViewTag(holder.itemView, d);
@@ -106,13 +107,13 @@ public class JVBrecvAdapter<D extends JViewBean> extends RecyclerView.Adapter<JV
   }
 
   protected D getItemData(int position) {
-    return getDataList().get(position);
+    return getCurrentList().get(position);
   }
 
   @Keep
   @Override
   public int getItemCount() {
-    return getDataList().size();
+    return getCurrentList().size();
   }
 
   @Override
@@ -122,6 +123,14 @@ public class JVBrecvAdapter<D extends JViewBean> extends RecyclerView.Adapter<JV
     if (holdVBean != null) {
       holdVBean.onViewAttachedToWindow(holder);
     }
+  }
+
+  @Override
+  public long getItemId(int position) {
+    if (hasStableIds()) {
+      return getItemData(position).getItemId(position);
+    }
+    return super.getItemId(position);
   }
 
   @Override

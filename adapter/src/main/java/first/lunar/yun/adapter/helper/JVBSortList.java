@@ -1,4 +1,4 @@
-package first.lunar.yun.adapter.loadmore;
+package first.lunar.yun.adapter.helper;
 
 import androidx.annotation.Keep;
 import androidx.annotation.Nullable;
@@ -13,10 +13,10 @@ import first.lunar.yun.adapter.vb.JViewBean;
  * @since [https://github.com/ZuYun]
  * <p><a href="https://github.com/ZuYun">github</a>
  */
-public class JLoadMoreVBSortList extends SortedList<JViewBean>{
+public class JVBSortList extends SortedList<JViewBean>{
 
   @Keep
-  public JLoadMoreVBSortList(JVBSortListAdapter jvBrecvAdapter){
+  public JVBSortList(JVBSortListAdapter jvBrecvAdapter){
     super(JViewBean.class, new JVBSortListCallback(jvBrecvAdapter));
   }
 

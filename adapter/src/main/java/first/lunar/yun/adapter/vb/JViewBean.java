@@ -4,6 +4,7 @@ import android.os.Bundle;
 import androidx.annotation.Keep;
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import first.lunar.yun.adapter.face.IRecvDataDiff;
 import first.lunar.yun.adapter.holder.JViewHolder;
 
@@ -30,6 +31,10 @@ public abstract class JViewBean implements IRecvDataDiff {
     mPosition = position;
   }
 
+  protected boolean isTypeOf(Object item){
+    return item instanceof JViewBean;
+  }
+
   @Override
   public int compare(IRecvDataDiff newData) {
     return 0;
@@ -37,7 +42,7 @@ public abstract class JViewBean implements IRecvDataDiff {
 
   @Override
   public boolean areItemsTheSame(IRecvDataDiff newData) {
-    return false;
+    return newData.getClass().isAssignableFrom(getClass());
   }
 
   @Override
@@ -48,6 +53,19 @@ public abstract class JViewBean implements IRecvDataDiff {
   @Override
   public Object getChangePayload(IRecvDataDiff oldData) {
     return new Bundle();
+  }
+
+  /**
+   * Return the stable ID for the item at <code>position</code>. If {@link RecyclerView.Adapter#hasStableIds()()}
+   * would return false this method should return {@link RecyclerView.Adapter#NO_ID}. The default implementation
+   * of this method returns {@link RecyclerView.Adapter#NO_ID}.
+   *
+   * @param position Adapter position to query
+   * @return the stable ID of the item at position
+   */
+  @Override
+  public long getItemId(int position) {
+    return RecyclerView.NO_ID;
   }
 
   @LayoutRes

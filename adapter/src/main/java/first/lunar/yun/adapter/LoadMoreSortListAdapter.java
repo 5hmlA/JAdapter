@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SortedList;
 import first.lunar.yun.adapter.face.OnViewClickListener;
 import first.lunar.yun.adapter.holder.JViewHolder;
-import first.lunar.yun.adapter.loadmore.JLoadMoreVBSortList;
+import first.lunar.yun.adapter.helper.JVBSortList;
 import first.lunar.yun.adapter.vb.JViewBean;
 import java.util.List;
 
@@ -24,7 +24,7 @@ public class LoadMoreSortListAdapter extends AbsLoadMoreWrapperAdapter<JViewBean
   @Keep
   public LoadMoreSortListAdapter(OnViewClickListener<JViewBean> viewClickListener) {
     mJvbSortListAdapter = new JVBSortListAdapter(viewClickListener);
-    mJvbSortListAdapter.setSortList(new JLoadMoreVBSortList(mJvbSortListAdapter));
+    mJvbSortListAdapter.setSortList(new JVBSortList(mJvbSortListAdapter));
     mJvbSortListAdapter.setUpdateCallback(this);
   }
 

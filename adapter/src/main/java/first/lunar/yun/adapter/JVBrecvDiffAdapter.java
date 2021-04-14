@@ -89,15 +89,9 @@ public class JVBrecvDiffAdapter<D extends JViewBean> extends JVBrecvAdapter<D>{
    * @see #onCurrentListChanged(List, List)
    */
   @NonNull
-  @Keep
+  @Override
   public List<D> getCurrentList() {
     return mDiffer.getCurrentList();
-  }
-
-  @Keep
-  @Override
-  public List<D> getDataList() {
-    return getCurrentList();
   }
 
   /**
