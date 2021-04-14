@@ -32,12 +32,21 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
   LoadMoreChecker mLoadMoreChecker;
   LoadMoreCallBack mLoadMoreCallBack;
 
+  @Keep
+  public AbsLoadMoreWrapperAdapter() {
+  }
+
+  @Keep
+  public void setLoadMoreConfig(LoadMoreConfig loadMoreConfig) {
+    mLoadMoreConfig = loadMoreConfig;
+  }
+
   @Override
   public void onAttachedToRecyclerView(RecyclerView recyclerView) {
     getInnerAdapter().onAttachedToRecyclerView(recyclerView);
     mLoadMoreChecker = new LoadMoreChecker();
-    mLoadMoreChecker.toggleLoadMore(mLoadMoreConfig.isEnableLoadMore());
     mLoadMoreChecker.attach(recyclerView, this);
+    mLoadMoreChecker.toggleLoadMore(mLoadMoreConfig.isEnableLoadMore());
     setSpanCount(recyclerView);
   }
 
@@ -94,7 +103,13 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
     if (itemCount == 0) {
       return 0;
     }
-    if (mLoadMoreChecker.enableLoadMore()) {
+    if (!mLoadMoreChecker.enableLoadMore()) {
+      return itemCount;
+    }
+    if (mLoadMoreChecker.shouldCheckLoadMore()) {
+      return itemCount + 1;
+    }
+    if (mLoadMoreConfig.getStyle()== LoadMoreConfig.Style.FIX) {
       return itemCount + 1;
     }
     return itemCount;
@@ -149,14 +164,16 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
 
   @Keep
   public final void refreshData(List<T> data) {
-    //刷新数据之后 需要允许上拉加载检测
-    if (mLoadMoreConfig.getStyle() == LoadMoreConfig.Style.GONE) {
-      mLoadMoreChecker.toggleLoadMore(true);
-      notifyItemInserted(getInnerAdapter().getItemCount());
-    } else {
-      mLoadMoreChecker.loadMoreCheck();
+    if (mLoadMoreConfig.isEnableLoadMore()) {
+      //刷新数据之后 需要允许上拉加载检测
+      if (mLoadMoreConfig.getStyle() == LoadMoreConfig.Style.GONE) {
+        mLoadMoreChecker.toggleLoadMore(true);
+        notifyItemInserted(getInnerAdapter().getItemCount());
+      } else {
+        mLoadMoreChecker.loadMoreCheck();
+      }
+      showLoading();
     }
-    showLoading();
     onRefreshData(data);
   }
 
@@ -165,16 +182,24 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
    */
   @Keep
   public void loadMoreError(CharSequence tips) {
-    LLog.llogi("loadError >>>");
-    //加载失败之后 需要允许上拉加载检测
-    mLoadMoreChecker.loadMoreCheck();
-    HolderState loadError = HolderState.LOADERETRY;
-    loadError.setTips(tips);
-    notifyLoadMore(loadError);
+    if (mLoadMoreConfig.isEnableLoadMore()) {
+      LLog.llogi("loadError >>>");
+      //加载失败之后 需要允许上拉加载检测
+      mLoadMoreChecker.loadMoreCheck();
+      HolderState loadError = HolderState.LOADERETRY;
+      loadError.setTips(tips);
+      notifyLoadMore(loadError);
+    } else {
+      throw new RuntimeException("loadmore check is disable");
+    }
   }
 
   @Keep
   public final void loadMoreSucceed(List<T> moreData) {
+    if (!mLoadMoreConfig.isEnableLoadMore()) {
+      throw new RuntimeException("loadmore check is disable");
+    }
+    LLog.llog("loadMoreSucceed >>> ");
     //更多数据加载成功之后 需要允许上拉加载检测
     onLoadMoreSucceed(moreData);
     mLoadMoreChecker.loadMoreCheck();
@@ -183,14 +208,17 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
 
   @Keep
   public void noMoreLoad(CharSequence finishTips) {
+    if (!mLoadMoreConfig.isEnableLoadMore()) {
+      throw new RuntimeException("loadmore check is disable");
+    }
     if (mLoadMoreConfig.getStyle() == LoadMoreConfig.Style.GONE) {
-        mLoadMoreChecker.toggleLoadMore(false);
-        notifyItemRemoved(getItemCount());
+      mLoadMoreChecker.toggleLoadMore(false);
+      notifyItemRemoved(getItemCount());
     } else {
-        mLoadMoreChecker.noMoreLoad();
-        HolderState disload = HolderState.LOADNOMORE;
-        disload.setTips(finishTips);
-        notifyLoadMore(disload);
+      mLoadMoreChecker.noMoreLoad();
+      HolderState disload = HolderState.LOADNOMORE;
+      disload.setTips(finishTips);
+      notifyLoadMore(disload);
     }
   }
 
@@ -210,11 +238,6 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
     if (mLoadMoreCallBack != null) {
       mLoadMoreCallBack.onLoadMore(retry);
     }
-  }
-
-  @Keep
-  public void setLoadMoreConfig(LoadMoreConfig loadMoreConfig) {
-    mLoadMoreConfig = loadMoreConfig;
   }
 
   @Override
@@ -271,7 +294,7 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
   }
 
   @Keep
-  public static enum HolderState{
+  public static enum HolderState {
     LOADNOMORE("没有更多"), LOADING("加载中"), LOADERETRY("重试");
     private String desc;
     private CharSequence tips;

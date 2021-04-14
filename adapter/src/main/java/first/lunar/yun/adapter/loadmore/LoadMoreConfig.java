@@ -13,7 +13,6 @@ import first.lunar.yun.adapter.vb.JLoadMoreVb;
  * @since [https://github.com/ZuYun]
  * <p><a href="https://github.com/ZuYun">github</a>
  */
-@Keep
 public final class LoadMoreConfig {
 
   private JLoadMoreVb loadMoreVb = new JLoadMoreVb();
@@ -22,6 +21,7 @@ public final class LoadMoreConfig {
   private CharSequence loadingTips;
   private Style style;
 
+  @Keep
   private LoadMoreConfig(JLoadMoreVb loadMoreVb, Style style, CharSequence loadingTips, boolean enableLoadMore) {
     this.loadMoreVb = loadMoreVb;
     this.style = style;
@@ -33,6 +33,7 @@ public final class LoadMoreConfig {
     return loadMoreVb;
   }
 
+  @Keep
   public Style getStyle() {
     return style;
   }
@@ -41,6 +42,7 @@ public final class LoadMoreConfig {
     return loadingTips;
   }
 
+  @Keep
   public boolean isEnableLoadMore() {
     return enableLoadMore;
   }
@@ -49,6 +51,7 @@ public final class LoadMoreConfig {
     return spanSizeLookup;
   }
 
+  @Keep
   public static class Builder {
     private JLoadMoreVb loadMoreVb = new JLoadMoreVb();
     private LoadMoreConfig.Style style = Style.FIX;

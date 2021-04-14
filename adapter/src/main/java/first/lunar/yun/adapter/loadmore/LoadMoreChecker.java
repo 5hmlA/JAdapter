@@ -45,20 +45,6 @@ public class LoadMoreChecker {
       super.onScrollStateChanged(recyclerView, newState);
       checkUp2loadMore(newState);
     }
-
-    //            @Override
-    //            public void onScrolled(RecyclerView recyclerView, int dx, int dy){
-    //                super.onScrolled(recyclerView, dx, dy);
-    //                if(mLoadmoreitem == NEED_UP2LOAD_MORE) {
-    //                    //向上无法滚动
-    //                    if(dy>0 && !mRecyclerView.canScrollVertically(1) && mLoadmoreitem == NEED_UP2LOAD_MORE && !mInLoadingMore) {
-    //                        mInLoadingMore = true;
-    //                        if(mListener != null) {
-    //                            mListener.onup2LoadingMore();
-    //                        }
-    //                    }
-    //                }
-    //            }
   };
 
   private RecyclerView.AdapterDataObserver mAdapterDataObserver = new RecyclerView.AdapterDataObserver() {
@@ -154,7 +140,7 @@ public class LoadMoreChecker {
    *
    * @return
    */
-  private boolean shouldCheckLoadMore() {
+  public boolean shouldCheckLoadMore() {
     //加载中不需要检测, 没有更多数据的时候不需要上拉检测
     return mLoadState.compareTo(LoadState.LOADING) > 0;
   }
@@ -219,6 +205,9 @@ public class LoadMoreChecker {
   }
 
   public boolean isRemoveAll(int itemCount) {
+    if (mLoadState == LoadState.LOADDISABLE) {
+      return false;
+    }
     return mLastDataSize == itemCount;
   }
 }

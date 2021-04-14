@@ -36,14 +36,14 @@ public class JLoadMoreVb extends JViewBean implements View.OnClickListener {
   }
 
   @Override
-  public void onBindViewHolder(JViewHolder holder, int position, @Nullable List<Object> payloads,
+  public final void onBindViewHolder(JViewHolder holder, int position, @Nullable List<Object> payloads,
                                 @Nullable OnViewClickListener viewClickListener) {
     mViewClickListener = viewClickListener;
     if (!payloads.isEmpty()) {
       mLoadState = (AbsLoadMoreWrapperAdapter.HolderState) payloads.get(0);
     }
     if (mLoadState == AbsLoadMoreWrapperAdapter.HolderState.LOADNOMORE) {
-      showNoMoreLoad(holder, mLoadState.getTips());
+      showNomoreLoad(holder, mLoadState.getTips());
     } else if (mLoadState == AbsLoadMoreWrapperAdapter.HolderState.LOADING) {
       showLoading(holder, mLoadState.getTips());
     } else if (mLoadState == AbsLoadMoreWrapperAdapter.HolderState.LOADERETRY) {
@@ -55,27 +55,41 @@ public class JLoadMoreVb extends JViewBean implements View.OnClickListener {
    * 重新设置holder到loaderror界面和状态
    */
   protected void showLoadError(JViewHolder holder, CharSequence tips) {
+    holder.setOnClickListener(this);
+    onShowLoadError(holder, tips);
+  }
+
+  @Keep
+  protected void onShowLoadError(JViewHolder holder, CharSequence tips) {
     holder.visibleViews(R.id.recyc_item_pb_loadmore);
     holder.setText(R.id.recyc_item_tv_loadmore,
         TextUtils.isEmpty(tips) ? findString(R.string.jonas_recyc_load_retry) : tips);
-    holder.setOnClickListener(this);
   }
 
   protected void showLoading(JViewHolder holder, CharSequence msg) {
-    holder.setText(R.id.recyc_item_tv_loadmore, TextUtils.isEmpty(msg) ? findString(R.string.jonas_recyc_loading_more) : msg);
-    holder.visibleViews(R.id.recyc_item_pb_loadmore);
     holder.setOnClickListener(null);
+    onShowLoading(holder, msg);
   }
 
+  @Keep
+  protected void onShowLoading(JViewHolder holder, CharSequence msg) {
+    holder.setText(R.id.recyc_item_tv_loadmore, TextUtils.isEmpty(msg) ? findString(R.string.jonas_recyc_loading_more) : msg);
+    holder.visibleViews(R.id.recyc_item_pb_loadmore);
+  }
 
-  protected void showNoMoreLoad(JViewHolder holder, CharSequence msg) {
+  protected void showNomoreLoad(JViewHolder holder, CharSequence msg) {
+    holder.setOnClickListener(null);
+    onShowNomoreLoad(holder, msg);
+  }
+
+  @Keep
+  public void onShowNomoreLoad(JViewHolder holder, CharSequence msg) {
     holder.goneViews(R.id.recyc_item_pb_loadmore);
     if (!TextUtils.isEmpty(msg)) {
       holder.setText(R.id.recyc_item_tv_loadmore, msg);
     } else {
       holder.setText(R.id.recyc_item_tv_loadmore, R.string.jonas_recyc_load_finish);
     }
-    holder.setOnClickListener(null);
   }
 
   @Override

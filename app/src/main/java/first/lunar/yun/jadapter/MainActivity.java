@@ -19,6 +19,7 @@ import first.lunar.yun.adapter.face.LoadMoreCallBack;
 import first.lunar.yun.adapter.face.OnViewClickListener;
 import first.lunar.yun.adapter.helper.LLog;
 import first.lunar.yun.adapter.holder.JViewHolder;
+import first.lunar.yun.adapter.loadmore.LoadMoreConfig;
 import first.lunar.yun.adapter.vb.JViewBean;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements OnViewClickListen
     mRefreshLayout.setOnRefreshListener(this);
     mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     mAdapter = new LoadMoreDiffDampAdapter(this);
+    mAdapter.setLoadMoreConfig(new LoadMoreConfig.Builder().setStyle(LoadMoreConfig.Style.GONE).build());
     mRecyclerView.setAdapter(mAdapter);
     mAdapter.setLoadMoreCallBack(this);
     mRecyclerView.postDelayed(new Runnable() {
@@ -70,12 +72,14 @@ public class MainActivity extends AppCompatActivity implements OnViewClickListen
       @Override
       public void run() {
         dataTests = new ArrayList(dataTests);
-        Collections.swap(dataTests,0,3);
+        if (dataTests.size() > 4) {
+          Collections.swap(dataTests, 0, 3);
 //        Collections.shuffle(dataTests);
-//        List<DataTest> dataTests = new ArrayList<>();
-//        for (int i = 0; i < 13; i++) {
-//          dataTests.add(new DataTest());
-//        }
+        } else {
+          for (int i = 0; i < 13; i++) {
+            dataTests.add(new DataTest());
+          }
+        }
         mAdapter.refreshData(dataTests);
         mRefreshLayout.setRefreshing(false);
       }
