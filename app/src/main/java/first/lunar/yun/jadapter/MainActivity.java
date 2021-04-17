@@ -82,10 +82,10 @@ public class MainActivity extends AppCompatActivity implements OnViewClickListen
         dataTests = new ArrayList(dataTests);
         if (dataTests.size() > 4) {
           Collections.swap(dataTests, 1, 3);
-          dataTests.add(4, new DataTest("新增"));
           dataTests.remove(0);
           dataTests.add(0, new DataTest(6,"变化后的 " + System.currentTimeMillis()));
 //        Collections.shuffle(dataTests);
+          dataTests.add(7, new DataTest("新增"));
         } else {
           for (int i = 0; i < 13; i++) {
             dataTests.add(new DataTest());
