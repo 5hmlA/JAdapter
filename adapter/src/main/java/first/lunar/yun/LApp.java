@@ -3,6 +3,7 @@ package first.lunar.yun;
 import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.res.Resources;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -88,5 +89,12 @@ public class LApp {
   @Keep
   public static void setDebug(boolean isDebug) {
     sIsDebug = isDebug;
+  }
+
+  /**
+   * 根据手机的分辨率从 px(像素) 的单位 转成为 dp
+   */
+  public static int dp2px(float dpValue) {
+    return (int)(0.5f + dpValue * Resources.getSystem().getDisplayMetrics().density);
   }
 }

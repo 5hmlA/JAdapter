@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ListUpdateCallback;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import first.lunar.yun.adapter.face.LoadMoreCallBack;
 import first.lunar.yun.adapter.face.OnViewClickListener;
 import first.lunar.yun.adapter.helper.LLog;
@@ -31,6 +32,7 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
   LoadMoreConfig mLoadMoreConfig = new LoadMoreConfig.Builder().build();
   LoadMoreChecker mLoadMoreChecker;
   LoadMoreCallBack mLoadMoreCallBack;
+  private RecyclerView mRecyclerView;
 
   @Keep
   public AbsLoadMoreWrapperAdapter() {
@@ -43,6 +45,7 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
 
   @Override
   public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+    mRecyclerView = recyclerView;
     getInnerAdapter().onAttachedToRecyclerView(recyclerView);
     mLoadMoreChecker = new LoadMoreChecker();
     mLoadMoreChecker.attach(recyclerView, this);
@@ -51,19 +54,19 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
   }
 
   @Override
+  public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
+    super.onDetachedFromRecyclerView(recyclerView);
+    if (getInnerAdapter() != null) {
+      getInnerAdapter().onDetachedFromRecyclerView(recyclerView);
+    }
+  }
+
+  @Override
   @Keep
   public void onViewAttachedToWindow(JViewHolder holder) {
     super.onViewAttachedToWindow(holder);
     if (getInnerAdapter() != null) {
       getInnerAdapter().onViewAttachedToWindow(holder);
-    }
-  }
-
-  @Override
-  public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
-    super.onDetachedFromRecyclerView(recyclerView);
-    if (getInnerAdapter() != null) {
-      getInnerAdapter().onDetachedFromRecyclerView(recyclerView);
     }
   }
 
@@ -90,7 +93,9 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
     final RecyclerView.LayoutManager layoutManager = recv.getLayoutManager();
     if (layoutManager != null) {
       if (layoutManager instanceof GridLayoutManager) {
-        ((GridLayoutManager) layoutManager).setSpanSizeLookup(mLoadMoreConfig.getSpanSizeLookup());
+        GridLayoutManager gridLayoutManager = (GridLayoutManager) layoutManager;
+        int spanCount = gridLayoutManager.getSpanCount();
+        gridLayoutManager.setSpanSizeLookup(mLoadMoreConfig.getSpanSizeLookup().setSpanCount(spanCount).setAdapter(this));
       }
     } else {
       Log.e(TAG, "LayoutManager 为空,请先设置 recycleView.setLayoutManager(...)");
@@ -115,6 +120,22 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
     return itemCount;
   }
 
+  public T getItemData(int position){
+    if (mLoadMoreChecker.enableLoadMore()) {
+      if (position < getInnerAdapter().getItemCount()) {
+        return null;
+      }
+      try {
+        return (T) mLoadMoreConfig.getLoadMoreVb();
+      } catch (Exception e) {
+        LLog.lloge(e);
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
   @Override
   public final int getItemViewType(int position) {
     if (mLoadMoreChecker.enableLoadMore()) {
@@ -133,7 +154,14 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
     if (mLoadMoreChecker.enableLoadMore()) {
       int layout = mLoadMoreConfig.getLoadMoreVb().bindLayout();
       if (layout == viewType) {
-        return new JViewHolder(LayoutInflater.from(parent.getContext()).inflate(layout, parent, false));
+        JViewHolder jViewHolder = new JViewHolder(LayoutInflater.from(parent.getContext()).inflate(layout, parent, false));
+        if (mRecyclerView.getLayoutManager() instanceof StaggeredGridLayoutManager) {
+          StaggeredGridLayoutManager.LayoutParams fullSpanLayoutparam = new StaggeredGridLayoutManager.LayoutParams(
+              -1, -2);
+          fullSpanLayoutparam.setFullSpan(true);
+          jViewHolder.itemView.setLayoutParams(fullSpanLayoutparam);
+        }
+        return jViewHolder;
       }
     }
     return getInnerAdapter().onCreateViewHolder(parent, viewType);

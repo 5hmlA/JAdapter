@@ -22,7 +22,6 @@ import first.lunar.yun.adapter.holder.JViewHolder;
 import first.lunar.yun.adapter.loadmore.LoadMoreConfig;
 import first.lunar.yun.adapter.vb.JViewBean;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -45,14 +44,16 @@ public class MainActivity extends AppCompatActivity implements OnViewClickListen
     mRefreshLayout.setOnRefreshListener(this);
     mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     mAdapter = new LoadMoreDiffDampAdapter(this);
-    mAdapter.setLoadMoreConfig(new LoadMoreConfig.Builder().setEnable(false).setStyle(LoadMoreConfig.Style.GONE).build());
+    mAdapter.setLoadMoreConfig(new LoadMoreConfig.Builder().setLoadingTips("自定义加载").build());
+//    mAdapter.setLoadMoreConfig(new LoadMoreConfig.Builder().setEnable(false).setStyle(LoadMoreConfig.Style.GONE).build());
+//    mAdapter.setLoadMoreConfig(new LoadMoreConfig.Builder().setEnable(false).setStyle(LoadMoreConfig.Style.GONE).build());
     mRecyclerView.setAdapter(mAdapter);
     mAdapter.setLoadMoreCallBack(this);
     mRecyclerView.postDelayed(new Runnable() {
       @Override
       public void run() {
         for (int i = 0; i < 13; i++) {
-          dataTests.add(new DataTest("初始化数据 " + i));
+          dataTests.add(new DataTest(i,"初始化数据 " + i));
         }
         mAdapter.refreshData(dataTests);
       }
@@ -73,7 +74,10 @@ public class MainActivity extends AppCompatActivity implements OnViewClickListen
       public void run() {
         dataTests = new ArrayList(dataTests);
         if (dataTests.size() > 4) {
-          Collections.swap(dataTests, 0, 3);
+//          Collections.swap(dataTests, 1, 3);
+//          dataTests.add(4, new DataTest("新增"));
+          dataTests.remove(6);
+          dataTests.add(6, new DataTest(6,"变化后的6"));
 //        Collections.shuffle(dataTests);
         } else {
           for (int i = 0; i < 13; i++) {
@@ -115,7 +119,13 @@ public class MainActivity extends AppCompatActivity implements OnViewClickListen
 
 class DataTest extends JViewBean {
 
+  int id;
   String text = "测试:" + String.valueOf(new Random().nextInt());
+
+  public DataTest(int id, String text) {
+    this.id = id;
+    this.text = text;
+  }
 
   public DataTest(String text) {
     this.text = text;
@@ -135,8 +145,8 @@ class DataTest extends JViewBean {
         .setOnClickListener(new JOnClickListener() {
           @Override
           public void doClick(View v) {
-//            Toast.makeText(v.getContext(), getPosition() + "", Toast.LENGTH_SHORT).show();
-            holder.getAdapterKnife().remove(holder.getAdapterPosition());
+            Toast.makeText(v.getContext(), DataTest.this + "", Toast.LENGTH_SHORT).show();
+//            holder.getAdapterKnife().remove(holder.getAdapterPosition());
 //            ((LoadMoreDiffAdapter) holder.getAdatper()).loadMoreFinish("9090");
           }
         }, R.id.iv);
@@ -144,7 +154,7 @@ class DataTest extends JViewBean {
 
   @Override
   public boolean areItemsTheSame(IRecvDataDiff newData) {
-    return ((DataTest) newData).text.equals(text);
+    return ((DataTest) newData).id==(id);
   }
 
   @Override
@@ -154,7 +164,7 @@ class DataTest extends JViewBean {
 
   @Override
   public Object getChangePayload(IRecvDataDiff oldData) {
-    return text = ((DataTest) oldData).text;
+    return text;
   }
 
   @Override

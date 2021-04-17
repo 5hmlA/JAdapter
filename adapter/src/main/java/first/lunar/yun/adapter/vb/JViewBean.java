@@ -1,6 +1,5 @@
 package first.lunar.yun.adapter.vb;
 
-import android.os.Bundle;
 import androidx.annotation.Keep;
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
@@ -52,7 +51,7 @@ public abstract class JViewBean implements IRecvDataDiff {
 
   @Override
   public Object getChangePayload(IRecvDataDiff oldData) {
-    return new Bundle();
+    return this;
   }
 
   /**
@@ -84,5 +83,9 @@ public abstract class JViewBean implements IRecvDataDiff {
   @Override
   public void onViewRecycled(@NonNull JViewHolder holder) {
 
+  }
+
+  public int getSpanSize(int position) {
+    return 1;
   }
 }

@@ -2,9 +2,10 @@ package first.lunar.yun.adapter.loadmore;
 
 import androidx.annotation.Keep;
 import androidx.recyclerview.widget.GridLayoutManager;
-import first.lunar.yun.adapter.face.IDataProvider;
+import first.lunar.yun.adapter.AbsLoadMoreWrapperAdapter;
 import first.lunar.yun.adapter.vb.FullSpan;
 import first.lunar.yun.adapter.vb.JLoadMoreVb;
+import first.lunar.yun.adapter.vb.JViewBean;
 
 /**
  * @author yun.
@@ -17,7 +18,7 @@ public final class LoadMoreConfig {
 
   private JLoadMoreVb loadMoreVb = new JLoadMoreVb();
   private boolean isEnable = true;
-  private GridLayoutManager.SpanSizeLookup spanSizeLookup;
+  private LoadMoreSpanSizeLookup spanSizeLookup = new LoadMoreSpanSizeLookup();
   private CharSequence loadingTips;
   private Style style;
 
@@ -47,7 +48,7 @@ public final class LoadMoreConfig {
     return isEnable;
   }
 
-  public GridLayoutManager.SpanSizeLookup getSpanSizeLookup() {
+  public LoadMoreSpanSizeLookup getSpanSizeLookup() {
     return spanSizeLookup;
   }
 
@@ -96,20 +97,38 @@ public final class LoadMoreConfig {
 
   @Keep
   public static class LoadMoreSpanSizeLookup extends GridLayoutManager.SpanSizeLookup {
-    GridLayoutManager mGridLayoutManager;
-    IDataProvider mIDataProvider;
+    int spanCount;
+    private AbsLoadMoreWrapperAdapter adapter;
 
-    public LoadMoreSpanSizeLookup(GridLayoutManager gridLayoutManager, IDataProvider JVBrecvAdapter) {
-      mGridLayoutManager = gridLayoutManager;
-      mIDataProvider = JVBrecvAdapter;
+    @Keep
+    public LoadMoreSpanSizeLookup() {
+    }
+
+    public LoadMoreSpanSizeLookup setSpanCount(int spanCount) {
+      this.spanCount = spanCount;
+      return this;
+    }
+
+    public LoadMoreSpanSizeLookup setAdapter(AbsLoadMoreWrapperAdapter adapter) {
+      this.adapter = adapter;
+      return this;
     }
 
     @Override
     public int getSpanSize(int position) {
-      if (position == mIDataProvider.getDataSize()) {
-        return mGridLayoutManager.getSpanCount();
+      Object itemData = getItemData(position);
+      if (itemData instanceof FullSpan) {
+        return spanCount;
       }
-      return mIDataProvider.getItemData(position) instanceof FullSpan ? mGridLayoutManager.getSpanCount() : 1;
+      if (itemData instanceof JViewBean) {
+        return ((JViewBean) itemData).getSpanSize(position);
+      }
+      return 1;
+    }
+
+    @Keep
+    protected Object getItemData(int position) {
+      return adapter.getItemData(position);
     }
   }
 }

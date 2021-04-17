@@ -23,6 +23,15 @@ public class LoadMoreDiffAdapter<T extends JViewBean> extends AbsLoadMoreWrapper
   }
 
   @Override
+  public T getItemData(int position) {
+    T itemData = super.getItemData(position);
+    if (itemData == null) {
+      return mInnerAdapter.getItemData(position);
+    }
+    return itemData;
+  }
+
+  @Override
   protected RecyclerView.Adapter<JViewHolder> getInnerAdapter() {
     return mInnerAdapter;
   }

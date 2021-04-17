@@ -29,6 +29,15 @@ public class LoadMoreSortListAdapter extends AbsLoadMoreWrapperAdapter<JViewBean
   }
 
   @Override
+  public JViewBean getItemData(int position) {
+    JViewBean itemData = super.getItemData(position);
+    if (itemData == null) {
+      return mJvbSortListAdapter.getItemData(position);
+    }
+    return itemData;
+  }
+
+  @Override
   protected RecyclerView.Adapter<JViewHolder> getInnerAdapter() {
     return mJvbSortListAdapter;
   }
