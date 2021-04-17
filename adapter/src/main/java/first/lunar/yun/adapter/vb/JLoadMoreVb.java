@@ -7,10 +7,13 @@ import androidx.annotation.Nullable;
 import first.lunar.yun.adapter.AbsLoadMoreWrapperAdapter;
 import first.lunar.yun.adapter.R;
 import first.lunar.yun.adapter.face.OnViewClickListener;
+import first.lunar.yun.adapter.helper.LLog;
 import first.lunar.yun.adapter.holder.JViewHolder;
 import java.util.List;
+import java.util.Objects;
 
 import static first.lunar.yun.LApp.findString;
+import static first.lunar.yun.LApp.noEmptyStr;
 
 /**
  * @author yun.
@@ -37,7 +40,14 @@ public class JLoadMoreVb extends JViewBean implements View.OnClickListener {
 
   @Override
   public final void onBindViewHolder(JViewHolder holder, int position, @Nullable List<Object> payloads,
-                                @Nullable OnViewClickListener viewClickListener) {
+                                     @Nullable OnViewClickListener viewClickListener) {
+    Object extra = holder.getExtra();
+    String state = noEmptyStr(mLoadState.getTips(), mLoadState.getDesc());
+    if (Objects.equals(extra, state)) {
+      return;
+    }
+    LLog.llogi("JLoadMoreVb show ui ", state);
+    holder.setExtra(state);
     mViewClickListener = viewClickListener;
     if (!payloads.isEmpty()) {
       mLoadState = (AbsLoadMoreWrapperAdapter.HolderState) payloads.get(0);

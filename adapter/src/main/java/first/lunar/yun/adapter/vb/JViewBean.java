@@ -67,6 +67,10 @@ public abstract class JViewBean implements IRecvDataDiff {
     return RecyclerView.NO_ID;
   }
 
+  public boolean isStableHolder(){
+    return false;
+  }
+
   @LayoutRes
   public abstract int bindLayout();
 

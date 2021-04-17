@@ -10,6 +10,7 @@ import first.lunar.yun.LApp;
 import first.lunar.yun.adapter.face.AdapterKnife;
 import first.lunar.yun.adapter.face.JOnClickListener;
 import first.lunar.yun.adapter.face.OnViewClickListener;
+import first.lunar.yun.adapter.helper.LLog;
 import first.lunar.yun.adapter.holder.JViewHolder;
 import first.lunar.yun.adapter.vb.JViewBean;
 import java.util.ArrayList;
@@ -82,7 +83,6 @@ public class JVBrecvAdapter<D extends JViewBean> extends RecyclerView.Adapter<JV
   public JViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int itemLayout) {
     JViewHolder jViewHolder = new JViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(itemLayout, viewGroup, false));
     jViewHolder.itemView.setOnClickListener(jOnClickListener);
-    System.out.println("onCreateViewHolder");
     return jViewHolder;
   }
 
@@ -96,12 +96,16 @@ public class JVBrecvAdapter<D extends JViewBean> extends RecyclerView.Adapter<JV
   @Keep
   public void onBindViewHolder(@NonNull JViewHolder holder, int position, @NonNull List<Object> payloads) {
     final D d = getItemData(position);
+    if (d.isStableHolder() && holder.getHoldVBean() == d && payloads.isEmpty()) {
+      LLog.llogi("onBindViewHolder >> d.isStableHolder", d);
+      return;
+    }
     holder.setHoldVBean(d)
         .setAdapterKnife(this)
         .keepList(getCurrentList());
     d.setPosition(position);
     if (mOnViewClickListener != null) {
-      JViewHolder.setViewTag(holder.itemView, d);
+      holder.setViewTag(d);
     }
     d.onBindViewHolder(holder, position, payloads, mOnViewClickListener);
   }

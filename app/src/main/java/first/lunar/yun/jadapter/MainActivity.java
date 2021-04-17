@@ -22,6 +22,7 @@ import first.lunar.yun.adapter.holder.JViewHolder;
 import first.lunar.yun.adapter.loadmore.LoadMoreConfig;
 import first.lunar.yun.adapter.vb.JViewBean;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -42,6 +43,12 @@ public class MainActivity extends AppCompatActivity implements OnViewClickListen
     mRecyclerView = findViewById(R.id.rcv);
     mRefreshLayout = findViewById(R.id.refresh);
     mRefreshLayout.setOnRefreshListener(this);
+    mRecyclerView.setRecyclerListener(new RecyclerView.RecyclerListener() {
+      @Override
+      public void onViewRecycled(@NonNull RecyclerView.ViewHolder holder) {
+
+      }
+    });
     mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     mAdapter = new LoadMoreDiffDampAdapter(this);
     mAdapter.setLoadMoreConfig(new LoadMoreConfig.Builder().setLoadingTips("自定义加载").build());
@@ -63,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements OnViewClickListen
   @Override
   public void onItemClicked(View view, JViewBean itemData) {
     Toast.makeText(view.getContext(), ((DataTest) itemData).text + "", Toast.LENGTH_SHORT).show();
-    mAdapter.noMoreLoad("fff");
+    mAdapter.noMoreLoad("自定义加载结束");
   }
 
 
@@ -74,10 +81,10 @@ public class MainActivity extends AppCompatActivity implements OnViewClickListen
       public void run() {
         dataTests = new ArrayList(dataTests);
         if (dataTests.size() > 4) {
-//          Collections.swap(dataTests, 1, 3);
-//          dataTests.add(4, new DataTest("新增"));
-          dataTests.remove(6);
-          dataTests.add(6, new DataTest(6,"变化后的6"));
+          Collections.swap(dataTests, 1, 3);
+          dataTests.add(4, new DataTest("新增"));
+          dataTests.remove(0);
+          dataTests.add(0, new DataTest(6,"变化后的 " + System.currentTimeMillis()));
 //        Collections.shuffle(dataTests);
         } else {
           for (int i = 0; i < 13; i++) {
@@ -109,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements OnViewClickListen
             LLog.lloge("load_more load more error >>> ");
           } else {
             LLog.lloge("load_more load finish >>> ");
-            mAdapter.noMoreLoad("啦啦啦");
+            mAdapter.noMoreLoad("");
           }
         }
       }
@@ -146,8 +153,7 @@ class DataTest extends JViewBean {
           @Override
           public void doClick(View v) {
             Toast.makeText(v.getContext(), DataTest.this + "", Toast.LENGTH_SHORT).show();
-//            holder.getAdapterKnife().remove(holder.getAdapterPosition());
-//            ((LoadMoreDiffAdapter) holder.getAdatper()).loadMoreFinish("9090");
+            holder.getAdapterKnife().remove(holder.getAdapterPosition());
           }
         }, R.id.iv);
   }

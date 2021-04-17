@@ -338,5 +338,9 @@ public abstract class AbsLoadMoreWrapperAdapter<T> extends RecyclerView.Adapter<
     public void setTips(CharSequence tips) {
       this.tips = tips;
     }
+
+    public String getDesc() {
+      return desc;
+    }
   }
 }

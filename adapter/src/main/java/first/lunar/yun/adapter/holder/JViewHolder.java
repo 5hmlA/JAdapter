@@ -29,26 +29,28 @@ import java.util.List;
  * @since [https://github.com/ZuYun]
  * <p><a href="https://github.com/ZuYun">github</a>
  */
-@Keep
 public class JViewHolder extends RecyclerView.ViewHolder {
   private static final int NO_COLOR = -19910113;
   private static final int JVIEW_TAG = 0x20190601;
   private final SparseArray<WeakReference<View>> mCacheViews;
-  private String tag = JViewHolder.class.getSimpleName();
+  private static String tag = JViewHolder.class.getSimpleName();
   private final WeakReference<Activity> mActivityWeakReference;
   private JViewBean mHoldVBean;
   private AdapterKnife mAdapterKnife;
   private List mList;
   private Object extra;
 
+  @Keep
   public <E> E getExtra() {
     return (E) extra;
   }
-  
+
+  @Keep
   public <E> void setExtra(E extra) {
     this.extra = extra;
   }
 
+  @Keep
   public JViewHolder(View itemView) {
     super(itemView);
     if (LApp.getContext() == null) {
@@ -57,7 +59,8 @@ public class JViewHolder extends RecyclerView.ViewHolder {
     mActivityWeakReference = new WeakReference<>(getActivity(itemView));
     mCacheViews = new SparseArray<>(10);
   }
-  
+
+  @Keep
   public Activity getActivity() {
     if (mActivityWeakReference == null || mActivityWeakReference.get() == null) {
       return getActivity(itemView);
@@ -65,15 +68,18 @@ public class JViewHolder extends RecyclerView.ViewHolder {
       return mActivityWeakReference.get();
     }
   }
-  
+
+  @Keep
   public Activity getActivity(View view) {
     return LApp.getAct4View(view);
   }
 
+  @Keep
   public <V extends View> V getView(int viewId) {
     return getView(itemView, viewId);
   }
 
+  @Keep
   public <V extends View> V getView(View rootView, int viewId) {
     View view = null;
     if (mCacheViews.get(viewId) != null) {
@@ -89,6 +95,7 @@ public class JViewHolder extends RecyclerView.ViewHolder {
     return (V) view;
   }
 
+  @Keep
   public JViewHolder setText(int viewId, int strRes, @ColorRes int colorRes) {
     TextView textView = getView(viewId);
 //    if (textView != null) { //不判断空 好知道是否写错了ID
@@ -96,15 +103,18 @@ public class JViewHolder extends RecyclerView.ViewHolder {
     setText(viewId, text, colorRes);
     return this;
   }
-  
+
+  @Keep
   public JViewHolder setText(int viewId, @StringRes int strRes) {
     return setText(viewId, strRes, NO_COLOR);
   }
 
+  @Keep
   public JViewHolder setText(int viewId, CharSequence text) {
     return setText(viewId, text, NO_COLOR);
   }
-  
+
+  @Keep
   public JViewHolder setText(int viewId, CharSequence text, @ColorRes int colorRes) {
     int color = NO_COLOR;
     if (NO_COLOR != colorRes) {
@@ -113,6 +123,7 @@ public class JViewHolder extends RecyclerView.ViewHolder {
     return setTextWithColor(viewId,text,color);
   }
 
+  @Keep
   public JViewHolder setTextWithColor(int viewId, CharSequence text, @ColorInt int color) {
     TextView textView = getView(viewId);
     if (!TextUtils.isEmpty(text)) {
@@ -131,7 +142,7 @@ public class JViewHolder extends RecyclerView.ViewHolder {
    * @param text
    * @return
    */
-  
+  @Keep
   public JViewHolder setText2(int viewId, CharSequence text) {
     return setText2(viewId, text, NO_COLOR);
   }
@@ -143,7 +154,7 @@ public class JViewHolder extends RecyclerView.ViewHolder {
    * @param color
    * @return
    */
-  
+  @Keep
   public JViewHolder setText2(int viewId, CharSequence text, @ColorInt int color) {
     TextView textView = getView(viewId);
     if (!TextUtils.isEmpty(text)) {
@@ -158,12 +169,14 @@ public class JViewHolder extends RecyclerView.ViewHolder {
     return this;
   }
 
+  @Keep
   public JViewHolder setTextColorState(int viewId, ColorStateList colors) {
     TextView tv = getView(viewId);
     tv.setTextColor(colors);
     return this;
   }
 
+  @Keep
   public JViewHolder setVisibility(int visibility, int... viewIds) {
     for (int viewId : viewIds) {
       View view = getView(viewId);
@@ -174,14 +187,17 @@ public class JViewHolder extends RecyclerView.ViewHolder {
     return this;
   }
 
+  @Keep
   public JViewHolder goneViews(int... viewIds) {
     return setVisibility(View.GONE, viewIds);
   }
-  
+
+  @Keep
   public JViewHolder visibleViews(int... viewIds) {
     return setVisibility(View.VISIBLE, viewIds);
   }
-  
+
+  @Keep
   public int getVisibility(int viewId) {
     View view = getView(viewId);
     if (view == null) {
@@ -193,7 +209,7 @@ public class JViewHolder extends RecyclerView.ViewHolder {
   /**
    * 为ImageView设置图片
    */
-  
+  @Keep
   public JViewHolder setImageResource(int viewId, @DrawableRes int drawableId) {
     ImageView view = getView(viewId);
     view.setImageResource(drawableId);
@@ -203,18 +219,20 @@ public class JViewHolder extends RecyclerView.ViewHolder {
   /**
    * 为ImageView设置图片
    */
-  
+  @Keep
   public JViewHolder setImageBitmap(int viewId, Bitmap bm) {
     ImageView view = getView(viewId);
     view.setImageBitmap(bm);
     return this;
   }
 
+  @Keep
   public JViewHolder setOnLongClickListener(int viewId, View.OnLongClickListener l) {
     getView(viewId).setOnLongClickListener(l);
     return this;
   }
-  
+
+  @Keep
   public JViewHolder setOnClickListener(View.OnClickListener l, int... viewIds) {
     for (int viewId : viewIds) {
       getView(viewId).setOnClickListener(l);
@@ -222,32 +240,47 @@ public class JViewHolder extends RecyclerView.ViewHolder {
     return this;
   }
 
+  @Keep
   public JViewHolder setOnClickListener(View.OnClickListener l) {
     this.itemView.setOnClickListener(l);
     return this;
   }
 
+  @Keep
   public JViewHolder setOnLongclickListener(View.OnLongClickListener l) {
     this.itemView.setOnLongClickListener(l);
     return this;
   }
-  
+
+  @Keep
   public String getTag() {
     return tag;
   }
 
+  @Keep
   public JViewHolder setTag(String tag) {
     this.tag = tag;
     return this;
   }
 
-  public static void setViewTag(View view, Object Tag) {
-    if (Tag != null) {
-      view.setTag(JVIEW_TAG, Tag);
+  public void setViewTag(Object tag) {
+    setViewTag(itemView, tag);
+  }
+
+
+  public <T> T getViewTag() {
+    return getViewTag(itemView);
+  }
+
+  @Keep
+  public static void setViewTag(View view, Object tag) {
+    if (tag != null) {
+      view.setTag(JVIEW_TAG, tag);
     }
   }
 
   @Nullable
+  @Keep
   public static <T> T getViewTag(View view) {
     return (T) view.getTag(JVIEW_TAG);
   }
@@ -256,7 +289,8 @@ public class JViewHolder extends RecyclerView.ViewHolder {
     mHoldVBean = holdVBean;
     return this;
   }
-  
+
+  @Keep
   public JViewBean getHoldVBean() {
     return mHoldVBean;
   }
@@ -266,10 +300,12 @@ public class JViewHolder extends RecyclerView.ViewHolder {
     return this;
   }
 
+  @Keep
   public AdapterKnife getAdapterKnife() {
     return mAdapterKnife;
   }
 
+  @Keep
   public List getList() {
     return mList;
   }
