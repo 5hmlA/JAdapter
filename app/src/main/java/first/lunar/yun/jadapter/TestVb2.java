@@ -3,10 +3,12 @@ package first.lunar.yun.jadapter;
 import android.view.View;
 import android.widget.Toast;
 import androidx.annotation.Nullable;
-import first.lunar.yun.adapter.face.JOnClickListener;
-import first.lunar.yun.adapter.face.OnViewClickListener;
-import first.lunar.yun.adapter.holder.JViewHolder;
-import first.lunar.yun.adapter.vb.JViewBean;
+import sparkj.adapter.face.JOnClickListener;
+import sparkj.adapter.face.OnViewClickListener;
+import sparkj.adapter.holder.JViewHolder;
+import sparkj.adapter.vb.JViewBean;
+import sparkj.jadapter.R;
+
 import java.util.List;
 
 /**

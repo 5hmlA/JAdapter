@@ -9,14 +9,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import first.lunar.yun.adapter.JVBrecvAdapter;
-import first.lunar.yun.adapter.LApp;
-import first.lunar.yun.adapter.LoadMoreWrapperAdapter;
-import first.lunar.yun.adapter.face.JOnClickListener;
-import first.lunar.yun.adapter.face.OnMoreloadListener;
-import first.lunar.yun.adapter.face.OnViewClickListener;
-import first.lunar.yun.adapter.holder.JViewHolder;
-import first.lunar.yun.adapter.vb.JViewBean;
+import sparkj.adapter.JVBrecvAdapter;
+import sparkj.adapter.LApp;
+import sparkj.adapter.LoadMoreWrapperAdapter;
+import sparkj.adapter.face.JOnClickListener;
+import sparkj.adapter.face.OnMoreloadListener;
+import sparkj.adapter.face.OnViewClickListener;
+import sparkj.adapter.holder.JViewHolder;
+import sparkj.adapter.vb.JViewBean;
+import sparkj.jadapter.R;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -33,7 +35,6 @@ public class MainActivity extends AppCompatActivity implements OnViewClickListen
     setContentView(R.layout.activity_main);
     LApp.setDebug(true);
     List<DataTest> dataTests = new ArrayList<>();
-
     mRecyclerView = findViewById(R.id.rcv);
     mRefreshLayout = findViewById(R.id.refresh);
     mRefreshLayout.setOnRefreshListener(this);
