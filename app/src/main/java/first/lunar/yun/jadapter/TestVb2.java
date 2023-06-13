@@ -23,7 +23,7 @@ public class TestVb2 extends JViewBean {
 
   @Override
   public int bindLayout() {
-    return R.layout.item_test_vb;
+    return R.layout.item_test_vb2;
   }
 
   @Override

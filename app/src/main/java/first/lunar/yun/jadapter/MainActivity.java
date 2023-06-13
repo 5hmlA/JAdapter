@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import org.jetbrains.annotations.NotNull;
 import sparkj.adapter.JVBrecvAdapter;
 import sparkj.adapter.LApp;
 import sparkj.adapter.LoadMoreWrapperAdapter;
@@ -93,10 +94,12 @@ public class MainActivity extends AppCompatActivity implements OnViewClickListen
     mRecyclerView.postDelayed(new Runnable() {
       @Override
       public void run() {
-        List<DataTest> dataTests = new ArrayList<>();
+        List<JViewBean> dataTests = new ArrayList<>();
+        dataTests.add(new TestVb2());
         for (int i = 0; i < 20; i++) {
           dataTests.add(new DataTest());
         }
+
         mAdapter.refreshAllData(dataTests);
         mRefreshLayout.setRefreshing(false);
       }
@@ -127,6 +130,18 @@ class DataTest extends JViewBean {
   @Override
   public void onViewDetachedFromWindow(@NonNull JViewHolder holder) {
     super.onViewDetachedFromWindow(holder);
-    System.out.println("onViewDetachedFromWindow - "+getPosition() +" - " + holder);
+    System.out.println("onViewDetachedFromWindow - " + getPosition() + " - " + holder);
+  }
+
+  @Override
+  public void onViewRecycled(@NonNull @NotNull JViewHolder holder) {
+    super.onViewRecycled(holder);
+    System.out.println("onViewRecycled - " + getPosition() + " - " + holder);
+  }
+
+  @Override
+  public void onViewAttachedToWindow(@NonNull @NotNull JViewHolder holder) {
+    super.onViewAttachedToWindow(holder);
+    System.out.println("onViewAttachedToWindow - " + getPosition() + " - " + holder);
   }
 }
