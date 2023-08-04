@@ -81,6 +81,7 @@ public class JVBrecvAdapter<D extends JViewBean> extends RecyclerView.Adapter<JV
   @Override
   @Keep
   public JViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int itemLayout) {
+    System.out.println("onCreateViewHolder--------------------");
     JViewHolder jViewHolder = new JViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(itemLayout, viewGroup, false));
     jViewHolder.itemView.setOnClickListener(jOnClickListener);
     return jViewHolder;

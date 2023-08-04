@@ -35,6 +35,7 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    namespace 'sparkj.adapter'
 }
 
 dependencies {
@@ -45,4 +46,5 @@ dependencies {
 //    https://medium.com/androiddevelopers/jetpack-compose-interop-using-compose-in-a-recyclerview-569c7ec7a583
     implementation 'androidx.customview:customview-poolingcontainer:1.0.0'//recycleview 1.3已经依赖了
     implementation "androidx.compose.ui:ui"
+    testImplementation 'junit:junit:4.13.2'
 }

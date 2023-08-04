@@ -12,8 +12,16 @@ interface ComposeBean {
     fun content()
 }
 
-class ComposeHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {}
+//(proxy.javaClass.genericSuperclass as ParameterizedType)// 获取类型参数列表
+//.actualTypeArguments[0].toString()// 获取类型参数表列中的第一个类型
+
+
+class ComposeHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+}
 class ComposeAdapter : RecyclerView.Adapter<ComposeHolder>() {
+
+    val datas = mutableListOf<ComposeBean>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ComposeHolder {
         return ComposeHolder(ComposeView(parent.context).apply {
@@ -23,9 +31,7 @@ class ComposeAdapter : RecyclerView.Adapter<ComposeHolder>() {
         })
     }
 
-    override fun getItemCount(): Int {
-        TODO("Not yet implemented")
-    }
+    override fun getItemCount() = datas.size
 
     override fun getItemViewType(position: Int): Int {
         return super.getItemViewType(position)
