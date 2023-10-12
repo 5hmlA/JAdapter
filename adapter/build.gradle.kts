@@ -6,10 +6,10 @@ plugins {
 
 rootProject.ext["GROUP_ID"] = "osp.sparkj.ui"
 rootProject.ext["ARTIFACT_ID"] = "adapter"
-rootProject.ext["VERSION"] = "2023.10.12"
+rootProject.ext["VERSION"] = "2023.10.13"
 
 //apply(from = "https://raw.githubusercontent.com/5hmlA/5hmlA/space/publish-plugin.gradle")
-//apply(from = "../publish-plugin.gradle")
+apply(from = "../publish-plugin.gradle")
 
 
 android {
@@ -48,17 +48,17 @@ android {
         jvmTarget = "17"
     }
 
-    namespace = "sparkj.jadapter"
+    namespace = "sparkj.adapter"
 }
 
 dependencies {
-    api(libs.androidx.activity.ktx)
-    api(libs.androidx.core.ktx)
-    api(libs.lifecycle.runtime.ktx)
-    api(libs.lifecycle.livedata.ktx)
-    api(libs.lifecycle.viewmodel.ktx)
-    implementation("androidx.swiperefreshlayout:swiperefreshlayout:+")
-    implementation("androidx.recyclerview:recyclerview:+")
+    implementation(libs.androidx.activity.ktx)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.recyclerview)
+    implementation(libs.androidx.swiperefreshlayout)
+    implementation(libs.lifecycle.runtime.ktx)
+    implementation(libs.lifecycle.livedata.ktx)
+    implementation(libs.lifecycle.viewmodel.ktx)
 //    https://medium.com/androiddevelopers/jetpack-compose-interop-using-compose-in-a-recyclerview-569c7ec7a583
 //    implementation 'androidx.customview:customview-poolingcontainer:1.0.0'//recycleview 1.3已经依赖了
     testImplementation(libs.test.junit)
